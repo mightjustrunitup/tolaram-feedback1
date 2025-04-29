@@ -44,7 +44,10 @@ export default function Login() {
       >
         <div className="h-full w-full bg-gradient-to-r from-black/70 to-transparent flex items-center">
           <div className="p-12 md:p-16 lg:p-24 max-w-2xl animate-fade-in-left">
-            <div className="relative mb-8 overflow-hidden rounded-lg border-4 border-yellow-400 w-3/4 mx-auto p-4 bg-black/40 rotate-2">
+            <h1 className="text-4xl lg:text-6xl font-bold text-white mb-4 text-shadow">Welcome to the Indomie</h1>
+            <p className="text-lg lg:text-xl text-white/90 text-shadow">Your opinion matters to us.</p>
+            
+            <div className="relative mb-8 overflow-hidden rounded-lg border-4 border-yellow-400 w-3/4 mx-auto p-4 bg-black/40 rotate-2 mt-8">
               <div className="noodle-texture">
                 <img 
                   src="/indomie-product.png" 
