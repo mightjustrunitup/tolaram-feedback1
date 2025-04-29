@@ -41,7 +41,7 @@ export default function Login() {
       {/* Background Image Section - visible on medium and larger screens */}
       <div 
         className="hidden md:block md:w-3/5 lg:w-2/3 bg-center bg-cover animate-fade-in" 
-        style={{ backgroundImage: "url('/indomie-bg.jpg')" }}
+        style={{ backgroundImage: "url('/lovable-uploads/8db447ec-a193-4ca9-b609-7497306c2e64.png')" }}
       >
         <div className="h-full w-full bg-gradient-to-r from-black/70 to-transparent flex items-center">
           <div className="p-12 md:p-16 lg:p-24 max-w-2xl animate-fade-in-left">
