@@ -11,6 +11,7 @@ import ThankYou from "./pages/ThankYou";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import Index from "./pages/Index";
+import ScrollToTop from "./components/utils/ScrollToTop";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +21,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
