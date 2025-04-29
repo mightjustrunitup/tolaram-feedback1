@@ -53,8 +53,6 @@ export default function Login() {
                 />
               </div>
             </div>
-            <h1 className="text-4xl lg:text-6xl font-bold text-white mb-4 text-shadow">Welcome to the Indomie Feedback Oasis</h1>
-            <p className="text-lg lg:text-xl text-white/90 text-shadow">Your opinion matters to us. Help us improve your experience!</p>
             
             <div className="mt-8 relative">
               <div className="flex gap-2 overflow-hidden py-2">
@@ -92,7 +90,7 @@ export default function Login() {
             </div>
             <CardTitle className="text-2xl font-bold text-center">Sign In</CardTitle>
             <CardDescription className="text-center">
-              Enter your credentials to access the feedback portal
+              Enter your credentials to access the portal
             </CardDescription>
           </CardHeader>
           <CardContent>
