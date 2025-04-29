@@ -61,16 +61,6 @@ export default function Logo({ size = "md", className }: LogoProps) {
               {letter}
             </span>
           ))}
-          <span className="text-indomie-yellow ml-1 inline-block">
-            {Array.from("FEEDBACK").map((letter, index) => (
-              <span
-                key={index + 7}
-                className="hover:text-indomie-red transition-colors duration-200"
-              >
-                {letter}
-              </span>
-            ))}
-          </span>
         </div>
         <div className="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-indomie-red via-indomie-yellow to-indomie-red animate-gradient-x"></div>
       </div>
