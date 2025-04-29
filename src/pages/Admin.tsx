@@ -15,7 +15,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import Logo from "@/components/layout/Logo";
 import { toast } from "sonner";
 
-// Mock data for the admin dashboard
+// Mock data for the admin dashboard (kept from original)
 const MOCK_FEEDBACK_DATA = [
   { id: 1, customerName: "John Doe", date: "2023-04-25", storeLocation: "Lagos - Ikeja Mall", staffFriendliness: 8, cleanliness: 9, productAvailability: 7, overallExperience: 8, comment: "Great experience overall, staff was very helpful." },
   { id: 2, customerName: "Anonymous", date: "2023-04-24", storeLocation: "Abuja - Wuse II", staffFriendliness: 6, cleanliness: 5, productAvailability: 4, overallExperience: 5, comment: "The store was not very clean, and some products were out of stock." },
@@ -24,7 +24,7 @@ const MOCK_FEEDBACK_DATA = [
   { id: 5, customerName: "Anonymous", date: "2023-04-21", storeLocation: "Abuja - Jabi Lake Mall", staffFriendliness: 5, cleanliness: 6, productAvailability: 7, overallExperience: 6, comment: "Average experience, staff could be more friendly." },
 ];
 
-// Mock data for the charts
+// Mock data for the charts (kept from original)
 const STORE_PERFORMANCE_DATA = [
   { name: "Lagos - Ikeja Mall", staffFriendliness: 8.2, cleanliness: 8.5, productAvailability: 7.8, overallExperience: 8.1 },
   { name: "Lagos - Lekki Phase 1", staffFriendliness: 8.9, cleanliness: 8.7, productAvailability: 9.1, overallExperience: 8.9 },
@@ -33,7 +33,7 @@ const STORE_PERFORMANCE_DATA = [
   { name: "Port Harcourt - GRA", staffFriendliness: 8.0, cleanliness: 8.2, productAvailability: 7.4, overallExperience: 7.9 },
 ];
 
-// Pie chart data
+// Pie chart data (kept from original)
 const ISSUE_DISTRIBUTION_DATA = [
   { name: "Mislabelled products", value: 15 },
   { name: "Unusual taste/odor", value: 25 },
@@ -43,7 +43,7 @@ const ISSUE_DISTRIBUTION_DATA = [
   { name: "Other issues", value: 25 },
 ];
 
-// Colors for the pie chart
+// Colors for the pie chart (updated to match Indomie branding)
 const COLORS = ["#E51E25", "#FFC72C", "#2D2926", "#5AA9E6", "#7FC8A9", "#9F9F9F"];
 
 export default function Admin() {
@@ -69,9 +69,9 @@ export default function Admin() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-gray-50 noodle-pattern">
       {/* Header */}
-      <header className="w-full bg-white border-b py-4 px-6">
+      <header className="w-full bg-white border-b py-4 px-6 shadow-md relative z-10">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <Logo />
           <div className="flex items-center gap-4">
@@ -83,10 +83,11 @@ export default function Admin() {
             </Button>
             <Button 
               variant="default"
-              className="bg-indomie-red hover:bg-indomie-red/90"
+              className="bg-indomie-red hover:bg-indomie-red/90 relative overflow-hidden group"
               onClick={() => navigate("/login")}
             >
-              Logout
+              <span className="relative z-10">Logout</span>
+              <span className="absolute bottom-0 left-0 w-full h-0 bg-indomie-yellow transition-all duration-300 group-hover:h-full -z-0"></span>
             </Button>
           </div>
         </div>
@@ -107,14 +108,15 @@ export default function Admin() {
             
             {/* Reports Tab */}
             <TabsContent value="reports" className="space-y-6">
-              <Card>
-                <CardHeader>
+              <Card className="shadow-lg border border-indomie-yellow/10 relative overflow-hidden">
+                <div className="absolute inset-0 noodle-bg-light opacity-20"></div>
+                <CardHeader className="relative z-10">
                   <CardTitle>Feedback Reports</CardTitle>
                   <CardDescription>
                     View and filter customer feedback data
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-4 relative z-10">
                   {/* Filters */}
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div className="space-y-2">
@@ -232,7 +234,7 @@ export default function Admin() {
                   </div>
                   
                   {/* Feedback Table */}
-                  <div className="rounded-md border overflow-hidden">
+                  <div className="rounded-md border overflow-hidden bg-white shadow-sm">
                     <div className="overflow-x-auto">
                       <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-50">
@@ -307,8 +309,9 @@ export default function Admin() {
             {/* Charts Tab */}
             <TabsContent value="charts" className="space-y-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between">
+                <Card className="shadow-lg border border-indomie-yellow/10 relative overflow-hidden">
+                  <div className="absolute inset-0 noodle-bg-light opacity-20"></div>
+                  <CardHeader className="flex flex-row items-center justify-between relative z-10">
                     <div>
                       <CardTitle className="flex items-center gap-2">
                         <ChartBar className="h-5 w-5" />
@@ -319,7 +322,7 @@ export default function Admin() {
                       </CardDescription>
                     </div>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="relative z-10">
                     <div className="h-[400px]">
                       <ResponsiveContainer width="100%" height="100%">
                         <BarChart
@@ -346,8 +349,9 @@ export default function Admin() {
                   </CardContent>
                 </Card>
                 
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between">
+                <Card className="shadow-lg border border-indomie-yellow/10 relative overflow-hidden">
+                  <div className="absolute inset-0 noodle-bg-light opacity-20"></div>
+                  <CardHeader className="flex flex-row items-center justify-between relative z-10">
                     <div>
                       <CardTitle className="flex items-center gap-2">
                         <ChartPie className="h-5 w-5" />
@@ -358,7 +362,7 @@ export default function Admin() {
                       </CardDescription>
                     </div>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="relative z-10">
                     <div className="h-[400px]">
                       <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
@@ -387,14 +391,15 @@ export default function Admin() {
             
             {/* Analytics Tab */}
             <TabsContent value="analytics" className="space-y-6">
-              <Card>
-                <CardHeader>
+              <Card className="shadow-lg border border-indomie-yellow/10 relative overflow-hidden">
+                <div className="absolute inset-0 noodle-bg-light opacity-20"></div>
+                <CardHeader className="relative z-10">
                   <CardTitle>Performance Analytics</CardTitle>
                   <CardDescription>
                     Key metrics and insights from customer feedback
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="relative z-10">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     {[
                       { title: "Highest Rated Branch", value: "Lagos - Lekki Phase 1", score: "8.9/10", trend: "up" },
@@ -402,7 +407,7 @@ export default function Admin() {
                       { title: "Best Service Quality", value: "Lagos - Lekki Phase 1", score: "9.1/10", trend: "up" },
                       { title: "Most Improved", value: "Port Harcourt - GRA", score: "+1.2 pts", trend: "up" },
                     ].map((metric, index) => (
-                      <Card key={index} className="shadow-sm hover:shadow-md transition-shadow">
+                      <Card key={index} className="shadow-sm hover:shadow-md transition-shadow bg-white/70 backdrop-blur-sm border border-indomie-yellow/10">
                         <CardContent className="p-4">
                           <p className="text-sm font-medium text-gray-500">{metric.title}</p>
                           <h3 className="text-xl font-bold mt-1">{metric.value}</h3>
@@ -425,7 +430,7 @@ export default function Admin() {
                         { issue: "Packaging damage during transportation", count: 12, locations: ["Port Harcourt - GRA"] },
                         { issue: "Product availability issues", count: 10, locations: ["Abuja - Wuse II", "Kano - Nassarawa"] },
                       ].map((complaint, index) => (
-                        <div key={index} className="p-4 border rounded-md">
+                        <div key={index} className="p-4 border rounded-md bg-white/80 backdrop-blur-sm hover:bg-white transition-colors">
                           <div className="flex justify-between">
                             <h4 className="font-medium">{complaint.issue}</h4>
                             <span className="text-sm bg-red-100 text-red-800 px-2 py-1 rounded-full">
@@ -445,14 +450,15 @@ export default function Admin() {
             
             {/* Settings Tab */}
             <TabsContent value="settings" className="space-y-6">
-              <Card>
-                <CardHeader>
+              <Card className="shadow-lg border border-indomie-yellow/10 relative overflow-hidden">
+                <div className="absolute inset-0 noodle-bg-light opacity-20"></div>
+                <CardHeader className="relative z-10">
                   <CardTitle>Report Settings</CardTitle>
                   <CardDescription>
                     Configure your reporting preferences
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-4 relative z-10">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <label className="text-sm font-medium">Export Frequency</label>
@@ -493,8 +499,9 @@ export default function Admin() {
                     <p className="text-xs text-gray-500">Reports will be automatically sent to these email addresses.</p>
                   </div>
                   
-                  <Button className="bg-indomie-red hover:bg-indomie-red/90">
-                    Save Settings
+                  <Button className="bg-indomie-red hover:bg-indomie-red/90 relative overflow-hidden group">
+                    <span className="relative z-10">Save Settings</span>
+                    <span className="absolute bottom-0 left-0 w-full h-0 bg-indomie-yellow transition-all duration-300 group-hover:h-full -z-0"></span>
                   </Button>
                 </CardContent>
               </Card>

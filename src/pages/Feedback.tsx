@@ -71,9 +71,9 @@ export default function Feedback() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col noodle-bg-light">
       {/* Header */}
-      <header className="w-full bg-white border-b py-4 px-6">
+      <header className="w-full bg-white border-b py-4 px-6 shadow-md relative z-10">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <Logo />
           <Button 
@@ -86,16 +86,23 @@ export default function Feedback() {
       </header>
 
       {/* Feedback Form */}
-      <div className="flex-1 py-12 px-6">
-        <div className="max-w-3xl mx-auto">
-          <Card className="shadow-lg animate-fade-in border-t-4 border-t-indomie-red">
-            <CardHeader>
+      <div className="flex-1 py-12 px-6 relative">
+        <div className="absolute inset-0 w-full h-full">
+          <div className="w-full h-full bg-[radial-gradient(#FFC72C_1px,transparent_1px)] [background-size:20px_20px] opacity-20"></div>
+        </div>
+        
+        <div className="max-w-3xl mx-auto relative z-10">
+          <Card className="shadow-lg animate-fade-in border-t-4 border-t-indomie-red relative overflow-hidden">
+            <div className="absolute -right-16 -top-16 w-32 h-32 rounded-full bg-indomie-yellow/30 blur-xl"></div>
+            <div className="absolute -left-16 -bottom-16 w-32 h-32 rounded-full bg-indomie-red/30 blur-xl"></div>
+            
+            <CardHeader className="relative z-10">
               <CardTitle className="text-2xl font-bold">Share Your Feedback</CardTitle>
               <CardDescription>
                 Help us improve your Indomie experience by completing this short feedback form.
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="relative z-10">
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Customer Information */}
                 <div className="space-y-4">
@@ -190,7 +197,9 @@ export default function Feedback() {
                 </div>
 
                 {/* Rating Scales */}
-                <div className="space-y-6">
+                <div className="space-y-6 p-4 bg-white/70 rounded-md backdrop-blur-sm border border-indomie-yellow/20">
+                  <h3 className="font-semibold text-lg mb-4 text-indomie-dark">Rate Your Experience</h3>
+                  
                   <div className="space-y-2">
                     <Label>Staff Friendliness (1-10)</Label>
                     <RangeSlider
@@ -274,7 +283,7 @@ export default function Feedback() {
                 </div>
               </form>
             </CardContent>
-            <CardFooter className="flex justify-between">
+            <CardFooter className="flex justify-between relative z-10">
               <Button 
                 variant="outline"
                 onClick={() => navigate("/home")}
@@ -282,11 +291,14 @@ export default function Feedback() {
                 Cancel
               </Button>
               <Button 
-                className="bg-indomie-red hover:bg-indomie-red/90"
+                className="bg-indomie-red hover:bg-indomie-red/90 relative overflow-hidden group"
                 onClick={handleSubmit}
                 disabled={submitting}
               >
-                {submitting ? "Submitting..." : "Submit Feedback"}
+                <span className="relative z-10">
+                  {submitting ? "Submitting..." : "Submit Feedback"}
+                </span>
+                <span className="absolute bottom-0 left-0 w-full h-0 bg-indomie-yellow transition-all duration-300 group-hover:h-full -z-0"></span>
               </Button>
             </CardFooter>
           </Card>

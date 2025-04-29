@@ -29,9 +29,9 @@ export default function ThankYou() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col noodle-bg-light">
       {/* Header */}
-      <header className="w-full bg-white border-b py-4 px-6">
+      <header className="w-full bg-white border-b py-4 px-6 shadow-md">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <Logo />
           <Button 
@@ -45,9 +45,12 @@ export default function ThankYou() {
 
       {/* Thank You Content */}
       <div className="flex-1 py-12 px-6 flex items-center justify-center">
-        <Card className="max-w-md w-full shadow-lg animate-scale-in border-t-4 border-t-indomie-yellow">
+        <Card className="max-w-md w-full shadow-lg animate-scale-in border-t-4 border-t-indomie-yellow relative overflow-hidden">
+          <div className="absolute -right-16 -top-16 w-32 h-32 rounded-full bg-indomie-yellow/20 blur-xl"></div>
+          <div className="absolute -left-16 -bottom-16 w-32 h-32 rounded-full bg-indomie-red/20 blur-xl"></div>
+          
           <CardHeader className="text-center">
-            <div className="mx-auto mb-4 bg-green-100 rounded-full w-16 h-16 flex items-center justify-center">
+            <div className="mx-auto mb-4 bg-green-100 rounded-full w-16 h-16 flex items-center justify-center relative z-10">
               <CheckCircle2 className="h-10 w-10 text-green-600" />
             </div>
             <CardTitle className="text-2xl font-bold">Thank You!</CardTitle>
@@ -55,7 +58,7 @@ export default function ThankYou() {
               Your feedback has been submitted successfully. We truly appreciate your time and input.
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-6 relative z-10">
             <div className="text-center">
               <p className="mb-3 font-medium">How would you rate your experience with our feedback process?</p>
               <StarRating 
@@ -114,13 +117,16 @@ export default function ThankYou() {
               )}
             </div>
           </CardContent>
-          <CardFooter>
+          <CardFooter className="relative z-10">
             <Button 
-              className="w-full flex items-center justify-center gap-2"
+              className="w-full flex items-center justify-center gap-2 bg-indomie-red hover:bg-indomie-red/90 text-white relative overflow-hidden group"
               onClick={() => navigate("/home")}
             >
-              <Home className="h-4 w-4" />
-              Return to Home
+              <span className="relative z-10 flex items-center">
+                <Home className="h-4 w-4 mr-2" />
+                Return to Home
+              </span>
+              <span className="absolute bottom-0 left-0 w-full h-0 bg-indomie-yellow transition-all duration-300 group-hover:h-full -z-0"></span>
             </Button>
           </CardFooter>
         </Card>

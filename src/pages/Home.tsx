@@ -2,15 +2,15 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Logo from "@/components/layout/Logo";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Utensils } from "lucide-react";
 
 export default function Home() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col noodle-pattern">
       {/* Header */}
-      <header className="w-full bg-white border-b py-4 px-6">
+      <header className="w-full bg-white border-b py-4 px-6 shadow-md relative z-10">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <Logo />
           <div className="flex items-center gap-4">
@@ -33,12 +33,13 @@ export default function Home() {
 
       {/* Hero Section with updated background */}
       <section 
-        className="flex-1 bg-cover bg-center bg-no-repeat"
+        className="flex-1 bg-cover bg-center bg-no-repeat relative"
         style={{ backgroundImage: "url('/lovable-uploads/0f642b58-5ac4-4a89-9237-0b0be0b488aa.png')" }}
       >
-        <div className="w-full h-full bg-black/20 backdrop-blur-[2px]">
+        <div className="absolute inset-0 noodle-texture opacity-30"></div>
+        <div className="w-full h-full bg-black/20 backdrop-blur-[2px] relative">
           <div className="max-w-7xl mx-auto px-6 py-16 md:py-24 flex flex-col md:flex-row items-center gap-12">
-            <div className="flex-1 animate-fade-in-left bg-black/40 p-8 rounded-lg backdrop-blur-sm">
+            <div className="flex-1 animate-fade-in-left bg-black/60 p-8 rounded-lg backdrop-blur-sm border border-indomie-yellow/20">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 text-shadow">
                 Your Feedback <span className="text-indomie-red">Matters</span> to Us
               </h1>
@@ -47,11 +48,14 @@ export default function Home() {
               </p>
               <Button 
                 size="lg" 
-                className="bg-indomie-red hover:bg-indomie-red/90 hover-scale group"
+                className="bg-indomie-red hover:bg-indomie-red/90 hover-scale group relative overflow-hidden"
                 onClick={() => navigate("/feedback")}
               >
-                Start Feedback
-                <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+                <span className="relative z-10 flex items-center">
+                  Start Feedback
+                  <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+                </span>
+                <span className="absolute bottom-0 left-0 w-full h-0 bg-indomie-yellow transition-all duration-300 group-hover:h-full -z-0"></span>
               </Button>
             </div>
             
@@ -73,8 +77,9 @@ export default function Home() {
       </section>
 
       {/* Feature Section */}
-      <section className="bg-white py-16">
-        <div className="max-w-7xl mx-auto px-6">
+      <section className="bg-white py-16 relative overflow-hidden">
+        <div className="absolute inset-0 noodle-bg-light opacity-50"></div>
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
           <h2 className="text-3xl font-bold text-center mb-12">Why Your Feedback Is Important</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -97,7 +102,7 @@ export default function Home() {
             ].map((feature, index) => (
               <div 
                 key={index}
-                className="bg-gray-50 p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow animate-fade-in"
+                className="bg-white/80 backdrop-blur-sm p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow animate-fade-in border border-indomie-yellow/20"
                 style={{ animationDelay: `${index * 150}ms` }}
               >
                 <div className="text-4xl mb-4">{feature.icon}</div>
@@ -110,18 +115,25 @@ export default function Home() {
           <div className="mt-12 text-center">
             <Button 
               size="lg" 
-              className="bg-indomie-red hover:bg-indomie-red/90 hover-scale"
+              className="bg-indomie-red hover:bg-indomie-red/90 hover-scale relative overflow-hidden group"
               onClick={() => navigate("/feedback")}
             >
-              Share Your Experience Now
+              <span className="relative z-10 flex items-center">
+                <Utensils className="mr-2" />
+                Share Your Experience Now
+              </span>
+              <span className="absolute bottom-0 left-0 w-full h-0 bg-indomie-yellow transition-all duration-300 group-hover:h-full -z-0"></span>
             </Button>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-indomie-dark text-white py-8">
-        <div className="max-w-7xl mx-auto px-6">
+      <footer className="bg-indomie-dark text-white py-8 relative overflow-hidden">
+        <div className="absolute inset-0">
+          <div className="w-full h-full bg-[radial-gradient(#FFC72C_0.5px,transparent_0.5px)] [background-size:12px_12px] opacity-5"></div>
+        </div>
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-4 md:mb-0">
               <Logo className="text-white" />
