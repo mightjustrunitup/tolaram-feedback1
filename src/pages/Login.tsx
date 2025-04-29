@@ -66,7 +66,7 @@ export default function Login() {
                   >
                     <img 
                       src="/indomie-product.png" 
-                      alt="Indomie Noodle Pack"
+                      alt="Indomie Product"
                       className="h-full w-full object-cover"
                     />
                   </div>
