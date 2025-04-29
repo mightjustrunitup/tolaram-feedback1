@@ -62,14 +62,14 @@ export default function Home() {
             <div className="flex-1 flex justify-center animate-fade-in-right">
               <div className="relative w-full max-w-lg">
                 <img 
-                  src="/indomie-product.png" 
-                  alt="Indomie Products" 
-                  className="w-full h-auto rounded-lg shadow-2xl hover-scale object-contain bg-white/10 backdrop-blur-sm p-4 border border-indomie-yellow/20"
+                  src="/lovable-uploads/d00b8aa9-0602-4cb4-913d-eaced5d824c3.png"
+                  alt="Delicious Indomie Noodles" 
+                  className="w-full h-auto rounded-lg shadow-2xl hover-scale object-cover bg-white/10 backdrop-blur-sm p-4 border border-indomie-yellow/20"
                   onError={(e) => {
                     // Fallback if the image fails to load
                     const target = e.target as HTMLImageElement;
                     target.onerror = null;
-                    target.src = "https://placehold.co/600x400/FFC72C/e51e25?text=Indomie+Products";
+                    target.src = "https://placehold.co/600x400/FFC72C/e51e25?text=Indomie+Noodles";
                   }}
                 />
                 <div className="absolute -bottom-6 -right-6 bg-indomie-yellow text-indomie-dark p-4 rounded-lg shadow-lg rotate-3 animate-pulse-slow">
