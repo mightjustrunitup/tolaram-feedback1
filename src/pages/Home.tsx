@@ -31,36 +31,41 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="flex-1 bg-gradient-to-br from-white to-gray-100">
-        <div className="max-w-7xl mx-auto px-6 py-16 md:py-24 flex flex-col md:flex-row items-center gap-12">
-          <div className="flex-1 animate-fade-in-left">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-indomie-dark mb-4">
-              Your Feedback <span className="text-indomie-red">Matters</span> to Us
-            </h1>
-            <p className="text-lg md:text-xl text-gray-700 mb-8">
-              Help us improve your experience with Indomie products by sharing your thoughts and suggestions.
-            </p>
-            <Button 
-              size="lg" 
-              className="bg-indomie-red hover:bg-indomie-red/90 hover-scale group"
-              onClick={() => navigate("/feedback")}
-            >
-              Start Feedback
-              <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
-            </Button>
-          </div>
-          
-          <div className="flex-1 flex justify-center animate-fade-in-right">
-            <div className="relative w-full max-w-lg">
-              <img 
-                src="/indomie-product.png" 
-                alt="Indomie Products" 
-                className="w-full h-auto rounded-lg shadow-2xl hover-scale"
-              />
-              <div className="absolute -bottom-6 -right-6 bg-indomie-yellow text-indomie-dark p-4 rounded-lg shadow-lg rotate-3 animate-pulse-slow">
-                <p className="font-bold text-lg">New Flavor Alert!</p>
-                <p className="text-sm">Try our limited edition taste</p>
+      {/* Hero Section with updated background */}
+      <section 
+        className="flex-1 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('/lovable-uploads/0f642b58-5ac4-4a89-9237-0b0be0b488aa.png')" }}
+      >
+        <div className="w-full h-full bg-black/50 backdrop-blur-sm">
+          <div className="max-w-7xl mx-auto px-6 py-16 md:py-24 flex flex-col md:flex-row items-center gap-12">
+            <div className="flex-1 animate-fade-in-left bg-black/60 p-8 rounded-lg backdrop-blur-sm">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">
+                Your Feedback <span className="text-indomie-red">Matters</span> to Us
+              </h1>
+              <p className="text-lg md:text-xl text-white/90 mb-8">
+                Help us improve your experience with Indomie products by sharing your thoughts and suggestions.
+              </p>
+              <Button 
+                size="lg" 
+                className="bg-indomie-red hover:bg-indomie-red/90 hover-scale group"
+                onClick={() => navigate("/feedback")}
+              >
+                Start Feedback
+                <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </div>
+            
+            <div className="flex-1 flex justify-center animate-fade-in-right">
+              <div className="relative w-full max-w-lg">
+                <img 
+                  src="/indomie-product.png" 
+                  alt="Indomie Products" 
+                  className="w-full h-auto rounded-lg shadow-2xl hover-scale"
+                />
+                <div className="absolute -bottom-6 -right-6 bg-indomie-yellow text-indomie-dark p-4 rounded-lg shadow-lg rotate-3 animate-pulse-slow">
+                  <p className="font-bold text-lg">New Flavor Alert!</p>
+                  <p className="text-sm">Try our limited edition taste</p>
+                </div>
               </div>
             </div>
           </div>
