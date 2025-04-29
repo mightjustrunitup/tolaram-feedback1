@@ -31,7 +31,7 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Hero Section with updated background */}
+      {/* Hero Section with enhanced background */}
       <section 
         className="flex-1 bg-cover bg-center bg-no-repeat relative"
         style={{ backgroundImage: "url('/lovable-uploads/0f642b58-5ac4-4a89-9237-0b0be0b488aa.png')" }}
@@ -64,7 +64,13 @@ export default function Home() {
                 <img 
                   src="/indomie-product.png" 
                   alt="Indomie Products" 
-                  className="w-full h-auto rounded-lg shadow-2xl hover-scale"
+                  className="w-full h-auto rounded-lg shadow-2xl hover-scale object-contain bg-white/10 backdrop-blur-sm p-4 border border-indomie-yellow/20"
+                  onError={(e) => {
+                    // Fallback if the image fails to load
+                    const target = e.target as HTMLImageElement;
+                    target.onerror = null;
+                    target.src = "https://placehold.co/600x400/FFC72C/e51e25?text=Indomie+Products";
+                  }}
                 />
                 <div className="absolute -bottom-6 -right-6 bg-indomie-yellow text-indomie-dark p-4 rounded-lg shadow-lg rotate-3 animate-pulse-slow">
                   <p className="font-bold text-lg">New Flavor Alert!</p>
