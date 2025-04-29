@@ -72,8 +72,8 @@ export default function Feedback() {
 
   return (
     <div className="min-h-screen flex flex-col noodle-bg-light">
-      {/* Header */}
-      <header className="w-full bg-white border-b py-4 px-6 shadow-md relative z-10">
+      {/* Fixed Header */}
+      <header className="w-full bg-white border-b py-4 px-6 shadow-md fixed top-0 left-0 right-0 z-20">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <Logo />
           <Button 
@@ -85,8 +85,8 @@ export default function Feedback() {
         </div>
       </header>
 
-      {/* Feedback Form */}
-      <div className="flex-1 py-12 px-6 relative">
+      {/* Feedback Form - add padding-top for the fixed header */}
+      <div className="flex-1 py-12 px-6 relative pt-20">
         <div className="absolute inset-0 w-full h-full">
           <div className="w-full h-full bg-[radial-gradient(#FFC72C_1px,transparent_1px)] [background-size:20px_20px] opacity-20"></div>
         </div>

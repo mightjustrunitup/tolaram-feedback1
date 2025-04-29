@@ -30,8 +30,8 @@ export default function ThankYou() {
 
   return (
     <div className="min-h-screen flex flex-col noodle-bg-light">
-      {/* Header */}
-      <header className="w-full bg-white border-b py-4 px-6 shadow-md">
+      {/* Fixed Header */}
+      <header className="w-full bg-white border-b py-4 px-6 shadow-md fixed top-0 left-0 right-0 z-20">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <Logo />
           <Button 
@@ -43,8 +43,8 @@ export default function ThankYou() {
         </div>
       </header>
 
-      {/* Thank You Content */}
-      <div className="flex-1 py-12 px-6 flex items-center justify-center">
+      {/* Thank You Content - add padding-top for the fixed header */}
+      <div className="flex-1 py-12 px-6 flex items-center justify-center pt-20">
         <Card className="max-w-md w-full shadow-lg animate-scale-in border-t-4 border-t-indomie-yellow relative overflow-hidden">
           <div className="absolute -right-16 -top-16 w-32 h-32 rounded-full bg-indomie-yellow/20 blur-xl"></div>
           <div className="absolute -left-16 -bottom-16 w-32 h-32 rounded-full bg-indomie-red/20 blur-xl"></div>

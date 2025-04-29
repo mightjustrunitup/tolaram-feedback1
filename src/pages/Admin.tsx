@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -70,8 +69,8 @@ export default function Admin() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 noodle-pattern">
-      {/* Header */}
-      <header className="w-full bg-white border-b py-4 px-6 shadow-md relative z-10">
+      {/* Fixed Header */}
+      <header className="w-full bg-white border-b py-4 px-6 shadow-md fixed top-0 left-0 right-0 z-20">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <Logo />
           <div className="flex items-center gap-4">
@@ -93,8 +92,8 @@ export default function Admin() {
         </div>
       </header>
 
-      {/* Admin Dashboard */}
-      <div className="flex-1 py-8 px-6">
+      {/* Admin Dashboard - add padding-top for the fixed header */}
+      <div className="flex-1 py-8 px-6 pt-20">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
           

@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { toast } from "sonner";
 import Logo from "@/components/layout/Logo";
 import { Lock, User } from "lucide-react";
+
 export default function Login() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -15,6 +16,7 @@ export default function Login() {
     username: "",
     password: ""
   });
+  
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -28,17 +30,14 @@ export default function Login() {
       navigate("/home");
     }, 1500);
   };
+  
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const {
-      name,
-      value
-    } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
-  return <div className="min-h-screen flex flex-col md:flex-row">
+  
+  return (
+    <div className="min-h-screen flex flex-col md:flex-row">
       {/* Background Image Section - visible on medium and larger screens */}
       <div className="hidden md:block md:w-3/5 lg:w-2/3 bg-center bg-cover animate-fade-in noodle-bg-dark">
         <div className="h-full w-full bg-gradient-to-r from-black/70 to-transparent flex items-center">
@@ -105,5 +104,6 @@ export default function Login() {
           </CardFooter>
         </Card>
       </div>
-    </div>;
+    </div>
+  );
 }

@@ -2,13 +2,29 @@
 import AnimatedIndomie from "@/components/layout/AnimatedIndomie";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import Logo from "@/components/layout/Logo";
 
 const Index = () => {
   const navigate = useNavigate();
   
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 noodle-pattern">
-      <div className="text-center max-w-3xl px-4">
+      {/* Fixed Header */}
+      <header className="w-full bg-white border-b py-4 px-6 shadow-md fixed top-0 left-0 right-0 z-20">
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
+          <Logo />
+          <div className="flex items-center gap-4">
+            <Button 
+              variant="outline"
+              onClick={() => navigate("/login")}
+            >
+              Login
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      <div className="text-center max-w-3xl px-4 pt-20">
         <AnimatedIndomie size="xl" />
         
         <h1 className="text-4xl font-bold mt-8 mb-4">Welcome to Indomie Feedback Portal</h1>

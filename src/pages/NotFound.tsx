@@ -18,13 +18,13 @@ const NotFound = () => {
 
   return (
     <div className="min-h-screen flex flex-col noodle-bg-light">
-      <header className="w-full bg-white border-b py-4 px-6 shadow-md">
+      <header className="w-full bg-white border-b py-4 px-6 shadow-md fixed top-0 left-0 right-0 z-20">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <Logo />
         </div>
       </header>
       
-      <div className="flex-1 flex items-center justify-center p-6">
+      <div className="flex-1 flex items-center justify-center p-6 pt-20">
         <div className="text-center max-w-md animate-fade-in relative bg-white/70 backdrop-blur-sm p-12 rounded-xl shadow-xl border border-indomie-yellow/30">
           <div className="absolute -right-8 -top-8 w-24 h-24 rounded-full bg-indomie-yellow/20 blur-xl"></div>
           <div className="absolute -left-8 -bottom-8 w-24 h-24 rounded-full bg-indomie-red/20 blur-xl"></div>
