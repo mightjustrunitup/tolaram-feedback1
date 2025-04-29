@@ -36,10 +36,10 @@ export default function Home() {
         className="flex-1 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url('/lovable-uploads/0f642b58-5ac4-4a89-9237-0b0be0b488aa.png')" }}
       >
-        <div className="w-full h-full bg-black/50 backdrop-blur-sm">
+        <div className="w-full h-full bg-black/20 backdrop-blur-[2px]">
           <div className="max-w-7xl mx-auto px-6 py-16 md:py-24 flex flex-col md:flex-row items-center gap-12">
-            <div className="flex-1 animate-fade-in-left bg-black/60 p-8 rounded-lg backdrop-blur-sm">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">
+            <div className="flex-1 animate-fade-in-left bg-black/40 p-8 rounded-lg backdrop-blur-sm">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 text-shadow">
                 Your Feedback <span className="text-indomie-red">Matters</span> to Us
               </h1>
               <p className="text-lg md:text-xl text-white/90 mb-8">
