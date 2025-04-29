@@ -47,32 +47,12 @@ export default function Login() {
             <h1 className="text-4xl lg:text-6xl font-bold text-white mb-4 text-shadow">Welcome to the Indomie</h1>
             <p className="text-lg lg:text-xl text-white/90 text-shadow">Your opinion matters to us.</p>
             
-            <div className="relative mb-8 overflow-hidden rounded-lg border-4 border-yellow-400 w-3/4 mx-auto p-4 bg-black/40 rotate-2 mt-8">
-              <div className="noodle-texture">
-                <img 
-                  src="/indomie-product.png" 
-                  alt="Indomie Product" 
-                  className="w-full h-auto hover-scale transition-all duration-700"
-                />
-              </div>
-            </div>
-            
-            <div className="mt-8 relative">
-              <div className="flex gap-2 overflow-hidden py-2">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <div 
-                    key={i} 
-                    className="flex-shrink-0 h-24 w-32 rounded-lg overflow-hidden transform rotate-3 animate-pulse-slow"
-                    style={{ animationDelay: `${i * 0.2}s` }}
-                  >
-                    <img 
-                      src="/indomie-product.png" 
-                      alt="Indomie Product"
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                ))}
-              </div>
+            <div className="relative my-8 overflow-hidden rounded-lg">
+              <img 
+                src="/indomie-product.png" 
+                alt="Indomie Product" 
+                className="w-3/4 mx-auto h-auto hover-scale transition-all duration-700"
+              />
             </div>
           </div>
         </div>

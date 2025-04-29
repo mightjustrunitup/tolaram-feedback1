@@ -64,7 +64,7 @@ export default function Home() {
                 <img 
                   src="/lovable-uploads/d00b8aa9-0602-4cb4-913d-eaced5d824c3.png"
                   alt="Delicious Indomie Noodles" 
-                  className="w-full h-auto rounded-lg shadow-2xl hover-scale object-cover bg-white/10 backdrop-blur-sm p-4 border border-indomie-yellow/20"
+                  className="w-full h-auto rounded-lg shadow-2xl hover-scale object-cover bg-white/10 backdrop-blur-sm p-4"
                   onError={(e) => {
                     // Fallback if the image fails to load
                     const target = e.target as HTMLImageElement;
@@ -72,10 +72,6 @@ export default function Home() {
                     target.src = "https://placehold.co/600x400/FFC72C/e51e25?text=Indomie+Noodles";
                   }}
                 />
-                <div className="absolute -bottom-6 -right-6 bg-indomie-yellow text-indomie-dark p-4 rounded-lg shadow-lg rotate-3 animate-pulse-slow">
-                  <p className="font-bold text-lg">New Flavor Alert!</p>
-                  <p className="text-sm">Try our limited edition taste</p>
-                </div>
               </div>
             </div>
           </div>
