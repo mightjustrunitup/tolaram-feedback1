@@ -19,25 +19,25 @@ const products: Product[] = [
   {
     id: "indomie",
     name: "Indomie",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Indomie_Goreng_Mie.jpg/1200px-Indomie_Goreng_Mie.jpg",
+    image: "https://cdn.shopify.com/s/files/1/0552/1065/6145/products/indomie_1.jpg",
     description: "Delicious instant noodles with a variety of flavors"
   },
   {
     id: "minimie",
     name: "Minimie",
-    image: "https://mindsetsanctuary.com/wp-content/uploads/2024/03/Minimie-Logo-vector-image.jpg",
+    image: "https://cdn.fyfibo.com/cc/5958516498906112.jpg",
     description: "Mini-sized instant noodles perfect for snacking"
   },
   {
     id: "dano",
     name: "Dano Milk",
-    image: "https://i0.wp.com/www.ecowise.ng/wp-content/uploads/2023/07/Dano.jpg",
+    image: "https://www.arla.ng/contentassets/74e7c7e7fa5746649a6cc1ef6cf21485/dano-milk-powder-400g_455x455.png",
     description: "High quality milk products for your daily needs"
   },
   {
     id: "kelloggs",
     name: "Kellogg's Cereals",
-    image: "https://1000logos.net/wp-content/uploads/2017/03/Kelloggs-Logo.png",
+    image: "https://www.kelloggs.co.uk/content/dam/europe/kelloggs_gb/images/Redesign/Headers/Cereal%20group.png",
     description: "Nutritious breakfast cereals for a great start to your day"
   }
 ];
@@ -49,7 +49,12 @@ const Index = () => {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   
   useEffect(() => {
-    // Force reload of images
+    // Preload images to ensure they're in browser cache
+    products.forEach(product => {
+      const img = new Image();
+      img.src = product.image;
+    });
+    
     setImagesLoaded(true);
   }, []);
   
@@ -106,17 +111,19 @@ const Index = () => {
                     }`}
                     onClick={() => handleProductSelect(product)}
                   >
-                    <div className="h-40 overflow-hidden bg-gray-100">
-                      <img 
-                        src={`${product.image}?v=${Date.now()}`} 
-                        alt={product.name} 
-                        className="w-full h-full object-contain p-2"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.onerror = null;
-                          target.src = "https://placehold.co/300x200?text=" + product.name;
-                        }}
-                      />
+                    <div className="h-40 overflow-hidden flex items-center justify-center bg-white">
+                      {imagesLoaded && (
+                        <img 
+                          src={product.image}
+                          alt={product.name} 
+                          className="max-w-full max-h-full object-contain p-2"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.onerror = null;
+                            target.src = "https://placehold.co/300x200?text=" + product.name;
+                          }}
+                        />
+                      )}
                     </div>
                     <CardContent className="p-4">
                       <h3 className="text-xl font-semibold mb-2">{product.name}</h3>
