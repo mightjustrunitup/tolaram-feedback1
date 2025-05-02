@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import Logo from "@/components/layout/Logo";
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Package } from "lucide-react";
 
 // Define product types
@@ -15,29 +14,30 @@ interface Product {
   description: string;
 }
 
+// Use local placeholder images with text to ensure display
 const products: Product[] = [
   {
     id: "indomie",
     name: "Indomie",
-    image: "https://cdn.shopify.com/s/files/1/0552/1065/6145/products/indomie_1.jpg",
+    image: "https://placehold.co/400x300/FFFFFF/E51E25?text=Indomie",
     description: "Delicious instant noodles with a variety of flavors"
   },
   {
     id: "minimie",
     name: "Minimie",
-    image: "https://cdn.fyfibo.com/cc/5958516498906112.jpg",
+    image: "https://placehold.co/400x300/FFFFFF/FFB800?text=Minimie",
     description: "Mini-sized instant noodles perfect for snacking"
   },
   {
     id: "dano",
     name: "Dano Milk",
-    image: "https://www.arla.ng/contentassets/74e7c7e7fa5746649a6cc1ef6cf21485/dano-milk-powder-400g_455x455.png",
+    image: "https://placehold.co/400x300/FFFFFF/0075C2?text=Dano+Milk",
     description: "High quality milk products for your daily needs"
   },
   {
     id: "kelloggs",
     name: "Kellogg's Cereals",
-    image: "https://www.kelloggs.co.uk/content/dam/europe/kelloggs_gb/images/Redesign/Headers/Cereal%20group.png",
+    image: "https://placehold.co/400x300/FFFFFF/E31837?text=Kellogg's",
     description: "Nutritious breakfast cereals for a great start to your day"
   }
 ];
@@ -46,17 +46,6 @@ const Index = () => {
   const navigate = useNavigate();
   const [showProducts, setShowProducts] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [imagesLoaded, setImagesLoaded] = useState(false);
-  
-  useEffect(() => {
-    // Preload images to ensure they're in browser cache
-    products.forEach(product => {
-      const img = new Image();
-      img.src = product.image;
-    });
-    
-    setImagesLoaded(true);
-  }, []);
   
   const handleProductSelect = (product: Product) => {
     setSelectedProduct(product);
@@ -112,18 +101,11 @@ const Index = () => {
                     onClick={() => handleProductSelect(product)}
                   >
                     <div className="h-40 overflow-hidden flex items-center justify-center bg-white">
-                      {imagesLoaded && (
-                        <img 
-                          src={product.image}
-                          alt={product.name} 
-                          className="max-w-full max-h-full object-contain p-2"
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.onerror = null;
-                            target.src = "https://placehold.co/300x200?text=" + product.name;
-                          }}
-                        />
-                      )}
+                      <img 
+                        src={product.image}
+                        alt={product.name} 
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                     <CardContent className="p-4">
                       <h3 className="text-xl font-semibold mb-2">{product.name}</h3>
