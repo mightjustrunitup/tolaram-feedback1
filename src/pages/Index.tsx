@@ -1,7 +1,8 @@
+
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import Logo from "@/components/layout/Logo";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Package } from "lucide-react";
@@ -45,6 +46,12 @@ const Index = () => {
   const navigate = useNavigate();
   const [showProducts, setShowProducts] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+  
+  useEffect(() => {
+    // Force reload of images
+    setImagesLoaded(true);
+  }, []);
   
   const handleProductSelect = (product: Product) => {
     setSelectedProduct(product);
@@ -101,9 +108,9 @@ const Index = () => {
                   >
                     <div className="h-40 overflow-hidden bg-gray-100">
                       <img 
-                        src={product.image} 
+                        src={`${product.image}?v=${Date.now()}`} 
                         alt={product.name} 
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-contain p-2"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           target.onerror = null;
