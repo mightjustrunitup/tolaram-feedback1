@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import Logo from "@/components/layout/Logo";
@@ -19,25 +18,25 @@ const products: Product[] = [
   {
     id: "indomie",
     name: "Indomie",
-    image: "/lovable-uploads/d00b8aa9-0602-4cb4-913d-eaced5d824c3.png",
+    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Indomie_Goreng_Mie.jpg/1200px-Indomie_Goreng_Mie.jpg",
     description: "Delicious instant noodles with a variety of flavors"
   },
   {
     id: "minimie",
     name: "Minimie",
-    image: "https://via.placeholder.com/300x200/FFC72C/e51e25?text=Minimie",
+    image: "https://mindsetsanctuary.com/wp-content/uploads/2024/03/Minimie-Logo-vector-image.jpg",
     description: "Mini-sized instant noodles perfect for snacking"
   },
   {
     id: "dano",
     name: "Dano Milk",
-    image: "https://via.placeholder.com/300x200/FFFFFF/0000FF?text=Dano+Milk",
+    image: "https://i0.wp.com/www.ecowise.ng/wp-content/uploads/2023/07/Dano.jpg",
     description: "High quality milk products for your daily needs"
   },
   {
     id: "kelloggs",
     name: "Kellogg's Cereals",
-    image: "https://via.placeholder.com/300x200/FF0000/FFFFFF?text=Kelloggs",
+    image: "https://1000logos.net/wp-content/uploads/2017/03/Kelloggs-Logo.png",
     description: "Nutritious breakfast cereals for a great start to your day"
   }
 ];
