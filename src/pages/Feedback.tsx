@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -68,6 +67,11 @@ export default function Feedback() {
       toast.success("Feedback submitted successfully!");
       navigate("/thank-you");
     }, 1500);
+  };
+
+  // Function to format rating value with label
+  const formatRatingValue = (value: number): string => {
+    return `${value}/10`;
   };
 
   return (
@@ -200,7 +204,7 @@ export default function Feedback() {
                 <div className="space-y-6 p-4 bg-white/70 rounded-md backdrop-blur-sm border border-indomie-yellow/20">
                   <h3 className="font-semibold text-lg mb-4 text-indomie-dark">Rate Your Experience</h3>
                   
-                  <div className="space-y-2">
+                  <div className="space-y-2 pt-8">
                     <Label>Staff Friendliness (1-10)</Label>
                     <RangeSlider
                       min={1}
@@ -208,10 +212,12 @@ export default function Feedback() {
                       step={1}
                       value={formData.staffFriendliness}
                       onValueChange={(value) => handleSliderChange("staffFriendliness", value)}
+                      showValue={true}
+                      formatValue={formatRatingValue}
                     />
                   </div>
                   
-                  <div className="space-y-2">
+                  <div className="space-y-2 pt-8">
                     <Label>Cleanliness (1-10)</Label>
                     <RangeSlider
                       min={1}
@@ -219,10 +225,12 @@ export default function Feedback() {
                       step={1}
                       value={formData.cleanliness}
                       onValueChange={(value) => handleSliderChange("cleanliness", value)}
+                      showValue={true}
+                      formatValue={formatRatingValue}
                     />
                   </div>
                   
-                  <div className="space-y-2">
+                  <div className="space-y-2 pt-8">
                     <Label>Product Availability (1-10)</Label>
                     <RangeSlider
                       min={1}
@@ -230,10 +238,12 @@ export default function Feedback() {
                       step={1}
                       value={formData.productAvailability}
                       onValueChange={(value) => handleSliderChange("productAvailability", value)}
+                      showValue={true}
+                      formatValue={formatRatingValue}
                     />
                   </div>
                   
-                  <div className="space-y-2">
+                  <div className="space-y-2 pt-8">
                     <Label>Overall Experience (1-10)</Label>
                     <RangeSlider
                       min={1}
@@ -241,6 +251,8 @@ export default function Feedback() {
                       step={1}
                       value={formData.overallExperience}
                       onValueChange={(value) => handleSliderChange("overallExperience", value)}
+                      showValue={true}
+                      formatValue={formatRatingValue}
                     />
                   </div>
                 </div>
