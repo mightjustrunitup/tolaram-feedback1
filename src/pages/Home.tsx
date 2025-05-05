@@ -96,20 +96,6 @@ export default function Home() {
                 </div>
               ))}
             </div>
-            
-            <div className="mt-12 text-center">
-              <Button 
-                size="lg" 
-                className="bg-indomie-red hover:bg-indomie-red/90 hover-scale relative overflow-hidden group"
-                onClick={() => navigate("/feedback")}
-              >
-                <span className="relative z-10 flex items-center">
-                  <Utensils className="mr-2" />
-                  Share Your Experience Now
-                </span>
-                <span className="absolute bottom-0 left-0 w-full h-0 bg-indomie-yellow transition-all duration-300 group-hover:h-full -z-0"></span>
-              </Button>
-            </div>
           </div>
         </section>
 
