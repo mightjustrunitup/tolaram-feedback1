@@ -33,13 +33,10 @@ export default function Home() {
 
       {/* Content with padding top to prevent overlap with fixed header */}
       <div className="pt-20">
-        {/* Hero Section with enhanced background */}
-        <section 
-          className="flex-1 bg-cover bg-center bg-no-repeat relative"
-          style={{ backgroundImage: "url('/lovable-uploads/0f642b58-5ac4-4a89-9237-0b0be0b488aa.png')" }}
-        >
+        {/* Hero Section with solid background instead of image */}
+        <section className="flex-1 bg-indomie-yellow/10 relative">
           <div className="absolute inset-0 noodle-texture opacity-30"></div>
-          <div className="w-full h-full bg-black/20 backdrop-blur-[2px] relative">
+          <div className="w-full h-full relative">
             <div className="max-w-7xl mx-auto px-6 py-16 md:py-24 flex flex-col md:flex-row items-center gap-12">
               <div className="flex-1 animate-fade-in-left bg-black/60 p-8 rounded-lg backdrop-blur-sm border border-indomie-yellow/20">
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 text-shadow">
@@ -64,15 +61,9 @@ export default function Home() {
               <div className="flex-1 flex justify-center animate-fade-in-right">
                 <div className="relative w-full max-w-lg">
                   <img 
-                    src="/lovable-uploads/d00b8aa9-0602-4cb4-913d-eaced5d824c3.png"
+                    src="https://placehold.co/600x400/FFC72C/e51e25?text=Indomie+Noodles"
                     alt="Delicious Indomie Noodles" 
                     className="w-full h-auto rounded-lg shadow-2xl hover-scale object-cover bg-white/10 backdrop-blur-sm p-4"
-                    onError={(e) => {
-                      // Fallback if the image fails to load
-                      const target = e.target as HTMLImageElement;
-                      target.onerror = null;
-                      target.src = "https://placehold.co/600x400/FFC72C/e51e25?text=Indomie+Noodles";
-                    }}
                   />
                 </div>
               </div>
