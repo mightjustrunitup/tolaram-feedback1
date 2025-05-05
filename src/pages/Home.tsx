@@ -2,10 +2,15 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Logo from "@/components/layout/Logo";
-import { ArrowRight, Utensils } from "lucide-react";
+import { ArrowRight, LogOut } from "lucide-react";
 
 export default function Home() {
   const navigate = useNavigate();
+
+  const handleSignOut = () => {
+    // For a real app, you would handle auth logout here
+    navigate("/"); // Navigate to the products page (Index)
+  };
 
   return (
     <div className="min-h-screen flex flex-col noodle-pattern">
@@ -22,10 +27,12 @@ export default function Home() {
               Admin Dashboard
             </Button>
             <Button 
-              onClick={() => navigate("/login")}
+              onClick={handleSignOut}
               variant="ghost"
+              className="flex items-center gap-2"
             >
-              Login
+              <LogOut size={18} />
+              Sign Out
             </Button>
           </div>
         </div>
