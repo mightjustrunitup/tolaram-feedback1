@@ -9,10 +9,12 @@ import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { CalendarIcon, ChartBar, ChartPie, Download, Filter } from "lucide-react";
+import { CalendarIcon, ChartBar, ChartPie, Download, Filter, Menu, X } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import Logo from "@/components/layout/Logo";
 import { toast } from "sonner";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 // Mock data for the admin dashboard (kept from original)
 const MOCK_FEEDBACK_DATA = [
@@ -47,10 +49,12 @@ const COLORS = ["#E51E25", "#FFC72C", "#2D2926", "#5AA9E6", "#7FC8A9", "#9F9F9F"
 
 export default function Admin() {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
   const [selectedStore, setSelectedStore] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Filter feedback data based on selected filters
   const filteredFeedback = MOCK_FEEDBACK_DATA.filter((feedback) => {
@@ -69,68 +73,103 @@ export default function Admin() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 noodle-pattern">
-      {/* Fixed Header */}
-      <header className="w-full bg-white border-b py-4 px-6 shadow-md fixed top-0 left-0 right-0 z-20">
+      {/* Mobile-friendly Header */}
+      <header className="w-full bg-white border-b py-3 md:py-4 px-4 md:px-6 shadow-md fixed top-0 left-0 right-0 z-20">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <Logo />
-          <div className="flex items-center gap-4">
-            <Button 
-              variant="outline" 
-              onClick={() => navigate("/home")}
-            >
-              Back to Home
-            </Button>
-            <Button 
-              variant="default"
-              className="bg-indomie-red hover:bg-indomie-red/90 relative overflow-hidden group"
-              onClick={() => navigate("/login")}
-            >
-              <span className="relative z-10">Logout</span>
-              <span className="absolute bottom-0 left-0 w-full h-0 bg-indomie-yellow transition-all duration-300 group-hover:h-full -z-0"></span>
-            </Button>
-          </div>
+          <Logo size={isMobile ? "sm" : "md"} />
+          
+          {/* Mobile Menu */}
+          {isMobile ? (
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="md:hidden">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[250px] sm:w-[300px]">
+                <div className="flex flex-col h-full">
+                  <div className="flex-1 py-6 flex flex-col gap-4">
+                    <Button 
+                      variant="outline" 
+                      className="justify-start" 
+                      onClick={() => navigate("/home")}
+                    >
+                      Back to Home
+                    </Button>
+                    <Button 
+                      variant="default"
+                      className="bg-indomie-red hover:bg-indomie-red/90 justify-start"
+                      onClick={() => navigate("/login")}
+                    >
+                      Logout
+                    </Button>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
+          ) : (
+            <div className="hidden md:flex items-center gap-4">
+              <Button 
+                variant="outline" 
+                onClick={() => navigate("/home")}
+              >
+                Back to Home
+              </Button>
+              <Button 
+                variant="default"
+                className="bg-indomie-red hover:bg-indomie-red/90 relative overflow-hidden group"
+                onClick={() => navigate("/login")}
+              >
+                <span className="relative z-10">Logout</span>
+                <span className="absolute bottom-0 left-0 w-full h-0 bg-indomie-yellow transition-all duration-300 group-hover:h-full -z-0"></span>
+              </Button>
+            </div>
+          )}
         </div>
       </header>
 
       {/* Admin Dashboard - add padding-top for the fixed header */}
-      <div className="flex-1 py-8 px-6 pt-20">
+      <div className="flex-1 py-4 md:py-8 px-3 md:px-6 pt-16 md:pt-20">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
+          <h1 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">Admin Dashboard</h1>
           
-          <Tabs defaultValue="reports" className="space-y-6">
-            <TabsList className="grid grid-cols-2 md:grid-cols-4 w-full md:w-auto">
-              <TabsTrigger value="reports">Reports</TabsTrigger>
-              <TabsTrigger value="charts">Charts</TabsTrigger>
-              <TabsTrigger value="analytics">Analytics</TabsTrigger>
-              <TabsTrigger value="settings">Settings</TabsTrigger>
-            </TabsList>
+          <Tabs defaultValue="reports" className="space-y-4 md:space-y-6">
+            <div className="overflow-x-auto pb-2">
+              <TabsList className="grid grid-cols-2 md:grid-cols-4 w-full">
+                <TabsTrigger value="reports" className="text-sm md:text-base py-2">Reports</TabsTrigger>
+                <TabsTrigger value="charts" className="text-sm md:text-base py-2">Charts</TabsTrigger>
+                <TabsTrigger value="analytics" className="text-sm md:text-base py-2">Analytics</TabsTrigger>
+                <TabsTrigger value="settings" className="text-sm md:text-base py-2">Settings</TabsTrigger>
+              </TabsList>
+            </div>
             
             {/* Reports Tab */}
-            <TabsContent value="reports" className="space-y-6">
+            <TabsContent value="reports" className="space-y-4 md:space-y-6">
               <Card className="shadow-lg border border-indomie-yellow/10 relative overflow-hidden">
                 <div className="absolute inset-0 noodle-bg-light opacity-20"></div>
-                <CardHeader className="relative z-10">
-                  <CardTitle>Feedback Reports</CardTitle>
-                  <CardDescription>
+                <CardHeader className="relative z-10 p-4 md:p-6">
+                  <CardTitle className="text-lg md:text-xl">Feedback Reports</CardTitle>
+                  <CardDescription className="text-sm">
                     View and filter customer feedback data
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4 relative z-10">
-                  {/* Filters */}
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">Start Date</label>
+                <CardContent className="space-y-4 relative z-10 p-4 md:p-6">
+                  {/* Filters - Responsive grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+                    <div className="space-y-1 md:space-y-2">
+                      <label className="text-xs md:text-sm font-medium">Start Date</label>
                       <Popover>
                         <PopoverTrigger asChild>
                           <Button
                             variant="outline"
+                            size={isMobile ? "sm" : "default"}
                             className={cn(
-                              "w-full justify-start text-left font-normal",
+                              "w-full justify-start text-left font-normal text-xs md:text-sm",
                               !startDate && "text-muted-foreground"
                             )}
                           >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {startDate ? format(startDate, "PPP") : <span>Pick a date</span>}
+                            <CalendarIcon className="mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4" />
+                            {startDate ? format(startDate, "PP") : <span>Pick a date</span>}
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0" align="start">
@@ -145,19 +184,20 @@ export default function Admin() {
                       </Popover>
                     </div>
                     
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">End Date</label>
+                    <div className="space-y-1 md:space-y-2">
+                      <label className="text-xs md:text-sm font-medium">End Date</label>
                       <Popover>
                         <PopoverTrigger asChild>
                           <Button
                             variant="outline"
+                            size={isMobile ? "sm" : "default"}
                             className={cn(
-                              "w-full justify-start text-left font-normal",
+                              "w-full justify-start text-left font-normal text-xs md:text-sm",
                               !endDate && "text-muted-foreground"
                             )}
                           >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {endDate ? format(endDate, "PPP") : <span>Pick a date</span>}
+                            <CalendarIcon className="mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4" />
+                            {endDate ? format(endDate, "PP") : <span>Pick a date</span>}
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0" align="start">
@@ -172,13 +212,13 @@ export default function Admin() {
                       </Popover>
                     </div>
                     
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">Store Location</label>
+                    <div className="space-y-1 md:space-y-2">
+                      <label className="text-xs md:text-sm font-medium">Store Location</label>
                       <Select 
                         value={selectedStore}
                         onValueChange={setSelectedStore}
                       >
-                        <SelectTrigger>
+                        <SelectTrigger className="text-xs md:text-sm h-8 md:h-10">
                           <SelectValue placeholder="Select store" />
                         </SelectTrigger>
                         <SelectContent>
@@ -192,13 +232,14 @@ export default function Admin() {
                       </Select>
                     </div>
                     
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">Search</label>
+                    <div className="space-y-1 md:space-y-2">
+                      <label className="text-xs md:text-sm font-medium">Search</label>
                       <div className="relative">
                         <Input
                           placeholder="Search feedback..."
                           value={searchTerm}
                           onChange={(e) => setSearchTerm(e.target.value)}
+                          className="text-xs md:text-sm h-8 md:h-10"
                         />
                       </div>
                     </div>
@@ -208,55 +249,55 @@ export default function Admin() {
                   <div className="flex flex-wrap gap-2">
                     <Button 
                       variant="outline" 
-                      size="sm"
+                      size={isMobile ? "sm" : "default"}
                       onClick={() => {
                         setStartDate(undefined);
                         setEndDate(undefined);
                         setSelectedStore("all");
                         setSearchTerm("");
                       }}
-                      className="flex items-center gap-1"
+                      className="flex items-center gap-1 text-xs md:text-sm"
                     >
-                      <Filter className="h-4 w-4" />
+                      <Filter className="h-3 w-3 md:h-4 md:w-4" />
                       Reset Filters
                     </Button>
                     
                     <Button 
                       variant="default" 
-                      size="sm"
+                      size={isMobile ? "sm" : "default"}
                       onClick={handleExportExcel}
-                      className="flex items-center gap-1 bg-green-600 hover:bg-green-700"
+                      className="flex items-center gap-1 bg-green-600 hover:bg-green-700 text-xs md:text-sm"
                     >
-                      <Download className="h-4 w-4" />
+                      <Download className="h-3 w-3 md:h-4 md:w-4" />
                       Export to Excel
                     </Button>
                   </div>
                   
-                  {/* Feedback Table */}
+                  {/* Responsive Feedback Table */}
                   <div className="rounded-md border overflow-hidden bg-white shadow-sm">
                     <div className="overflow-x-auto">
                       <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-50">
                           <tr>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Store</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Staff</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Clean</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Products</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Overall</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Comments</th>
+                            <th className="px-2 md:px-6 py-2 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                            <th className="px-2 md:px-6 py-2 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                            <th className="px-2 md:px-6 py-2 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Store</th>
+                            <th className="px-2 md:px-6 py-2 md:py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Staff</th>
+                            <th className="px-2 md:px-6 py-2 md:py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Clean</th>
+                            <th className="px-2 md:px-6 py-2 md:py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Products</th>
+                            <th className="px-2 md:px-6 py-2 md:py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Overall</th>
+                            <th className="px-2 md:px-6 py-2 md:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Comments</th>
                           </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
                           {filteredFeedback.map((feedback) => (
                             <tr key={feedback.id} className="hover:bg-gray-50">
-                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{feedback.customerName}</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{feedback.date}</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{feedback.storeLocation}</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              <td className="px-2 md:px-6 py-2 md:py-4 text-xs md:text-sm font-medium text-gray-900">{feedback.customerName}</td>
+                              <td className="px-2 md:px-6 py-2 md:py-4 text-xs md:text-sm text-gray-500 whitespace-nowrap">{feedback.date}</td>
+                              <td className="px-2 md:px-6 py-2 md:py-4 text-xs md:text-sm text-gray-500 max-w-[8rem] md:max-w-none truncate">{feedback.storeLocation}</td>
+                              <td className="px-2 md:px-6 py-2 md:py-4 text-center whitespace-nowrap">
                                 <span className={cn(
-                                  "px-2 py-1 rounded-full text-xs font-medium",
+                                  "px-1 md:px-2 py-0.5 md:py-1 rounded-full text-xs font-medium",
                                   feedback.staffFriendliness >= 8 ? "bg-green-100 text-green-800" :
                                   feedback.staffFriendliness >= 6 ? "bg-yellow-100 text-yellow-800" : 
                                   "bg-red-100 text-red-800"
@@ -264,9 +305,9 @@ export default function Admin() {
                                   {feedback.staffFriendliness}
                                 </span>
                               </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              <td className="px-2 md:px-6 py-2 md:py-4 text-center whitespace-nowrap">
                                 <span className={cn(
-                                  "px-2 py-1 rounded-full text-xs font-medium",
+                                  "px-1 md:px-2 py-0.5 md:py-1 rounded-full text-xs font-medium",
                                   feedback.cleanliness >= 8 ? "bg-green-100 text-green-800" :
                                   feedback.cleanliness >= 6 ? "bg-yellow-100 text-yellow-800" : 
                                   "bg-red-100 text-red-800"
@@ -274,9 +315,9 @@ export default function Admin() {
                                   {feedback.cleanliness}
                                 </span>
                               </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              <td className="px-2 md:px-6 py-2 md:py-4 text-center whitespace-nowrap">
                                 <span className={cn(
-                                  "px-2 py-1 rounded-full text-xs font-medium",
+                                  "px-1 md:px-2 py-0.5 md:py-1 rounded-full text-xs font-medium",
                                   feedback.productAvailability >= 8 ? "bg-green-100 text-green-800" :
                                   feedback.productAvailability >= 6 ? "bg-yellow-100 text-yellow-800" : 
                                   "bg-red-100 text-red-800"
@@ -284,9 +325,9 @@ export default function Admin() {
                                   {feedback.productAvailability}
                                 </span>
                               </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              <td className="px-2 md:px-6 py-2 md:py-4 text-center whitespace-nowrap">
                                 <span className={cn(
-                                  "px-2 py-1 rounded-full text-xs font-medium",
+                                  "px-1 md:px-2 py-0.5 md:py-1 rounded-full text-xs font-medium",
                                   feedback.overallExperience >= 8 ? "bg-green-100 text-green-800" :
                                   feedback.overallExperience >= 6 ? "bg-yellow-100 text-yellow-800" : 
                                   "bg-red-100 text-red-800"
@@ -294,7 +335,7 @@ export default function Admin() {
                                   {feedback.overallExperience}
                                 </span>
                               </td>
-                              <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">{feedback.comment}</td>
+                              <td className="px-2 md:px-6 py-2 md:py-4 text-xs md:text-sm text-gray-500 max-w-[6rem] sm:max-w-xs truncate">{feedback.comment}</td>
                             </tr>
                           ))}
                         </tbody>
@@ -305,101 +346,106 @@ export default function Admin() {
               </Card>
             </TabsContent>
             
-            {/* Charts Tab */}
-            <TabsContent value="charts" className="space-y-6">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Charts Tab - Improved for mobile */}
+            <TabsContent value="charts" className="space-y-4 md:space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
                 <Card className="shadow-lg border border-indomie-yellow/10 relative overflow-hidden">
                   <div className="absolute inset-0 noodle-bg-light opacity-20"></div>
-                  <CardHeader className="flex flex-row items-center justify-between relative z-10">
+                  <CardHeader className="flex flex-row items-center justify-between relative z-10 p-4 md:p-6">
                     <div>
-                      <CardTitle className="flex items-center gap-2">
-                        <ChartBar className="h-5 w-5" />
-                        Store Performance Comparison
+                      <CardTitle className="flex items-center gap-1 md:gap-2 text-base md:text-lg">
+                        <ChartBar className="h-4 w-4 md:h-5 md:w-5" />
+                        Store Performance
                       </CardTitle>
-                      <CardDescription>
-                        Average ratings across all stores
+                      <CardDescription className="text-xs md:text-sm">
+                        Average ratings across stores
                       </CardDescription>
                     </div>
                   </CardHeader>
-                  <CardContent className="relative z-10">
-                    <div className="h-[400px]">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart
-                          data={STORE_PERFORMANCE_DATA}
-                          margin={{ top: 20, right: 30, left: 0, bottom: 120 }}
-                        >
-                          <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis 
-                            dataKey="name" 
-                            angle={-45} 
-                            textAnchor="end" 
-                            height={80}
-                            interval={0}
-                          />
-                          <YAxis domain={[0, 10]} />
-                          <Tooltip />
-                          <Bar dataKey="staffFriendliness" name="Staff Friendliness" fill="#E51E25" />
-                          <Bar dataKey="cleanliness" name="Cleanliness" fill="#FFC72C" />
-                          <Bar dataKey="productAvailability" name="Product Availability" fill="#2D2926" />
-                          <Bar dataKey="overallExperience" name="Overall Experience" fill="#5AA9E6" />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </div>
+                  <CardContent className="relative z-10 p-0 md:p-4 h-[300px] md:h-[400px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart
+                        data={STORE_PERFORMANCE_DATA}
+                        margin={{ 
+                          top: 20, 
+                          right: 10, 
+                          left: 0, 
+                          bottom: isMobile ? 140 : 120 
+                        }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis 
+                          dataKey="name" 
+                          angle={-45} 
+                          textAnchor="end" 
+                          height={80}
+                          interval={0}
+                          tick={{ fontSize: isMobile ? 8 : 12 }}
+                        />
+                        <YAxis 
+                          domain={[0, 10]} 
+                          tick={{ fontSize: isMobile ? 10 : 12 }}
+                        />
+                        <Tooltip />
+                        <Bar dataKey="staffFriendliness" name="Staff Friendliness" fill="#E51E25" />
+                        <Bar dataKey="cleanliness" name="Cleanliness" fill="#FFC72C" />
+                        <Bar dataKey="productAvailability" name="Product Availability" fill="#2D2926" />
+                        <Bar dataKey="overallExperience" name="Overall Experience" fill="#5AA9E6" />
+                      </BarChart>
+                    </ResponsiveContainer>
                   </CardContent>
                 </Card>
                 
                 <Card className="shadow-lg border border-indomie-yellow/10 relative overflow-hidden">
                   <div className="absolute inset-0 noodle-bg-light opacity-20"></div>
-                  <CardHeader className="flex flex-row items-center justify-between relative z-10">
+                  <CardHeader className="flex flex-row items-center justify-between relative z-10 p-4 md:p-6">
                     <div>
-                      <CardTitle className="flex items-center gap-2">
-                        <ChartPie className="h-5 w-5" />
+                      <CardTitle className="flex items-center gap-1 md:gap-2 text-base md:text-lg">
+                        <ChartPie className="h-4 w-4 md:h-5 md:w-5" />
                         Issue Distribution
                       </CardTitle>
-                      <CardDescription>
-                        Common issues reported by customers
+                      <CardDescription className="text-xs md:text-sm">
+                        Common issues reported
                       </CardDescription>
                     </div>
                   </CardHeader>
-                  <CardContent className="relative z-10">
-                    <div className="h-[400px]">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                          <Pie
-                            data={ISSUE_DISTRIBUTION_DATA}
-                            cx="50%"
-                            cy="50%"
-                            labelLine={true}
-                            label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                            outerRadius={120}
-                            fill="#8884d8"
-                            dataKey="value"
-                          >
-                            {ISSUE_DISTRIBUTION_DATA.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                            ))}
-                          </Pie>
-                          <Tooltip />
-                        </PieChart>
-                      </ResponsiveContainer>
-                    </div>
+                  <CardContent className="relative z-10 p-0 md:p-4 h-[300px] md:h-[400px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={ISSUE_DISTRIBUTION_DATA}
+                          cx="50%"
+                          cy="50%"
+                          labelLine={!isMobile}
+                          label={isMobile ? undefined : ({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                          outerRadius={isMobile ? 80 : 120}
+                          fill="#8884d8"
+                          dataKey="value"
+                        >
+                          {ISSUE_DISTRIBUTION_DATA.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <Tooltip />
+                      </PieChart>
+                    </ResponsiveContainer>
                   </CardContent>
                 </Card>
               </div>
             </TabsContent>
             
-            {/* Analytics Tab */}
-            <TabsContent value="analytics" className="space-y-6">
+            {/* Analytics Tab - Improved for mobile */}
+            <TabsContent value="analytics" className="space-y-4 md:space-y-6">
               <Card className="shadow-lg border border-indomie-yellow/10 relative overflow-hidden">
                 <div className="absolute inset-0 noodle-bg-light opacity-20"></div>
-                <CardHeader className="relative z-10">
-                  <CardTitle>Performance Analytics</CardTitle>
-                  <CardDescription>
+                <CardHeader className="relative z-10 p-4 md:p-6">
+                  <CardTitle className="text-lg md:text-xl">Performance Analytics</CardTitle>
+                  <CardDescription className="text-xs md:text-sm">
                     Key metrics and insights from customer feedback
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="relative z-10">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <CardContent className="relative z-10 p-4 md:p-6">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
                     {[
                       { title: "Highest Rated Branch", value: "Lagos - Lekki Phase 1", score: "8.9/10", trend: "up" },
                       { title: "Lowest Rated Branch", value: "Abuja - Wuse II", score: "6.8/10", trend: "down" },
@@ -407,11 +453,11 @@ export default function Admin() {
                       { title: "Most Improved", value: "Port Harcourt - GRA", score: "+1.2 pts", trend: "up" },
                     ].map((metric, index) => (
                       <Card key={index} className="shadow-sm hover:shadow-md transition-shadow bg-white/70 backdrop-blur-sm border border-indomie-yellow/10">
-                        <CardContent className="p-4">
-                          <p className="text-sm font-medium text-gray-500">{metric.title}</p>
-                          <h3 className="text-xl font-bold mt-1">{metric.value}</h3>
+                        <CardContent className="p-2 md:p-4">
+                          <p className="text-xs md:text-sm font-medium text-gray-500 truncate">{metric.title}</p>
+                          <h3 className="text-sm md:text-xl font-bold mt-1 truncate">{metric.value}</h3>
                           <div className={cn(
-                            "text-sm font-medium mt-1 flex items-center",
+                            "text-xs md:text-sm font-medium mt-1 flex items-center",
                             metric.trend === "up" ? "text-green-600" : "text-red-600"
                           )}>
                             <span>{metric.score}</span>
@@ -421,23 +467,23 @@ export default function Admin() {
                     ))}
                   </div>
                   
-                  <div className="mt-8">
-                    <h3 className="text-lg font-semibold mb-4">Top Customer Complaints</h3>
-                    <div className="space-y-4">
+                  <div className="mt-6 md:mt-8">
+                    <h3 className="text-base md:text-lg font-semibold mb-3 md:mb-4">Top Customer Complaints</h3>
+                    <div className="space-y-2 md:space-y-4">
                       {[
                         { issue: "Unusual taste in Chicken flavor", count: 15, locations: ["Lagos - Ikeja Mall", "Abuja - Wuse II"] },
                         { issue: "Packaging damage during transportation", count: 12, locations: ["Port Harcourt - GRA"] },
                         { issue: "Product availability issues", count: 10, locations: ["Abuja - Wuse II", "Kano - Nassarawa"] },
                       ].map((complaint, index) => (
-                        <div key={index} className="p-4 border rounded-md bg-white/80 backdrop-blur-sm hover:bg-white transition-colors">
-                          <div className="flex justify-between">
-                            <h4 className="font-medium">{complaint.issue}</h4>
-                            <span className="text-sm bg-red-100 text-red-800 px-2 py-1 rounded-full">
+                        <div key={index} className="p-3 md:p-4 border rounded-md bg-white/80 backdrop-blur-sm hover:bg-white transition-colors">
+                          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
+                            <h4 className="font-medium text-sm md:text-base">{complaint.issue}</h4>
+                            <span className="text-xs md:text-sm bg-red-100 text-red-800 px-2 py-1 rounded-full whitespace-nowrap">
                               {complaint.count} reports
                             </span>
                           </div>
-                          <p className="text-sm text-gray-500 mt-1">
-                            <span className="font-medium">Affected locations:</span> {complaint.locations.join(", ")}
+                          <p className="text-xs md:text-sm text-gray-500 mt-1 truncate">
+                            <span className="font-medium">Affected:</span> {complaint.locations.join(", ")}
                           </p>
                         </div>
                       ))}
@@ -447,22 +493,22 @@ export default function Admin() {
               </Card>
             </TabsContent>
             
-            {/* Settings Tab */}
-            <TabsContent value="settings" className="space-y-6">
+            {/* Settings Tab - Improved for mobile */}
+            <TabsContent value="settings" className="space-y-4 md:space-y-6">
               <Card className="shadow-lg border border-indomie-yellow/10 relative overflow-hidden">
                 <div className="absolute inset-0 noodle-bg-light opacity-20"></div>
-                <CardHeader className="relative z-10">
-                  <CardTitle>Report Settings</CardTitle>
-                  <CardDescription>
+                <CardHeader className="relative z-10 p-4 md:p-6">
+                  <CardTitle className="text-lg md:text-xl">Report Settings</CardTitle>
+                  <CardDescription className="text-xs md:text-sm">
                     Configure your reporting preferences
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4 relative z-10">
+                <CardContent className="space-y-4 relative z-10 p-4 md:p-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-sm font-medium">Export Frequency</label>
+                      <label className="text-xs md:text-sm font-medium">Export Frequency</label>
                       <Select defaultValue="monthly">
-                        <SelectTrigger>
+                        <SelectTrigger className="text-xs md:text-sm h-8 md:h-10">
                           <SelectValue placeholder="Select frequency" />
                         </SelectTrigger>
                         <SelectContent>
@@ -475,9 +521,9 @@ export default function Admin() {
                     </div>
                     
                     <div className="space-y-2">
-                      <label className="text-sm font-medium">Report Format</label>
+                      <label className="text-xs md:text-sm font-medium">Report Format</label>
                       <Select defaultValue="excel">
-                        <SelectTrigger>
+                        <SelectTrigger className="text-xs md:text-sm h-8 md:h-10">
                           <SelectValue placeholder="Select format" />
                         </SelectTrigger>
                         <SelectContent>
@@ -489,16 +535,17 @@ export default function Admin() {
                     </div>
                   </div>
                   
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Email Recipients</label>
+                  <div className="space-y-1 md:space-y-2">
+                    <label className="text-xs md:text-sm font-medium">Email Recipients</label>
                     <Input 
                       placeholder="Enter email addresses (comma-separated)"
                       defaultValue="admin@indomie.com, manager@indomie.com"
+                      className="text-xs md:text-sm h-8 md:h-10"
                     />
                     <p className="text-xs text-gray-500">Reports will be automatically sent to these email addresses.</p>
                   </div>
                   
-                  <Button className="bg-indomie-red hover:bg-indomie-red/90 relative overflow-hidden group">
+                  <Button className="bg-indomie-red hover:bg-indomie-red/90 relative overflow-hidden group text-xs md:text-sm h-8 md:h-10">
                     <span className="relative z-10">Save Settings</span>
                     <span className="absolute bottom-0 left-0 w-full h-0 bg-indomie-yellow transition-all duration-300 group-hover:h-full -z-0"></span>
                   </Button>
