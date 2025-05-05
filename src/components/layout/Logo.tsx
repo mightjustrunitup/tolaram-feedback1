@@ -49,18 +49,35 @@ export default function Logo({ size = "md", className }: LogoProps) {
         )}
       >
         <div className="text-indomie-red flex items-center">
-          {Array.from("CUSTOMER FEEDBACK").map((letter, index) => (
-            <span
-              key={index}
-              ref={el => {
-                if (lettersRef.current) lettersRef.current[index] = el;
-              }}
-              className="inline-block hover:scale-110 transition-transform duration-200 hover:text-indomie-yellow"
-              style={{ animationPlayState: "running" }}
-            >
-              {letter}
-            </span>
-          ))}
+          <div className="flex">
+            {Array.from("CUSTOMER").map((letter, index) => (
+              <span
+                key={index}
+                ref={el => {
+                  if (lettersRef.current) lettersRef.current[index] = el;
+                }}
+                className="inline-block hover:scale-110 transition-transform duration-200 hover:text-indomie-yellow"
+                style={{ animationPlayState: "running" }}
+              >
+                {letter}
+              </span>
+            ))}
+          </div>
+          <span className="mx-2">&nbsp;</span>
+          <div className="flex">
+            {Array.from("FEEDBACK").map((letter, index) => (
+              <span
+                key={index + 8} // offset to avoid duplicate keys
+                ref={el => {
+                  if (lettersRef.current) lettersRef.current[index + 8] = el; // offset for reference array
+                }}
+                className="inline-block hover:scale-110 transition-transform duration-200 hover:text-indomie-yellow"
+                style={{ animationPlayState: "running" }}
+              >
+                {letter}
+              </span>
+            ))}
+          </div>
         </div>
         <div className="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-indomie-red via-indomie-yellow to-indomie-red animate-gradient-x"></div>
       </div>
