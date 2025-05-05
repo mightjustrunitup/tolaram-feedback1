@@ -6,12 +6,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, AlertCircle } from "lucide-react";
 import Logo from "@/components/layout/Logo";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
@@ -29,6 +29,16 @@ const STORE_LOCATIONS = [
   "Enugu - New Haven"
 ];
 
+// Issues list
+const PRODUCT_ISSUES = [
+  "Mislabelled products / allergies",
+  "Unusual taste or odor",
+  "Texture - too hard or soft",
+  "Mold or spoilage",
+  "Foreign elements",
+  "Other"
+];
+
 interface Product {
   id: string;
   name: string;
@@ -43,6 +53,7 @@ export default function Feedback() {
   
   const [date, setDate] = useState<Date>(new Date());
   const [isAnonymous, setIsAnonymous] = useState(false);
+  const [selectedIssue, setSelectedIssue] = useState<string>("");
   const [formData, setFormData] = useState({
     customerName: "",
     email: "",
@@ -362,28 +373,44 @@ export default function Feedback() {
                   </div>
                 </div>
 
-                {/* Common Issues Checkbox */}
-                <div className="space-y-3">
-                  <Label>Did you experience any of these issues with {selectedProduct.name}?</Label>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    {[
-                      "Mislabelled products / allergies",
-                      "Unusual taste or odor",
-                      "Texture - too hard or soft",
-                      "Mold or spoilage",
-                      "Foreign elements"
-                    ].map((issue) => (
-                      <div key={issue} className="flex items-center space-x-2">
-                        <Checkbox id={issue.replace(/\s/g, '')} />
-                        <label
-                          htmlFor={issue.replace(/\s/g, '')}
-                          className="text-sm"
-                        >
-                          {issue}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
+                {/* Common Issues - Now using a Dropdown */}
+                <div className="space-y-3 p-4 bg-white/80 rounded-md backdrop-blur-sm border border-indomie-yellow/20">
+                  <Label className="text-base font-medium">Did you experience any of these issues with {selectedProduct?.name}?</Label>
+                  
+                  <Select 
+                    value={selectedIssue} 
+                    onValueChange={setSelectedIssue}
+                  >
+                    <SelectTrigger className="w-full bg-white">
+                      <SelectValue placeholder="Select any issues you experienced..." />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white">
+                      <SelectGroup>
+                        <SelectLabel className="font-semibold text-indomie-red">Common Product Issues</SelectLabel>
+                        {PRODUCT_ISSUES.map((issue) => (
+                          <SelectItem 
+                            key={issue} 
+                            value={issue}
+                            className="flex items-center gap-2 focus:bg-indomie-yellow/10 hover:bg-indomie-yellow/5 cursor-pointer"
+                          >
+                            <div className="flex items-center gap-2">
+                              <AlertCircle className="h-4 w-4 text-amber-500" />
+                              <span>{issue}</span>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                  
+                  {selectedIssue && (
+                    <div className="mt-2 p-2 bg-amber-50 border border-amber-200 rounded-md">
+                      <p className="text-sm text-amber-800 flex items-center gap-2">
+                        <AlertCircle className="h-4 w-4" />
+                        Thank you for reporting: <span className="font-medium">{selectedIssue}</span>
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Comments - now with 100 word limit */}
