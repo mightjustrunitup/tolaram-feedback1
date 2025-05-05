@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -54,10 +55,15 @@ export default function Feedback() {
     comments: ""
   });
   const [submitting, setSubmitting] = useState(false);
+  const [errors, setErrors] = useState<{[key: string]: string}>({});
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    // Clear error for this field when changed
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: "" }));
+    }
   };
 
   const handleRatingChange = (name: string, value: number) => {
@@ -66,10 +72,39 @@ export default function Feedback() {
 
   const handleSelectChange = (name: string, value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
+    // Clear error for this field when changed
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: "" }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors: {[key: string]: string} = {};
+    
+    // Validate name if not anonymous
+    if (!isAnonymous && !formData.customerName.trim()) {
+      newErrors.customerName = "Name is required";
+    }
+    
+    // Store location is always required
+    if (!formData.storeLocation) {
+      newErrors.storeLocation = "Please select a store location";
+    }
+    
+    // Set errors and return validity result
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate form before submission
+    if (!validateForm()) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+    
     setSubmitting(true);
     
     // Simulate submission - frontend only
@@ -169,7 +204,13 @@ export default function Feedback() {
                     <Checkbox 
                       id="anonymous" 
                       checked={isAnonymous}
-                      onCheckedChange={(checked) => setIsAnonymous(checked === true)}
+                      onCheckedChange={(checked) => {
+                        setIsAnonymous(checked === true);
+                        // Clear name error if switching to anonymous
+                        if (checked && errors.customerName) {
+                          setErrors(prev => ({ ...prev, customerName: "" }));
+                        }
+                      }}
                     />
                     <label
                       htmlFor="anonymous"
@@ -182,14 +223,21 @@ export default function Feedback() {
                   {!isAnonymous && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="customerName">Your Name</Label>
+                        <Label htmlFor="customerName" className="flex justify-between">
+                          <span>Your Name</span>
+                          <span className="text-red-500">*</span>
+                        </Label>
                         <Input
                           id="customerName"
                           name="customerName"
                           placeholder="Enter your name"
                           value={formData.customerName}
                           onChange={handleInputChange}
+                          className={errors.customerName ? "border-red-500" : ""}
                         />
+                        {errors.customerName && (
+                          <p className="text-sm text-red-500 mt-1">{errors.customerName}</p>
+                        )}
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="email">Email (Optional)</Label>
@@ -236,12 +284,14 @@ export default function Feedback() {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label>Store Location</Label>
+                    <Label className="flex justify-between">
+                      <span>Store Location</span>
+                      <span className="text-red-500">*</span>
+                    </Label>
                     <Select 
                       onValueChange={(value) => handleSelectChange("storeLocation", value)}
-                      required
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className={errors.storeLocation ? "border-red-500" : ""}>
                         <SelectValue placeholder="Select store location" />
                       </SelectTrigger>
                       <SelectContent>
@@ -252,6 +302,9 @@ export default function Feedback() {
                         ))}
                       </SelectContent>
                     </Select>
+                    {errors.storeLocation && (
+                      <p className="text-sm text-red-500 mt-1">{errors.storeLocation}</p>
+                    )}
                   </div>
                 </div>
 
