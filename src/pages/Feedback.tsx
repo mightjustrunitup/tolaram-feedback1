@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -311,7 +310,7 @@ export default function Feedback() {
                   </div>
                 </div>
 
-                {/* Comments */}
+                {/* Comments - now with 100 word limit */}
                 <div className="space-y-2">
                   <Label htmlFor="comments">Additional Comments about {selectedProduct.name}</Label>
                   <Textarea
@@ -321,6 +320,8 @@ export default function Feedback() {
                     className="min-h-[120px]"
                     value={formData.comments}
                     onChange={handleInputChange}
+                    maxWords={100}
+                    showWordCount={true}
                   />
                 </div>
 
