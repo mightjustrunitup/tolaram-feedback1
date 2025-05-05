@@ -126,7 +126,7 @@ export default function Home() {
             </div>
             
             <div className="mt-8 pt-4 border-t border-gray-800 text-center text-gray-400">
-              <p>© {new Date().getFullYear()} Indomie Feedback. All rights reserved.</p>
+              <p>© {new Date().getFullYear()} Products Feedback. All rights reserved.</p>
             </div>
           </div>
         </footer>
