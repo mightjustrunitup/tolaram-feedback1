@@ -42,7 +42,7 @@ export default function Login() {
       <div className="hidden md:block md:w-3/5 lg:w-2/3 bg-center bg-cover animate-fade-in noodle-bg-dark">
         <div className="h-full w-full bg-gradient-to-r from-black/70 to-transparent flex items-center">
           <div className="p-12 md:p-16 lg:p-24 max-w-2xl animate-fade-in-left">
-            <h1 className="text-4xl lg:text-6xl font-bold text-white mb-4 text-shadow">Welcome to the Indomie</h1>
+            <h1 className="text-4xl lg:text-6xl font-bold text-white mb-4 text-shadow">Welcome to Customer Feedback</h1>
             <p className="text-lg lg:text-xl text-white/90 text-shadow">Your opinion matters to us ALWAYS.</p>
             
             <div className="relative my-8 overflow-hidden rounded-lg">
