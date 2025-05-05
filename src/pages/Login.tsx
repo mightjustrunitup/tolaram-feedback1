@@ -46,7 +46,7 @@ export default function Login() {
             <p className="text-lg lg:text-xl text-white/90 text-shadow">Your opinion matters to us ALWAYS.</p>
             
             <div className="relative my-8 overflow-hidden rounded-lg">
-              <img src="/indomie-product.png" alt="Indomie Product" className="w-3/4 mx-auto h-auto hover-scale transition-all duration-700" />
+              <img src="/indomie-product.png" alt="" className="w-3/4 mx-auto h-auto hover-scale transition-all duration-700" />
             </div>
           </div>
         </div>
