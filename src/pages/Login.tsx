@@ -8,9 +8,11 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { toast } from "sonner";
 import Logo from "@/components/layout/Logo";
 import { Lock, User } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function Login() {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
@@ -52,8 +54,14 @@ export default function Login() {
         </div>
       </div>
 
+      {/* Mobile only smaller welcome text */}
+      <div className="md:hidden bg-indomie-dark text-white p-6 text-center noodle-bg-dark">
+        <h2 className="text-2xl font-bold text-shadow mb-2">Customer Feedback</h2>
+        <p className="text-sm text-white/90 text-shadow mb-4">Your opinion matters to us</p>
+      </div>
+
       {/* Login Form Section */}
-      <div className="flex-1 flex items-center justify-center p-6 md:p-0 noodle-bg-light">
+      <div className="flex-1 flex items-center justify-center p-4 md:p-6 noodle-bg-light">
         <Card className="w-full max-w-md shadow-xl animate-scale-in border-t-4 border-t-indomie-red relative overflow-hidden">
           <div className="absolute top-0 left-0 right-0 h-1.5 noodle-gradient-spicy"></div>
           <div className="absolute bottom-0 left-0 right-0 h-1.5 noodle-gradient-yellow"></div>
@@ -63,10 +71,10 @@ export default function Login() {
           
           <CardHeader className="space-y-2 relative">
             <div className="flex justify-center mb-4">
-              <Logo size="lg" />
+              <Logo size={isMobile ? "sm" : "lg"} />
             </div>
-            <CardTitle className="text-2xl font-bold text-center">Sign In to Your Account</CardTitle>
-            <CardDescription className="text-center">
+            <CardTitle className="text-xl md:text-2xl font-bold text-center">Sign In to Your Account</CardTitle>
+            <CardDescription className="text-center text-sm md:text-base">
               Enter your credentials to access the feedback portal
             </CardDescription>
           </CardHeader>
@@ -92,8 +100,8 @@ export default function Login() {
               </Button>
             </form>
           </CardContent>
-          <CardFooter className="flex flex-col space-y-2">
-            <div className="text-sm text-center text-gray-500">
+          <CardFooter className="flex flex-col space-y-2 pt-0">
+            <div className="text-xs md:text-sm text-center text-gray-500">
               <span>Don't have an account? </span>
               <a href="#" className="text-indomie-red hover:underline">Register here</a>
             </div>
