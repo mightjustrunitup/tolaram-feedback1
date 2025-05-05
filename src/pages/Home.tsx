@@ -37,8 +37,8 @@ export default function Home() {
         <section className="flex-1 bg-indomie-yellow/10 relative">
           <div className="absolute inset-0 noodle-texture opacity-30"></div>
           <div className="w-full h-full relative">
-            <div className="max-w-7xl mx-auto px-6 py-16 md:py-24 flex flex-col md:flex-row items-center gap-12">
-              <div className="flex-1 animate-fade-in-left bg-black/60 p-8 rounded-lg backdrop-blur-sm border border-indomie-yellow/20">
+            <div className="max-w-7xl mx-auto px-6 py-16 md:py-24">
+              <div className="animate-fade-in-left bg-black/60 p-8 rounded-lg backdrop-blur-sm border border-indomie-yellow/20 max-w-3xl mx-auto">
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 text-shadow">
                   Your Feedback <span className="text-indomie-red">Matters</span> to Us
                 </h1>
@@ -56,16 +56,6 @@ export default function Home() {
                   </span>
                   <span className="absolute bottom-0 left-0 w-full h-0 bg-indomie-yellow transition-all duration-300 group-hover:h-full -z-0"></span>
                 </Button>
-              </div>
-              
-              <div className="flex-1 flex justify-center animate-fade-in-right">
-                <div className="relative w-full max-w-lg">
-                  <img 
-                    src="https://placehold.co/600x400/FFC72C/e51e25?text=Indomie+Noodles"
-                    alt="Delicious Indomie Noodles" 
-                    className="w-full h-auto rounded-lg shadow-2xl hover-scale object-cover bg-white/10 backdrop-blur-sm p-4"
-                  />
-                </div>
               </div>
             </div>
           </div>
