@@ -49,7 +49,7 @@ export default function Logo({ size = "md", className }: LogoProps) {
         )}
       >
         <div className="text-indomie-red flex items-center">
-          {Array.from("INDOMIE").map((letter, index) => (
+          {Array.from("CUSTOMER FEEDBACK").map((letter, index) => (
             <span
               key={index}
               ref={el => {
