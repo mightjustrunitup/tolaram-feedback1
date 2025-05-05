@@ -1,5 +1,6 @@
+
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -15,6 +16,7 @@ import { CalendarIcon } from "lucide-react";
 import { RangeSlider } from "@/components/ui/range-slider";
 import Logo from "@/components/layout/Logo";
 import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 
 // Mock store locations
 const STORE_LOCATIONS = [
@@ -28,8 +30,18 @@ const STORE_LOCATIONS = [
   "Enugu - New Haven"
 ];
 
+interface Product {
+  id: string;
+  name: string;
+  image: string;
+  description: string;
+}
+
 export default function Feedback() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const selectedProduct = location.state?.selectedProduct as Product | null;
+  
   const [date, setDate] = useState<Date>(new Date());
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [formData, setFormData] = useState({
@@ -74,6 +86,23 @@ export default function Feedback() {
     return `${value}/10`;
   };
 
+  // If no product is selected, redirect to home page
+  if (!selectedProduct) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle>No Product Selected</CardTitle>
+            <CardDescription>Please select a product to provide feedback</CardDescription>
+          </CardHeader>
+          <CardFooter>
+            <Button onClick={() => navigate("/")}>Go to Home</Button>
+          </CardFooter>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col noodle-bg-light">
       {/* Fixed Header */}
@@ -82,7 +111,7 @@ export default function Feedback() {
           <Logo />
           <Button 
             variant="ghost" 
-            onClick={() => navigate("/home")}
+            onClick={() => navigate("/")}
           >
             Back to Home
           </Button>
@@ -101,13 +130,45 @@ export default function Feedback() {
             <div className="absolute -left-16 -bottom-16 w-32 h-32 rounded-full bg-indomie-red/30 blur-xl"></div>
             
             <CardHeader className="relative z-10">
-              <CardTitle className="text-2xl font-bold">Share Your Feedback</CardTitle>
+              <div className="flex items-center justify-between mb-2">
+                <CardTitle className="text-2xl font-bold">Share Your Feedback</CardTitle>
+                <Badge 
+                  className="px-3 py-1 bg-indomie-red/20 text-indomie-red border border-indomie-red/30 flex items-center gap-2"
+                  variant="outline"
+                >
+                  <div className="w-4 h-4 rounded overflow-hidden">
+                    <img 
+                      src={selectedProduct.image}
+                      alt={selectedProduct.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  Feedback for {selectedProduct.name}
+                </Badge>
+              </div>
               <CardDescription>
-                Help us improve your Indomie experience by completing this short feedback form.
+                Help us improve your {selectedProduct.name} experience by completing this short feedback form.
               </CardDescription>
             </CardHeader>
             <CardContent className="relative z-10">
               <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Product Information */}
+                <div className="p-4 border border-dashed border-indomie-yellow/50 bg-amber-50/50 rounded-lg">
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 rounded overflow-hidden flex-shrink-0 border">
+                      <img 
+                        src={selectedProduct.image}
+                        alt={selectedProduct.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg">{selectedProduct.name}</h3>
+                      <p className="text-sm text-gray-600">{selectedProduct.description}</p>
+                    </div>
+                  </div>
+                </div>
+
                 {/* Customer Information */}
                 <div className="space-y-4">
                   <div className="flex items-center space-x-2">
@@ -202,7 +263,7 @@ export default function Feedback() {
 
                 {/* Rating Scales */}
                 <div className="space-y-6 p-4 bg-white/70 rounded-md backdrop-blur-sm border border-indomie-yellow/20">
-                  <h3 className="font-semibold text-lg mb-4 text-indomie-dark">Rate Your Experience</h3>
+                  <h3 className="font-semibold text-lg mb-4 text-indomie-dark">Rate Your {selectedProduct.name} Experience</h3>
                   
                   <div className="space-y-2 pt-8">
                     <Label>Staff Friendliness (1-10)</Label>
@@ -231,7 +292,7 @@ export default function Feedback() {
                   </div>
                   
                   <div className="space-y-2 pt-8">
-                    <Label>Product Availability (1-10)</Label>
+                    <Label>{selectedProduct.name} Availability (1-10)</Label>
                     <RangeSlider
                       min={1}
                       max={10}
@@ -244,7 +305,7 @@ export default function Feedback() {
                   </div>
                   
                   <div className="space-y-2 pt-8">
-                    <Label>Overall Experience (1-10)</Label>
+                    <Label>Overall {selectedProduct.name} Experience (1-10)</Label>
                     <RangeSlider
                       min={1}
                       max={10}
@@ -259,11 +320,11 @@ export default function Feedback() {
 
                 {/* Comments */}
                 <div className="space-y-2">
-                  <Label htmlFor="comments">Additional Comments</Label>
+                  <Label htmlFor="comments">Additional Comments about {selectedProduct.name}</Label>
                   <Textarea
                     id="comments"
                     name="comments"
-                    placeholder="Please share any additional feedback, issues, or suggestions..."
+                    placeholder={`Please share any additional feedback, issues, or suggestions about ${selectedProduct.name}...`}
                     className="min-h-[120px]"
                     value={formData.comments}
                     onChange={handleInputChange}
@@ -272,7 +333,7 @@ export default function Feedback() {
 
                 {/* Common Issues Checkbox */}
                 <div className="space-y-3">
-                  <Label>Did you experience any of these issues?</Label>
+                  <Label>Did you experience any of these issues with {selectedProduct.name}?</Label>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                     {[
                       "Mislabelled products / allergies",
@@ -298,7 +359,7 @@ export default function Feedback() {
             <CardFooter className="flex justify-between relative z-10">
               <Button 
                 variant="outline"
-                onClick={() => navigate("/home")}
+                onClick={() => navigate("/")}
               >
                 Cancel
               </Button>

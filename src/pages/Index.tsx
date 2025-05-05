@@ -60,6 +60,13 @@ const Index = () => {
     }
   };
   
+  const handleContinue = () => {
+    if (selectedProduct) {
+      // Pass the selected product ID in the navigation state
+      navigate("/feedback", { state: { selectedProduct } });
+    }
+  };
+  
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 noodle-pattern">
       {/* Fixed Header */}
@@ -154,7 +161,7 @@ const Index = () => {
                     <Button 
                       disabled={!selectedProduct}
                       className="bg-indomie-red hover:bg-indomie-red/90"
-                      onClick={() => navigate("/feedback")}
+                      onClick={handleContinue}
                     >
                       Continue with {selectedProduct?.name || "selected product"}
                     </Button>
