@@ -43,10 +43,10 @@ export default function Login() {
         <div className="h-full w-full bg-gradient-to-r from-black/70 to-transparent flex items-center">
           <div className="p-12 md:p-16 lg:p-24 max-w-2xl animate-fade-in-left">
             <h1 className="text-4xl lg:text-6xl font-bold text-white mb-4 text-shadow">Welcome to Customer Feedback</h1>
-            <p className="text-lg lg:text-xl text-white/90 text-shadow">Your opinion matters to us ALWAYS.</p>
+            <p className="text-lg lg:text-xl text-white/90 text-shadow">Your opinion matters to us.</p>
             
             <div className="relative my-8 overflow-hidden rounded-lg">
-              <img src="/indomie-product.png" alt="" className="w-3/4 mx-auto h-auto hover-scale transition-all duration-700" />
+              <img src="/indomie-product.png" alt="Product showcase" className="w-3/4 mx-auto h-auto hover-scale transition-all duration-700" />
             </div>
           </div>
         </div>
@@ -65,9 +65,9 @@ export default function Login() {
             <div className="flex justify-center mb-4">
               <Logo size="lg" />
             </div>
-            <CardTitle className="text-2xl font-bold text-center">Sign In</CardTitle>
+            <CardTitle className="text-2xl font-bold text-center">Sign In to Your Account</CardTitle>
             <CardDescription className="text-center">
-              Enter your credentials to access the portal
+              Enter your credentials to access the feedback portal
             </CardDescription>
           </CardHeader>
           <CardContent>
