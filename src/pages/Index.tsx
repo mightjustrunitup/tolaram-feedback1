@@ -2,9 +2,15 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import Logo from "@/components/layout/Logo";
-import { useState, useEffect } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { useState } from "react";
 import { Package } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // Define product types
 interface Product {
@@ -47,10 +53,11 @@ const Index = () => {
   const [showProducts, setShowProducts] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   
-  const handleProductSelect = (product: Product) => {
-    setSelectedProduct(product);
-    // You could also navigate to a product-specific feedback page
-    // navigate(`/feedback/${product.id}`);
+  const handleProductSelect = (productId: string) => {
+    const product = products.find(p => p.id === productId);
+    if (product) {
+      setSelectedProduct(product);
+    }
   };
   
   return (
@@ -89,50 +96,70 @@ const Index = () => {
             </Button>
           ) : (
             <>
-              <h2 className="text-2xl font-semibold">Choose a product to provide feedback on</h2>
+              <h2 className="text-2xl font-semibold mb-6">Choose a product to provide feedback on</h2>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-                {products.map((product) => (
-                  <Card 
-                    key={product.id} 
-                    className={`overflow-hidden hover:shadow-lg transition-all cursor-pointer ${
-                      selectedProduct?.id === product.id ? 'ring-2 ring-blue-500' : ''
-                    }`}
-                    onClick={() => handleProductSelect(product)}
-                  >
-                    <div className="h-40 overflow-hidden flex items-center justify-center bg-white">
-                      <img 
-                        src={product.image}
-                        alt={product.name} 
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <CardContent className="p-4">
-                      <h3 className="text-xl font-semibold mb-2">{product.name}</h3>
-                      <p className="text-gray-600">{product.description}</p>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-              
-              <div className="flex gap-4">
-                <Button 
-                  variant="outline"
-                  onClick={() => {
-                    setShowProducts(false);
-                    setSelectedProduct(null);
-                  }}
-                >
-                  Back
-                </Button>
+              <div className="w-full max-w-md">
+                <Select onValueChange={handleProductSelect}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select a product" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {products.map((product) => (
+                      <SelectItem key={product.id} value={product.id}>
+                        <div className="flex items-center gap-3">
+                          <div className="w-6 h-6 rounded overflow-hidden">
+                            <img 
+                              src={product.image}
+                              alt={product.name}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <span>{product.name}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 
-                <Button 
-                  disabled={!selectedProduct}
-                  className="bg-indomie-red hover:bg-indomie-red/90"
-                  onClick={() => navigate("/feedback")}
-                >
-                  Continue with {selectedProduct?.name || "selected product"}
-                </Button>
+                <div className="mt-8 flex flex-col items-center">
+                  {selectedProduct && (
+                    <div className="mb-6 p-4 border rounded-lg bg-white shadow-sm w-full">
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-16 rounded overflow-hidden flex-shrink-0">
+                          <img 
+                            src={selectedProduct.image}
+                            alt={selectedProduct.name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="text-left">
+                          <h3 className="font-semibold text-lg">{selectedProduct.name}</h3>
+                          <p className="text-sm text-gray-600">{selectedProduct.description}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div className="flex gap-4 mt-4">
+                    <Button 
+                      variant="outline"
+                      onClick={() => {
+                        setShowProducts(false);
+                        setSelectedProduct(null);
+                      }}
+                    >
+                      Back
+                    </Button>
+                    
+                    <Button 
+                      disabled={!selectedProduct}
+                      className="bg-indomie-red hover:bg-indomie-red/90"
+                      onClick={() => navigate("/feedback")}
+                    >
+                      Continue with {selectedProduct?.name || "selected product"}
+                    </Button>
+                  </div>
+                </div>
               </div>
             </>
           )}
