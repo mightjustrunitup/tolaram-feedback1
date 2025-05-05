@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import Logo from "@/components/layout/Logo";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Package } from "lucide-react";
 import {
   Select,
@@ -52,6 +52,7 @@ const Index = () => {
   const navigate = useNavigate();
   const [showProducts, setShowProducts] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const selectTriggerRef = useRef<HTMLButtonElement>(null);
   
   const handleProductSelect = (productId: string) => {
     const product = products.find(p => p.id === productId);
@@ -66,6 +67,22 @@ const Index = () => {
       navigate("/feedback", { state: { selectedProduct } });
     }
   };
+
+  // Auto-show products and open dropdown when page loads
+  useEffect(() => {
+    // Automatically show products section
+    setShowProducts(true);
+    
+    // Add a small delay to allow the DOM to update
+    const timer = setTimeout(() => {
+      // Click the select trigger to open the dropdown
+      if (selectTriggerRef.current) {
+        selectTriggerRef.current.click();
+      }
+    }, 300);
+    
+    return () => clearTimeout(timer);
+  }, []);
   
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 noodle-pattern">
@@ -107,7 +124,7 @@ const Index = () => {
               
               <div className="w-full max-w-md">
                 <Select onValueChange={handleProductSelect}>
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full" ref={selectTriggerRef}>
                     <SelectValue placeholder="Select a product" />
                   </SelectTrigger>
                   <SelectContent>

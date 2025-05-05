@@ -55,7 +55,7 @@ export default function Home() {
                 <Button 
                   size="lg" 
                   className="bg-indomie-red hover:bg-indomie-red/90 hover-scale group relative overflow-hidden"
-                  onClick={() => navigate("/feedback")}
+                  onClick={() => navigate("/")}
                 >
                   <span className="relative z-10 flex items-center">
                     Start Feedback
