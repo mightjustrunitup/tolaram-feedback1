@@ -13,10 +13,10 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { CalendarIcon } from "lucide-react";
-import { RangeSlider } from "@/components/ui/range-slider";
 import Logo from "@/components/layout/Logo";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
+import { StarRating } from "@/components/ui/star-rating";
 
 // Mock store locations
 const STORE_LOCATIONS = [
@@ -48,10 +48,10 @@ export default function Feedback() {
     customerName: "",
     email: "",
     storeLocation: "",
-    staffFriendliness: [5],
-    cleanliness: [5],
-    productAvailability: [5],
-    overallExperience: [5],
+    staffFriendliness: 4,
+    cleanliness: 4,
+    productAvailability: 4,
+    overallExperience: 4,
     comments: ""
   });
   const [submitting, setSubmitting] = useState(false);
@@ -61,7 +61,7 @@ export default function Feedback() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSliderChange = (name: string, value: number[]) => {
+  const handleRatingChange = (name: string, value: number) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -79,11 +79,6 @@ export default function Feedback() {
       toast.success("Feedback submitted successfully!");
       navigate("/thank-you");
     }, 1500);
-  };
-
-  // Function to format rating value with label
-  const formatRatingValue = (value: number): string => {
-    return `${value}/10`;
   };
 
   // If no product is selected, redirect to home page
@@ -261,60 +256,58 @@ export default function Feedback() {
                   </div>
                 </div>
 
-                {/* Rating Scales */}
+                {/* Rating Scales - Now using Star Ratings instead of Sliders */}
                 <div className="space-y-6 p-4 bg-white/70 rounded-md backdrop-blur-sm border border-indomie-yellow/20">
                   <h3 className="font-semibold text-lg mb-4 text-indomie-dark">Rate Your {selectedProduct.name} Experience</h3>
                   
-                  <div className="space-y-2 pt-8">
-                    <Label>Staff Friendliness (1-10)</Label>
-                    <RangeSlider
-                      min={1}
-                      max={10}
-                      step={1}
-                      value={formData.staffFriendliness}
-                      onValueChange={(value) => handleSliderChange("staffFriendliness", value)}
-                      showValue={true}
-                      formatValue={formatRatingValue}
-                    />
-                  </div>
-                  
-                  <div className="space-y-2 pt-8">
-                    <Label>Cleanliness (1-10)</Label>
-                    <RangeSlider
-                      min={1}
-                      max={10}
-                      step={1}
-                      value={formData.cleanliness}
-                      onValueChange={(value) => handleSliderChange("cleanliness", value)}
-                      showValue={true}
-                      formatValue={formatRatingValue}
-                    />
-                  </div>
-                  
-                  <div className="space-y-2 pt-8">
-                    <Label>{selectedProduct.name} Availability (1-10)</Label>
-                    <RangeSlider
-                      min={1}
-                      max={10}
-                      step={1}
-                      value={formData.productAvailability}
-                      onValueChange={(value) => handleSliderChange("productAvailability", value)}
-                      showValue={true}
-                      formatValue={formatRatingValue}
-                    />
-                  </div>
-                  
-                  <div className="space-y-2 pt-8">
-                    <Label>Overall {selectedProduct.name} Experience (1-10)</Label>
-                    <RangeSlider
-                      min={1}
-                      max={10}
-                      step={1}
-                      value={formData.overallExperience}
-                      onValueChange={(value) => handleSliderChange("overallExperience", value)}
-                      showValue={true}
-                      formatValue={formatRatingValue}
-                    />
+                  <div className="space-y-4">
+                    <div className="p-3 hover:bg-gray-50/70 rounded-md transition-colors">
+                      <StarRating
+                        label={`Staff Friendliness`}
+                        value={formData.staffFriendliness}
+                        onChange={(value) => handleRatingChange("staffFriendliness", value)}
+                        max={5}
+                        color="text-indomie-yellow"
+                        size="lg"
+                        showValue
+                      />
+                    </div>
+                    
+                    <div className="p-3 hover:bg-gray-50/70 rounded-md transition-colors">
+                      <StarRating
+                        label={`Cleanliness`}
+                        value={formData.cleanliness}
+                        onChange={(value) => handleRatingChange("cleanliness", value)}
+                        max={5}
+                        color="text-indomie-yellow"
+                        size="lg"
+                        showValue
+                      />
+                    </div>
+                    
+                    <div className="p-3 hover:bg-gray-50/70 rounded-md transition-colors">
+                      <StarRating
+                        label={`${selectedProduct.name} Availability`}
+                        value={formData.productAvailability}
+                        onChange={(value) => handleRatingChange("productAvailability", value)}
+                        max={5}
+                        color="text-indomie-yellow"
+                        size="lg"
+                        showValue
+                      />
+                    </div>
+                    
+                    <div className="p-3 hover:bg-gray-50/70 rounded-md transition-colors">
+                      <StarRating
+                        label={`Overall ${selectedProduct.name} Experience`}
+                        value={formData.overallExperience}
+                        onChange={(value) => handleRatingChange("overallExperience", value)}
+                        max={5}
+                        color="text-indomie-yellow"
+                        size="lg"
+                        showValue
+                      />
+                    </div>
                   </div>
                 </div>
 
