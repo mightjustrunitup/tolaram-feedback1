@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -363,21 +362,6 @@ export default function Feedback() {
                   </div>
                 </div>
 
-                {/* Comments - now with 100 word limit */}
-                <div className="space-y-2">
-                  <Label htmlFor="comments">Additional Comments about {selectedProduct.name}</Label>
-                  <Textarea
-                    id="comments"
-                    name="comments"
-                    placeholder={`Please share any additional feedback, issues, or suggestions about ${selectedProduct.name}...`}
-                    className="min-h-[120px]"
-                    value={formData.comments}
-                    onChange={handleInputChange}
-                    maxWords={100}
-                    showWordCount={true}
-                  />
-                </div>
-
                 {/* Common Issues Checkbox */}
                 <div className="space-y-3">
                   <Label>Did you experience any of these issues with {selectedProduct.name}?</Label>
@@ -400,6 +384,21 @@ export default function Feedback() {
                       </div>
                     ))}
                   </div>
+                </div>
+
+                {/* Comments - now with 100 word limit */}
+                <div className="space-y-2">
+                  <Label htmlFor="comments">Additional Comments about {selectedProduct.name}</Label>
+                  <Textarea
+                    id="comments"
+                    name="comments"
+                    placeholder={`Please share any additional feedback, issues, or suggestions about ${selectedProduct.name}...`}
+                    className="min-h-[120px]"
+                    value={formData.comments}
+                    onChange={handleInputChange}
+                    maxWords={100}
+                    showWordCount={true}
+                  />
                 </div>
               </form>
             </CardContent>
