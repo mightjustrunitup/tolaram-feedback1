@@ -104,10 +104,7 @@ export default function Feedback() {
       newErrors.customerName = "Name is required";
     }
     
-    // Location is always required
-    if (!formData.location) {
-      newErrors.location = "Please enter your location";
-    }
+    // Location is now optional, so we remove the validation check
     
     // Set errors and return validity result
     setErrors(newErrors);
@@ -294,9 +291,8 @@ export default function Feedback() {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label className="flex justify-between">
-                      <span>Location</span>
-                      <span className="text-red-500">*</span>
+                    <Label>
+                      <span>Location (Optional)</span>
                     </Label>
                     <Input
                       id="location"
@@ -304,11 +300,7 @@ export default function Feedback() {
                       placeholder="Enter your location (e.g., Ikeja, Badagry)"
                       value={formData.location}
                       onChange={handleInputChange}
-                      className={errors.location ? "border-red-500" : ""}
                     />
-                    {errors.location && (
-                      <p className="text-sm text-red-500 mt-1">{errors.location}</p>
-                    )}
                   </div>
                 </div>
 
