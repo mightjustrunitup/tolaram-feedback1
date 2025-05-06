@@ -7,12 +7,10 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import ScrollToTop from "./components/utils/ScrollToTop";
-import NavigationBar from "./components/layout/NavigationBar";
 import ThankYou from "./pages/ThankYou";
 
 const queryClient = new QueryClient();
 
-// Simplified layout with consistent navigation bar on all pages
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -20,7 +18,6 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <ScrollToTop />
-        <NavigationBar />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/thank-you" element={<ThankYou />} />

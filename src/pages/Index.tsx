@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -6,12 +5,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertCircle } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Logo from "@/components/layout/Logo";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
@@ -88,19 +85,7 @@ const products: Product[] = [
   }
 ];
 
-// Example locations - updated with Ikeja, Badagry examples
-const LOCATIONS = [
-  "Ikeja",
-  "Badagry",
-  "Lekki",
-  "Abuja",
-  "Port Harcourt",
-  "Ibadan",
-  "Kano",
-  "Enugu"
-];
-
-// Product issues list - updated based on user requirements
+// Product issues list
 const PRODUCT_ISSUES = [
   "Mislabelled products / allergies",
   "Unusual taste or odor",
@@ -111,7 +96,6 @@ const PRODUCT_ISSUES = [
 
 const Index = () => {
   const navigate = useNavigate();
-  const isMobile = useIsMobile();
   
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
@@ -209,8 +193,6 @@ const Index = () => {
       newErrors.issue = "Please select at least one issue with the product";
     }
     
-    // Location is now optional, so we remove the validation check
-    
     // Set errors and return validity result
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -286,7 +268,7 @@ const Index = () => {
             
             <CardContent className="relative z-10">
               <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Customer Information - MOVED TO TOP - Changed border from yellow to grey - Now with side-by-side layout */}
+                {/* Customer Information - Now with side-by-side layout */}
                 <div className="space-y-4 p-4 bg-white/80 rounded-md backdrop-blur-sm border border-gray-200">
                   <h3 className="font-semibold text-lg mb-2">Your Information</h3>
                   
@@ -364,7 +346,7 @@ const Index = () => {
                       value={selectedVariant || ""} 
                       onValueChange={handleVariantSelect}
                       className={cn(
-                        "grid grid-cols-1 md:grid-cols-2 gap-2 p-2", // Changed to 2 columns for md screens and up
+                        "grid grid-cols-1 md:grid-cols-2 gap-2 p-2", 
                         errors.variant ? "border border-red-500 rounded-md" : ""
                       )}
                     >
@@ -383,7 +365,7 @@ const Index = () => {
                   </div>
                 )}
 
-                {/* Product Issues - Only display if a variant is selected - Changed border from yellow to grey */}
+                {/* Product Issues - Only display if a variant is selected */}
                 {selectedVariant && (
                   <>
                     <div className="space-y-3 p-4 bg-white/80 rounded-md backdrop-blur-sm border border-gray-200">
@@ -421,7 +403,7 @@ const Index = () => {
                       <Textarea
                         id="comments"
                         name="comments"
-                        placeholder={`Please share any additional details about the issues you experienced...`}
+                        placeholder="Please share any additional details about the issues you experienced..."
                         className="min-h-[120px]"
                         value={formData.comments}
                         onChange={handleInputChange}
