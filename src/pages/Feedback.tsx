@@ -122,7 +122,15 @@ export default function Feedback() {
     setTimeout(() => {
       setSubmitting(false);
       toast.success("Feedback submitted successfully!");
-      navigate("/thank-you");
+      
+      // Navigate to thank you page with relevant data
+      navigate("/thank-you", { 
+        state: { 
+          customerName: isAnonymous ? "Valued Customer" : formData.customerName,
+          email: formData.email,
+          productName: selectedProduct?.name || "our product"
+        } 
+      });
     }, 1500);
   };
 
