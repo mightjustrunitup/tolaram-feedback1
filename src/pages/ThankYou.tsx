@@ -36,7 +36,7 @@ export default function ThankYou() {
           <Logo />
           <Button 
             variant="ghost" 
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/home")}
           >
             Back to Home
           </Button>
@@ -120,7 +120,7 @@ export default function ThankYou() {
           <CardFooter className="relative z-10">
             <Button 
               className="w-full flex items-center justify-center gap-2 bg-indomie-red hover:bg-indomie-red/90 text-white relative overflow-hidden group"
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/home")}
             >
               <span className="relative z-10 flex items-center">
                 <Home className="h-4 w-4 mr-2" />
