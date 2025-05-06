@@ -12,11 +12,10 @@ import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { CalendarIcon, AlertCircle, Package } from "lucide-react";
+import { CalendarIcon, AlertCircle } from "lucide-react";
 import Logo from "@/components/layout/Logo";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
-import { StarRating } from "@/components/ui/star-rating";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 // Define product types
@@ -92,10 +91,6 @@ const Index = () => {
     customerName: "",
     email: "",
     storeLocation: "",
-    staffFriendliness: 4,
-    cleanliness: 4,
-    productAvailability: 4,
-    overallExperience: 4,
     comments: ""
   });
 
@@ -106,10 +101,6 @@ const Index = () => {
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: "" }));
     }
-  };
-
-  const handleRatingChange = (name: string, value: number) => {
-    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSelectChange = (name: string, value: string) => {
@@ -171,10 +162,6 @@ const Index = () => {
         customerName: "",
         email: "",
         storeLocation: "",
-        staffFriendliness: 4,
-        cleanliness: 4,
-        productAvailability: 4,
-        overallExperience: 4,
         comments: ""
       });
       setIsAnonymous(false);
@@ -191,14 +178,8 @@ const Index = () => {
         </div>
       </header>
 
-      {/* Title banner */}
-      <div className="mt-20 bg-indomie-dark text-white p-4 md:p-6 text-center noodle-bg-dark">
-        <h2 className="text-2xl md:text-3xl font-bold text-shadow mb-2">Welcome to Tolaram Feedback Portal</h2>
-        <p className="text-sm md:text-base text-white/90 text-shadow mb-4">Your opinion matters to us</p>
-      </div>
-
       {/* Feedback Form */}
-      <div className="flex-1 py-8 px-6 relative">
+      <div className="flex-1 py-8 px-6 relative pt-20">
         <div className="absolute inset-0 w-full h-full">
           <div className="w-full h-full bg-[radial-gradient(#FFC72C_1px,transparent_1px)] [background-size:20px_20px] opacity-20"></div>
         </div>
@@ -210,7 +191,7 @@ const Index = () => {
             
             <CardHeader className="relative z-10">
               <div className="flex items-center justify-between mb-2">
-                <CardTitle className="text-2xl font-bold">Share Your Feedback</CardTitle>
+                <CardTitle className="text-2xl font-bold">Welcome to Tolaram Feedback Portal</CardTitle>
                 {selectedProduct && (
                   <Badge 
                     className="px-3 py-1 bg-indomie-red/20 text-indomie-red border border-indomie-red/30 flex items-center gap-2"
@@ -398,63 +379,6 @@ const Index = () => {
                     )}
                   </div>
                 </div>
-
-                {/* Rating Scales - Now using Star Ratings */}
-                {selectedProduct && (
-                  <div className="space-y-6 p-4 bg-white/70 rounded-md backdrop-blur-sm border border-indomie-yellow/20">
-                    <h3 className="font-semibold text-lg mb-4 text-indomie-dark">Rate Your {selectedProduct.name} Experience</h3>
-                    
-                    <div className="space-y-4">
-                      <div className="p-3 hover:bg-gray-50/70 rounded-md transition-colors">
-                        <StarRating
-                          label={`Staff Friendliness`}
-                          value={formData.staffFriendliness}
-                          onChange={(value) => handleRatingChange("staffFriendliness", value)}
-                          max={5}
-                          color="text-indomie-yellow"
-                          size="lg"
-                          showValue
-                        />
-                      </div>
-                      
-                      <div className="p-3 hover:bg-gray-50/70 rounded-md transition-colors">
-                        <StarRating
-                          label={`Cleanliness`}
-                          value={formData.cleanliness}
-                          onChange={(value) => handleRatingChange("cleanliness", value)}
-                          max={5}
-                          color="text-indomie-yellow"
-                          size="lg"
-                          showValue
-                        />
-                      </div>
-                      
-                      <div className="p-3 hover:bg-gray-50/70 rounded-md transition-colors">
-                        <StarRating
-                          label={`${selectedProduct.name} Availability`}
-                          value={formData.productAvailability}
-                          onChange={(value) => handleRatingChange("productAvailability", value)}
-                          max={5}
-                          color="text-indomie-yellow"
-                          size="lg"
-                          showValue
-                        />
-                      </div>
-                      
-                      <div className="p-3 hover:bg-gray-50/70 rounded-md transition-colors">
-                        <StarRating
-                          label={`Overall ${selectedProduct.name} Experience`}
-                          value={formData.overallExperience}
-                          onChange={(value) => handleRatingChange("overallExperience", value)}
-                          max={5}
-                          color="text-indomie-yellow"
-                          size="lg"
-                          showValue
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
 
                 {/* Common Issues - Now using a Dropdown */}
                 {selectedProduct && (
