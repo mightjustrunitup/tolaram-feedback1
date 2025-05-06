@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -326,7 +327,7 @@ const Index = () => {
                         placeholder="Enter your name"
                         value={formData.customerName}
                         onChange={handleInputChange}
-                        className={errors.customerName ? "border-red-500" : ""}
+                        className={cn(errors.customerName ? "border-red-500" : "", "w-full")}
                         disabled={isAnonymous}
                       />
                       {errors.customerName && (
@@ -344,6 +345,7 @@ const Index = () => {
                         value={formData.email}
                         onChange={handleInputChange}
                         disabled={isAnonymous}
+                        className="w-full"
                       />
                     </div>
                   </div>
@@ -384,7 +386,7 @@ const Index = () => {
                       <Select 
                         onValueChange={(value) => handleSelectChange("storeLocation", value)}
                       >
-                        <SelectTrigger className={errors.storeLocation ? "border-red-500" : ""}>
+                        <SelectTrigger className={cn(errors.storeLocation ? "border-red-500" : "", "w-full")}>
                           <SelectValue placeholder="Select store location" />
                         </SelectTrigger>
                         <SelectContent>
