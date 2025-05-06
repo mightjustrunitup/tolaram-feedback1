@@ -286,35 +286,36 @@ const Index = () => {
             
             <CardContent className="relative z-10">
               <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Customer Information - MOVED TO TOP - Changed border from yellow to grey */}
+                {/* Customer Information - MOVED TO TOP - Changed border from yellow to grey - Now with side-by-side layout */}
                 <div className="space-y-4 p-4 bg-white/80 rounded-md backdrop-blur-sm border border-gray-200">
                   <h3 className="font-semibold text-lg mb-2">Your Information</h3>
                   
-                  <div className="space-y-2">
-                    <Label htmlFor="customerName">
-                      <span>Your Name (Optional)</span>
-                    </Label>
-                    <Input
-                      id="customerName"
-                      name="customerName"
-                      placeholder="Enter your name (optional)"
-                      value={formData.customerName}
-                      onChange={handleInputChange}
-                    />
-                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="customerName">
+                        <span>Your Name (Optional)</span>
+                      </Label>
+                      <Input
+                        id="customerName"
+                        name="customerName"
+                        placeholder="Enter your name"
+                        value={formData.customerName}
+                        onChange={handleInputChange}
+                      />
+                    </div>
 
-                  {/* Location - Changed from required to optional */}
-                  <div className="space-y-2">
-                    <Label>
-                      <span>Location (Optional)</span>
-                    </Label>
-                    <Input
-                      id="location"
-                      name="location"
-                      placeholder="Enter your location (e.g., Ikeja, Badagry)"
-                      value={formData.location}
-                      onChange={handleInputChange}
-                    />
+                    <div className="space-y-2">
+                      <Label>
+                        <span>Location (Optional)</span>
+                      </Label>
+                      <Input
+                        id="location"
+                        name="location"
+                        placeholder="Enter your location"
+                        value={formData.location}
+                        onChange={handleInputChange}
+                      />
+                    </div>
                   </div>
                 </div>
 
