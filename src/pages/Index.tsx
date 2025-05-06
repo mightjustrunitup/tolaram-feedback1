@@ -291,140 +291,11 @@ const Index = () => {
             
             <CardContent className="relative z-10">
               <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Product Selection */}
-                <div className="space-y-2">
-                  <Label htmlFor="product" className="flex justify-between">
-                    <span>Select Product</span>
-                    <span className="text-red-500">*</span>
-                  </Label>
-                  <Select 
-                    onValueChange={handleProductSelect}
-                    value={selectedProduct?.id}
-                  >
-                    <SelectTrigger className={errors.product ? "border-red-500" : ""}>
-                      <SelectValue placeholder="Choose a product to provide feedback on" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {products.map((product) => (
-                        <SelectItem key={product.id} value={product.id}>
-                          <div className="flex items-center gap-3">
-                            <div className="w-6 h-6 rounded overflow-hidden">
-                              <img 
-                                src={product.image}
-                                alt={product.name}
-                                className="w-full h-full object-cover"
-                              />
-                            </div>
-                            <span>{product.name}</span>
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {errors.product && (
-                    <p className="text-sm text-red-500 mt-1">{errors.product}</p>
-                  )}
-                </div>
-
-                {/* Product Variants Selection - Radio Buttons */}
-                {selectedProduct && (
-                  <div className="space-y-3">
-                    <Label className="flex justify-between">
-                      <span>Select {selectedProduct.name} Variant</span>
-                      <span className="text-red-500">*</span>
-                    </Label>
-                    <div className={cn("border rounded-md p-4", errors.variant ? "border-red-500" : "border-gray-200")}>
-                      <RadioGroup
-                        value={selectedVariant || ""}
-                        onValueChange={handleVariantSelect}
-                        className="grid grid-cols-1 gap-3"
-                      >
-                        {selectedProduct.variants.map((variant) => (
-                          <div key={variant.id} className="flex items-center space-x-2 hover:bg-gray-50 p-2 rounded-md">
-                            <RadioGroupItem value={variant.id} id={variant.id} />
-                            <Label htmlFor={variant.id} className="cursor-pointer flex-1">
-                              {variant.name}
-                            </Label>
-                          </div>
-                        ))}
-                      </RadioGroup>
-                    </div>
-                    {errors.variant && (
-                      <p className="text-sm text-red-500 mt-1">{errors.variant}</p>
-                    )}
-                  </div>
-                )}
-
-                {/* Product Issue Selection - Radio Buttons - Only shown after variant selection */}
-                {selectedProduct && selectedVariant && (
-                  <div className="space-y-3 p-4 bg-white/80 rounded-md backdrop-blur-sm border border-indomie-yellow/20">
-                    <Label className="text-base font-medium flex justify-between">
-                      <span>What issue did you experience with this product?</span>
-                      <span className="text-red-500">*</span>
-                    </Label>
-                    
-                    <RadioGroup 
-                      value={selectedIssue} 
-                      onValueChange={setSelectedIssue}
-                      className="grid grid-cols-1 gap-3 mt-3"
-                    >
-                      {PRODUCT_ISSUES.map((issue) => (
-                        <div key={issue} className="flex items-center space-x-2 hover:bg-gray-50 p-2 rounded-md">
-                          <RadioGroupItem value={issue} id={`issue-${issue}`} />
-                          <Label htmlFor={`issue-${issue}`} className="cursor-pointer flex items-center gap-2 flex-1">
-                            <AlertCircle className="h-4 w-4 text-amber-500" />
-                            <span>{issue}</span>
-                          </Label>
-                        </div>
-                      ))}
-                    </RadioGroup>
-                    
-                    {errors.issue && (
-                      <p className="text-sm text-red-500 mt-1">{errors.issue}</p>
-                    )}
-                    
-                    {selectedIssue && (
-                      <div className="mt-2 p-2 bg-amber-50 border border-amber-200 rounded-md">
-                        <p className="text-sm text-amber-800 flex items-center gap-2">
-                          <AlertCircle className="h-4 w-4" />
-                          Issue selected: <span className="font-medium">{selectedIssue}</span>
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* Selected Product Information (if selected) */}
-                {selectedProduct && selectedVariant && selectedIssue && (
-                  <div className="p-4 border border-dashed border-indomie-yellow/50 bg-amber-50/50 rounded-lg">
-                    <div className="flex items-center gap-4">
-                      <div className="w-16 h-16 rounded overflow-hidden flex-shrink-0 border">
-                        <img 
-                          src={selectedProduct.image}
-                          alt={selectedProduct.name}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-lg">{selectedProduct.name}</h3>
-                        <div className="text-sm text-gray-600">
-                          <p>{selectedProduct.description}</p>
-                          <p className="mt-1 font-medium">
-                            Selected: {selectedProduct.variants.find(v => v.id === selectedVariant)?.name}
-                          </p>
-                          <p className="mt-1 text-amber-700 flex items-center gap-1">
-                            <AlertCircle className="h-3 w-3" />
-                            Issue: {selectedIssue}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Customer Information */}
-                <div className="space-y-4">
-                  <div className="flex items-center space-x-2">
+                {/* Customer Information - MOVED TO TOP */}
+                <div className="space-y-4 p-4 bg-white/80 rounded-md backdrop-blur-sm border border-indomie-yellow/20">
+                  <h3 className="font-semibold text-lg mb-2">Your Information</h3>
+                  
+                  <div className="flex items-center space-x-2 mb-4">
                     <Checkbox 
                       id="anonymous" 
                       checked={isAnonymous}
@@ -463,6 +334,7 @@ const Index = () => {
                           <p className="text-sm text-red-500 mt-1">{errors.customerName}</p>
                         )}
                       </div>
+                      
                       <div className="space-y-2">
                         <Label htmlFor="email">Email (Optional)</Label>
                         <Input
@@ -476,116 +348,210 @@ const Index = () => {
                       </div>
                     </div>
                   )}
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div className="space-y-2">
+                      <Label>Date of Visit</Label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className={cn(
+                              "w-full justify-start text-left font-normal",
+                              !date && "text-muted-foreground"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {date ? format(date, "PPP") : <span>Pick a date</span>}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={date}
+                            onSelect={(date) => date && setDate(date)}
+                            initialFocus
+                            className="p-3 pointer-events-auto"
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label className="flex justify-between">
+                        <span>Store Location</span>
+                        <span className="text-red-500">*</span>
+                      </Label>
+                      <Select 
+                        onValueChange={(value) => handleSelectChange("storeLocation", value)}
+                      >
+                        <SelectTrigger className={errors.storeLocation ? "border-red-500" : ""}>
+                          <SelectValue placeholder="Select store location" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {STORE_LOCATIONS.map((location) => (
+                            <SelectItem key={location} value={location}>
+                              {location}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      {errors.storeLocation && (
+                        <p className="text-sm text-red-500 mt-1">{errors.storeLocation}</p>
+                      )}
+                    </div>
+                  </div>
                 </div>
 
-                {/* Visit Details */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>Date of Visit</Label>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant="outline"
-                          className={cn(
-                            "w-full justify-start text-left font-normal",
-                            !date && "text-muted-foreground"
-                          )}
-                        >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {date ? format(date, "PPP") : <span>Pick a date</span>}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={date}
-                          onSelect={(date) => date && setDate(date)}
-                          initialFocus
-                          className="p-3 pointer-events-auto"
-                        />
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-                  
-                  <div className="space-y-2">
+                {/* Product Selection - Now after user information */}
+                <div className="space-y-2">
+                  <Label htmlFor="product" className="flex justify-between">
+                    <span>Select Product</span>
+                    <span className="text-red-500">*</span>
+                  </Label>
+                  <Select 
+                    onValueChange={handleProductSelect}
+                    value={selectedProduct?.id}
+                  >
+                    <SelectTrigger className={errors.product ? "border-red-500" : ""}>
+                      <SelectValue placeholder="Choose a product to provide feedback on" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {products.map((product) => (
+                        <SelectItem key={product.id} value={product.id}>
+                          <div className="flex items-center gap-3">
+                            <div className="w-6 h-6 rounded overflow-hidden">
+                              <img 
+                                src={product.image}
+                                alt={product.name}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <span>{product.name}</span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.product && (
+                    <p className="text-sm text-red-500 mt-1">{errors.product}</p>
+                  )}
+                </div>
+
+                {/* Product Variants Selection - Radio Buttons */}
+                {selectedProduct && (
+                  <div className="space-y-3">
                     <Label className="flex justify-between">
-                      <span>Store Location</span>
+                      <span>Product Variant</span>
                       <span className="text-red-500">*</span>
                     </Label>
-                    <Select 
-                      onValueChange={(value) => handleSelectChange("storeLocation", value)}
-                      value={formData.storeLocation}
+                    <RadioGroup 
+                      onValueChange={handleVariantSelect}
+                      value={selectedVariant || ""}
+                      className={`grid grid-cols-1 sm:grid-cols-2 gap-2 ${errors.variant ? "border border-red-500 p-2 rounded" : ""}`}
                     >
-                      <SelectTrigger className={errors.storeLocation ? "border-red-500" : ""}>
-                        <SelectValue placeholder="Select store location" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {STORE_LOCATIONS.map((location) => (
-                          <SelectItem key={location} value={location}>
-                            {location}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {errors.storeLocation && (
-                      <p className="text-sm text-red-500 mt-1">{errors.storeLocation}</p>
+                      {selectedProduct.variants.map((variant) => (
+                        <div key={variant.id} className="flex items-center space-x-2 rounded-md border p-3 hover:bg-gray-100 cursor-pointer">
+                          <RadioGroupItem value={variant.id} id={variant.id} />
+                          <Label htmlFor={variant.id} className="flex-1 cursor-pointer">
+                            {variant.name}
+                          </Label>
+                        </div>
+                      ))}
+                    </RadioGroup>
+                    {errors.variant && (
+                      <p className="text-sm text-red-500">{errors.variant}</p>
                     )}
                   </div>
-                </div>
+                )}
 
-                {/* Comments */}
-                <div className="space-y-2">
-                  <Label htmlFor="comments">Additional Comments {selectedProduct ? `about ${selectedProduct.name}` : ''}</Label>
-                  <Textarea
-                    id="comments"
-                    name="comments"
-                    placeholder={`Please share any additional feedback, issues, or suggestions...`}
-                    className="min-h-[120px]"
-                    value={formData.comments}
-                    onChange={handleInputChange}
-                  />
-                </div>
+                {/* Product Issues Selection - Now showing only when variant is selected */}
+                {selectedProduct && selectedVariant && (
+                  <div className="space-y-3">
+                    <Label className="flex justify-between">
+                      <span>What issue did you experience?</span>
+                      <span className="text-red-500">*</span>
+                    </Label>
+                    <RadioGroup 
+                      onValueChange={setSelectedIssue}
+                      value={selectedIssue}
+                      className={`grid grid-cols-1 gap-2 ${errors.issue ? "border border-red-500 p-2 rounded" : ""}`}
+                    >
+                      {PRODUCT_ISSUES.map((issue) => (
+                        <div key={issue} className="flex items-center space-x-2 rounded-md border p-3 hover:bg-gray-100 cursor-pointer">
+                          <RadioGroupItem value={issue} id={issue.replace(/\s/g, "-")} />
+                          <Label htmlFor={issue.replace(/\s/g, "-")} className="flex-1 cursor-pointer">
+                            {issue}
+                          </Label>
+                        </div>
+                      ))}
+                      <div className="flex items-center space-x-2 rounded-md border p-3 hover:bg-gray-100 cursor-pointer">
+                        <RadioGroupItem value="other" id="other-issue" />
+                        <Label htmlFor="other-issue" className="flex-1 cursor-pointer">
+                          Other
+                        </Label>
+                      </div>
+                    </RadioGroup>
+                    {errors.issue && (
+                      <p className="text-sm text-red-500">{errors.issue}</p>
+                    )}
+                  </div>
+                )}
 
-                {/* Submit Button */}
-                <div className="flex justify-between items-center">
-                  <Button 
-                    variant="outline" 
-                    type="button" 
-                    onClick={() => {
-                      setSelectedProduct(null);
-                      setSelectedVariant(null);
-                      setSelectedIssue("");
-                      setFormData({
-                        customerName: "",
-                        email: "",
-                        storeLocation: "",
-                        comments: ""
-                      });
-                    }}
-                  >
-                    Reset Form
-                  </Button>
-                  <Button 
-                    className="bg-indomie-red hover:bg-indomie-red/90 relative overflow-hidden group"
-                    type="submit"
-                    disabled={submitting}
-                  >
-                    <span className="relative z-10">
-                      {submitting ? "Submitting..." : "Submit Feedback"}
-                    </span>
-                    <span className="absolute bottom-0 left-0 w-full h-0 bg-indomie-yellow transition-all duration-300 group-hover:h-full -z-0"></span>
-                  </Button>
-                </div>
+                {/* Comments - now with 100 word limit */}
+                {selectedProduct && selectedVariant && selectedIssue && (
+                  <div className="space-y-2">
+                    <Label htmlFor="comments">Additional Comments</Label>
+                    <Textarea
+                      id="comments"
+                      name="comments"
+                      placeholder="Please provide more details about your experience..."
+                      className="min-h-[120px]"
+                      value={formData.comments}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                )}
               </form>
             </CardContent>
-            <CardFooter className="flex justify-center text-center text-sm text-gray-500 relative z-10">
-              <p>Thank you for helping us improve our products and services.</p>
+            <CardFooter className="flex justify-between items-center relative z-10 mt-4">
+              <Button 
+                variant="outline"
+                type="button"
+                onClick={() => {
+                  // Reset the form
+                  setSelectedProduct(null);
+                  setSelectedVariant(null);
+                  setFormData({
+                    customerName: "",
+                    email: "",
+                    storeLocation: "",
+                    comments: ""
+                  });
+                  setIsAnonymous(false);
+                  setSelectedIssue("");
+                  setDate(new Date());
+                  setErrors({});
+                }}
+              >
+                Clear Form
+              </Button>
+              <Button 
+                className="bg-indomie-red hover:bg-indomie-red/90 relative overflow-hidden group"
+                onClick={handleSubmit}
+                disabled={submitting}
+              >
+                <span className="relative z-10">
+                  {submitting ? "Submitting..." : "Submit Feedback"}
+                </span>
+                <span className="absolute bottom-0 left-0 w-full h-0 bg-indomie-yellow transition-all duration-300 group-hover:h-full -z-0"></span>
+              </Button>
             </CardFooter>
           </Card>
         </div>
       </div>
     </div>
   );
-};
+}
 
 export default Index;
