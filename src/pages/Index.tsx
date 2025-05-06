@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AlertCircle } from "lucide-react";
@@ -112,7 +111,6 @@ const Index = () => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   
-  const [isAnonymous, setIsAnonymous] = useState(false);
   const [selectedIssue, setSelectedIssue] = useState<string>("");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
@@ -181,11 +179,6 @@ const Index = () => {
       newErrors.issue = "Please select an issue with the product";
     }
     
-    // Validate name if not anonymous
-    if (!isAnonymous && !formData.customerName.trim()) {
-      newErrors.customerName = "Name is required";
-    }
-    
     // Store location is always required
     if (!formData.storeLocation) {
       newErrors.storeLocation = "Please select a store location";
@@ -213,7 +206,7 @@ const Index = () => {
     // Directly navigate to the Thank-You page with relevant data
     navigate("/thank-you", { 
       state: { 
-        customerName: isAnonymous ? "Valued Customer" : formData.customerName,
+        customerName: formData.customerName || "Valued Customer", // Use "Valued Customer" if name is empty
         productName: selectedProduct?.name || "our product"
       } 
     });
@@ -269,43 +262,17 @@ const Index = () => {
                 <div className="space-y-4 p-4 bg-white/80 rounded-md backdrop-blur-sm border border-indomie-yellow/20">
                   <h3 className="font-semibold text-lg mb-2">Your Information</h3>
                   
-                  <div className="flex items-center space-x-2 mb-4">
-                    <Checkbox 
-                      id="anonymous" 
-                      checked={isAnonymous}
-                      onCheckedChange={(checked) => {
-                        setIsAnonymous(checked === true);
-                        // Clear name error if switching to anonymous
-                        if (checked && errors.customerName) {
-                          setErrors(prev => ({ ...prev, customerName: "" }));
-                        }
-                      }}
-                    />
-                    <label
-                      htmlFor="anonymous"
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      I want to remain anonymous
-                    </label>
-                  </div>
-                  
                   <div className="space-y-2">
-                    <Label htmlFor="customerName" className="flex justify-between">
-                      <span>Your Name</span>
-                      <span className="text-red-500">*</span>
+                    <Label htmlFor="customerName">
+                      <span>Your Name (Optional)</span>
                     </Label>
                     <Input
                       id="customerName"
                       name="customerName"
-                      placeholder="Enter your name"
+                      placeholder="Enter your name (optional)"
                       value={formData.customerName}
                       onChange={handleInputChange}
-                      className={errors.customerName ? "border-red-500" : ""}
-                      disabled={isAnonymous}
                     />
-                    {errors.customerName && (
-                      <p className="text-sm text-red-500 mt-1">{errors.customerName}</p>
-                    )}
                   </div>
 
                   {/* Store Location */}
@@ -349,9 +316,9 @@ const Index = () => {
                     </SelectTrigger>
                     <SelectContent>
                       {products.map((product) => (
-                        <SelectItem key={product.id} value={product.id}>
-                          <div className="flex items-center gap-3">
-                            <div className="w-6 h-6 rounded overflow-hidden">
+                        <SelectItem key={product.id} value={product.id} className="flex items-center gap-2">
+                          <div className="flex items-center gap-2">
+                            <div className="w-5 h-5 rounded-full overflow-hidden bg-gray-100">
                               <img 
                                 src={product.image}
                                 alt={product.name}
@@ -368,114 +335,103 @@ const Index = () => {
                     <p className="text-sm text-red-500 mt-1">{errors.product}</p>
                   )}
                 </div>
-
-                {/* Product Variants Selection - Radio Buttons */}
+                
+                {/* Product Variant Selection - Only shows if a product is selected */}
                 {selectedProduct && (
-                  <div className="space-y-3">
-                    <Label className="flex justify-between">
-                      <span>Product Variant</span>
+                  <div className="space-y-2">
+                    <Label htmlFor="variant" className="flex justify-between">
+                      <span>Select {selectedProduct.name} Variant</span>
                       <span className="text-red-500">*</span>
                     </Label>
-                    <RadioGroup 
+                    <Select 
                       onValueChange={handleVariantSelect}
-                      value={selectedVariant || ""}
-                      className={`grid grid-cols-1 sm:grid-cols-2 gap-2 ${errors.variant ? "border border-red-500 p-2 rounded" : ""}`}
+                      value={selectedVariant || undefined}
                     >
-                      {selectedProduct.variants.map((variant) => (
-                        <div key={variant.id} className="flex items-center space-x-2 rounded-md border p-3 hover:bg-gray-100 cursor-pointer">
-                          <RadioGroupItem value={variant.id} id={variant.id} />
-                          <Label htmlFor={variant.id} className="flex-1 cursor-pointer">
+                      <SelectTrigger className={errors.variant ? "border-red-500" : ""}>
+                        <SelectValue placeholder="Choose a product variant" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {selectedProduct.variants.map((variant) => (
+                          <SelectItem key={variant.id} value={variant.id}>
                             {variant.name}
-                          </Label>
-                        </div>
-                      ))}
-                    </RadioGroup>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     {errors.variant && (
-                      <p className="text-sm text-red-500">{errors.variant}</p>
+                      <p className="text-sm text-red-500 mt-1">{errors.variant}</p>
                     )}
                   </div>
                 )}
-
-                {/* Product Issues Selection - Now showing only when variant is selected */}
+                
+                {/* Issue Selection - Only shows if a product and variant are selected */}
                 {selectedProduct && selectedVariant && (
-                  <div className="space-y-3">
-                    <Label className="flex justify-between">
+                  <div className="space-y-2">
+                    <Label htmlFor="issue" className="flex justify-between">
                       <span>What issue did you experience?</span>
                       <span className="text-red-500">*</span>
                     </Label>
                     <RadioGroup 
                       onValueChange={setSelectedIssue}
                       value={selectedIssue}
-                      className={`grid grid-cols-1 gap-2 ${errors.issue ? "border border-red-500 p-2 rounded" : ""}`}
+                      className={cn(
+                        "grid grid-cols-1 md:grid-cols-2 gap-2",
+                        errors.issue ? "border border-red-500 rounded-md p-2" : ""
+                      )}
                     >
                       {PRODUCT_ISSUES.map((issue) => (
-                        <div key={issue} className="flex items-center space-x-2 rounded-md border p-3 hover:bg-gray-100 cursor-pointer">
-                          <RadioGroupItem value={issue} id={issue.replace(/\s/g, "-")} />
-                          <Label htmlFor={issue.replace(/\s/g, "-")} className="flex-1 cursor-pointer">
+                        <div key={issue} className="flex items-center space-x-2 hover:bg-gray-50 p-2 rounded-md">
+                          <RadioGroupItem value={issue} id={issue} />
+                          <Label htmlFor={issue} className="cursor-pointer flex items-center gap-2">
+                            <AlertCircle className="h-4 w-4 text-amber-500" />
                             {issue}
                           </Label>
                         </div>
                       ))}
-                      <div className="flex items-center space-x-2 rounded-md border p-3 hover:bg-gray-100 cursor-pointer">
-                        <RadioGroupItem value="other" id="other-issue" />
-                        <Label htmlFor="other-issue" className="flex-1 cursor-pointer">
+                      <div className="flex items-center space-x-2 hover:bg-gray-50 p-2 rounded-md">
+                        <RadioGroupItem value="Other" id="other" />
+                        <Label htmlFor="other" className="cursor-pointer flex items-center gap-2">
+                          <AlertCircle className="h-4 w-4 text-amber-500" />
                           Other
                         </Label>
                       </div>
                     </RadioGroup>
                     {errors.issue && (
-                      <p className="text-sm text-red-500">{errors.issue}</p>
+                      <p className="text-sm text-red-500 mt-1">{errors.issue}</p>
                     )}
                   </div>
                 )}
 
-                {/* Comments - now with 100 word limit */}
-                {selectedProduct && selectedVariant && selectedIssue && (
+                {/* Comments */}
+                {selectedIssue && (
                   <div className="space-y-2">
-                    <Label htmlFor="comments">Additional Comments</Label>
+                    <Label htmlFor="comments">Describe the issue in more detail (Optional)</Label>
                     <Textarea
                       id="comments"
                       name="comments"
-                      placeholder="Please provide more details about your experience..."
-                      className="min-h-[120px]"
+                      placeholder="Please provide more details about the issue..."
                       value={formData.comments}
                       onChange={handleInputChange}
+                      className="min-h-[120px]"
                     />
                   </div>
                 )}
+
+                {/* Submit Button */}
+                <div className="flex justify-end">
+                  <Button 
+                    type="submit"
+                    className="bg-indomie-red hover:bg-indomie-red/90 relative overflow-hidden group"
+                    disabled={submitting}
+                  >
+                    <span className="relative z-10">
+                      {submitting ? "Submitting..." : "Submit Feedback"}
+                    </span>
+                    <span className="absolute bottom-0 left-0 w-full h-0 bg-indomie-yellow transition-all duration-300 group-hover:h-full -z-0"></span>
+                  </Button>
+                </div>
               </form>
             </CardContent>
-            <CardFooter className="flex justify-between items-center relative z-10 mt-4">
-              <Button 
-                variant="outline"
-                type="button"
-                onClick={() => {
-                  // Reset the form
-                  setSelectedProduct(null);
-                  setSelectedVariant(null);
-                  setFormData({
-                    customerName: "",
-                    storeLocation: "",
-                    comments: ""
-                  });
-                  setIsAnonymous(false);
-                  setSelectedIssue("");
-                  setErrors({});
-                }}
-              >
-                Clear Form
-              </Button>
-              <Button 
-                className="bg-indomie-red hover:bg-indomie-red/90 relative overflow-hidden group"
-                onClick={handleSubmit}
-                disabled={submitting}
-              >
-                <span className="relative z-10">
-                  {submitting ? "Submitting..." : "Submit Feedback"}
-                </span>
-                <span className="absolute bottom-0 left-0 w-full h-0 bg-indomie-yellow transition-all duration-300 group-hover:h-full -z-0"></span>
-              </Button>
-            </CardFooter>
           </Card>
         </div>
       </div>
