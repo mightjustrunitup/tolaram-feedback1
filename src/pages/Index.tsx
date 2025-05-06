@@ -86,7 +86,7 @@ const products: Product[] = [
   }
 ];
 
-// Store locations
+// Store locations - we'll keep this in case it's used elsewhere in the code
 const STORE_LOCATIONS = [
   "Lagos - Ikeja Mall",
   "Lagos - Lekki Phase 1",
@@ -181,7 +181,7 @@ const Index = () => {
     
     // Store location is always required
     if (!formData.storeLocation) {
-      newErrors.storeLocation = "Please select a store location";
+      newErrors.storeLocation = "Please enter a store location";
     }
     
     // Set errors and return validity result
@@ -275,26 +275,20 @@ const Index = () => {
                     />
                   </div>
 
-                  {/* Store Location */}
+                  {/* Store Location - Changed from Select to Input */}
                   <div className="space-y-2">
                     <Label className="flex justify-between">
                       <span>Store Location</span>
                       <span className="text-red-500">*</span>
                     </Label>
-                    <Select 
-                      onValueChange={(value) => handleSelectChange("storeLocation", value)}
-                    >
-                      <SelectTrigger className={errors.storeLocation ? "border-red-500" : ""}>
-                        <SelectValue placeholder="Select store location" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {STORE_LOCATIONS.map((location) => (
-                          <SelectItem key={location} value={location}>
-                            {location}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <Input
+                      id="storeLocation"
+                      name="storeLocation"
+                      placeholder="Enter store location (city, mall, etc.)"
+                      value={formData.storeLocation}
+                      onChange={handleInputChange}
+                      className={errors.storeLocation ? "border-red-500" : ""}
+                    />
                     {errors.storeLocation && (
                       <p className="text-sm text-red-500 mt-1">{errors.storeLocation}</p>
                     )}
