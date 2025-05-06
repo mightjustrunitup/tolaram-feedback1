@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -116,6 +117,7 @@ const Index = () => {
   const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<{[key: string]: string}>({});
+  const [formValid, setFormValid] = useState(false);
   
   // Changed from single issue to multiple issues with checkboxes
   const [selectedIssues, setSelectedIssues] = useState<string[]>([]);
@@ -125,6 +127,14 @@ const Index = () => {
     location: "",
     comments: ""
   });
+
+  // Check form validity whenever relevant fields change
+  useEffect(() => {
+    const isValid = selectedProduct !== null && 
+                    selectedVariant !== null && 
+                    selectedIssues.length > 0;
+    setFormValid(isValid);
+  }, [selectedProduct, selectedVariant, selectedIssues]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -421,14 +431,15 @@ const Index = () => {
                 
                 <CardFooter className="flex justify-end items-center pt-4 px-0">
                   <Button 
-                    className="bg-indomie-red hover:bg-indomie-red/90 relative overflow-hidden group"
+                    className="transition-colors"
                     type="submit"
-                    disabled={submitting}
+                    disabled={submitting || !formValid}
+                    variant={formValid ? "default" : "disabled-red"}
+                    style={{
+                      backgroundColor: formValid ? "#ea384c" : undefined
+                    }}
                   >
-                    <span className="relative z-10">
-                      {submitting ? "Submitting..." : "Submit Feedback"}
-                    </span>
-                    <span className="absolute bottom-0 left-0 w-full h-0 bg-indomie-yellow transition-all duration-300 group-hover:h-full -z-0"></span>
+                    {submitting ? "Submitting..." : "Submit Feedback"}
                   </Button>
                 </CardFooter>
               </form>
