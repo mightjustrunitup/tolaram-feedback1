@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { StarRating } from "@/components/ui/star-rating";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "sonner";
@@ -59,15 +59,8 @@ export default function ThankYou() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-sky-50 to-gray-50">
-      {/* Fixed Header */}
-      <header className="w-full bg-white border-b py-4 px-6 shadow-md fixed top-0 left-0 right-0 z-20">
-        <div className="max-w-7xl mx-auto flex justify-center items-center">
-          <h1 className="text-2xl font-semibold text-gray-800">Feedback</h1>
-        </div>
-      </header>
-
-      {/* Thank You Content */}
-      <div className="flex-1 py-12 px-6 relative pt-24 md:pt-28">
+      {/* Thank You Content - Removed fixed header */}
+      <div className="flex-1 py-12 px-6 relative">
         <div className="absolute inset-0 w-full h-full">
           <div className="w-full h-full bg-[radial-gradient(#64748b_1px,transparent_1px)] [background-size:20px_20px] opacity-10"></div>
         </div>
@@ -182,8 +175,6 @@ export default function ThankYou() {
                 </div>
               )}
             </CardContent>
-            
-            {/* Removed CardFooter with "Back to Products" and "Home" buttons */}
           </Card>
         </div>
       </div>

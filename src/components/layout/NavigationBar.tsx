@@ -1,7 +1,7 @@
 
 import { cn } from "@/lib/utils";
 import Logo from "./Logo";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 interface NavigationBarProps {
@@ -10,6 +10,10 @@ interface NavigationBarProps {
 
 export default function NavigationBar({ className }: NavigationBarProps) {
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Check if the current page is the Thank You page
+  const isThankYouPage = location.pathname === "/thank-you";
   
   return (
     <nav className={cn(
@@ -18,15 +22,17 @@ export default function NavigationBar({ className }: NavigationBarProps) {
     )}>
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <Logo className="text-gray-800" />
-        <div className="flex items-center gap-4">
-          <Button 
-            variant="ghost" 
-            className="text-gray-700 hover:text-indomie-red hover:bg-gray-100"
-            onClick={() => navigate("/")}
-          >
-            Home
-          </Button>
-        </div>
+        {!isThankYouPage && (
+          <div className="flex items-center gap-4">
+            <Button 
+              variant="ghost" 
+              className="text-gray-700 hover:text-indomie-red hover:bg-gray-100"
+              onClick={() => navigate("/")}
+            >
+              Home
+            </Button>
+          </div>
+        )}
       </div>
     </nav>
   );
