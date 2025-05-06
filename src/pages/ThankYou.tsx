@@ -183,24 +183,7 @@ export default function ThankYou() {
               )}
             </CardContent>
             
-            <CardFooter className="flex justify-center relative z-10 mt-2">
-              <div className="space-x-4">
-                <Button 
-                  variant="outline"
-                  className="border-gray-200 hover:bg-gray-50"
-                  onClick={() => navigate("/")}
-                >
-                  Back to Products
-                </Button>
-                <Button 
-                  className="bg-indomie-red hover:bg-indomie-red/90 relative overflow-hidden group"
-                  onClick={() => navigate("/")}
-                >
-                  <span className="relative z-10">Home</span>
-                  <span className="absolute bottom-0 left-0 w-full h-0 bg-indomie-yellow transition-all duration-300 group-hover:h-full -z-0"></span>
-                </Button>
-              </div>
-            </CardFooter>
+            {/* Removed CardFooter with "Back to Products" and "Home" buttons */}
           </Card>
         </div>
       </div>
