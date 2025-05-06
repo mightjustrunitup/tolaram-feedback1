@@ -351,7 +351,7 @@ const Index = () => {
                   )}
                 </div>
                 
-                {/* Product Variant Selection - Changed to Radio Buttons */}
+                {/* Product Variant Selection - UPDATED to display in a two-column grid */}
                 {selectedProduct && (
                   <div className="space-y-2">
                     <Label htmlFor="variant" className="flex justify-between">
@@ -362,14 +362,14 @@ const Index = () => {
                       value={selectedVariant || ""} 
                       onValueChange={handleVariantSelect}
                       className={cn(
-                        "grid grid-cols-1 gap-2 p-2",
+                        "grid grid-cols-1 md:grid-cols-2 gap-2 p-2", // Changed to 2 columns for md screens and up
                         errors.variant ? "border border-red-500 rounded-md" : ""
                       )}
                     >
                       {selectedProduct.variants.map((variant) => (
                         <div key={variant.id} className="flex items-center space-x-2 hover:bg-gray-50 p-2 rounded-md">
                           <RadioGroupItem value={variant.id} id={variant.id} />
-                          <Label htmlFor={variant.id} className="cursor-pointer flex-grow">
+                          <Label htmlFor={variant.id} className="cursor-pointer flex-grow text-sm">
                             {variant.name}
                           </Label>
                         </div>
