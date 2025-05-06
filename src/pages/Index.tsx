@@ -266,27 +266,27 @@ const Index = () => {
             <div className="absolute -left-16 -bottom-16 w-32 h-32 rounded-full bg-indomie-red/30 blur-xl"></div>
             
             <CardHeader className="relative z-10">
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex flex-col items-center text-center mb-4">
                 <CardTitle className="text-2xl font-bold">Welcome to Tolaram Feedback Portal</CardTitle>
-                {selectedProduct && (
-                  <Badge 
-                    className="px-3 py-1 bg-indomie-red/20 text-indomie-red border border-indomie-red/30 flex items-center gap-2"
-                    variant="outline"
-                  >
-                    <div className="w-4 h-4 rounded overflow-hidden">
-                      <img 
-                        src={selectedProduct.image}
-                        alt={selectedProduct.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    Feedback for {selectedProduct.name}
-                  </Badge>
-                )}
+                <CardDescription className="mt-2 max-w-md">
+                  Help us improve our products by completing this short feedback form. Your opinion matters to us, and we're committed to making our products better with your input.
+                </CardDescription>
               </div>
-              <CardDescription>
-                Help us improve our products by completing this short feedback form.
-              </CardDescription>
+              {selectedProduct && (
+                <Badge 
+                  className="px-3 py-1 bg-indomie-red/20 text-indomie-red border border-indomie-red/30 flex items-center gap-2 mx-auto"
+                  variant="outline"
+                >
+                  <div className="w-4 h-4 rounded overflow-hidden">
+                    <img 
+                      src={selectedProduct.image}
+                      alt={selectedProduct.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  Feedback for {selectedProduct.name}
+                </Badge>
+              )}
             </CardHeader>
             
             <CardContent className="relative z-10">
