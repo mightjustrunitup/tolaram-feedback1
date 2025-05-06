@@ -381,7 +381,7 @@ const Index = () => {
                   </div>
                 )}
                 
-                {/* Issue Selection - Changed to Checkboxes */}
+                {/* Issue Selection - Changed to Checkboxes with yellow styling removed */}
                 {selectedProduct && selectedVariant && (
                   <div className="space-y-2">
                     <Label htmlFor="issue" className="flex justify-between">
@@ -399,8 +399,7 @@ const Index = () => {
                             checked={selectedIssues.includes(issue)}
                             onCheckedChange={() => handleIssueToggle(issue)}
                           />
-                          <Label htmlFor={issue} className="cursor-pointer flex items-center gap-2">
-                            <AlertCircle className="h-4 w-4 text-amber-500" />
+                          <Label htmlFor={issue} className="cursor-pointer">
                             {issue}
                           </Label>
                         </div>
@@ -411,8 +410,7 @@ const Index = () => {
                           checked={selectedIssues.includes("Other")}
                           onCheckedChange={() => handleIssueToggle("Other")}
                         />
-                        <Label htmlFor="other" className="cursor-pointer flex items-center gap-2">
-                          <AlertCircle className="h-4 w-4 text-amber-500" />
+                        <Label htmlFor="other" className="cursor-pointer">
                           Other
                         </Label>
                       </div>
