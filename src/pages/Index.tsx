@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 
 // Define product types
@@ -111,11 +112,13 @@ const Index = () => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   
-  const [selectedIssue, setSelectedIssue] = useState<string>("");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<{[key: string]: string}>({});
+  
+  // Changed from single issue to multiple issues with checkboxes
+  const [selectedIssues, setSelectedIssues] = useState<string[]>([]);
   
   const [formData, setFormData] = useState({
     customerName: "",
@@ -146,18 +149,35 @@ const Index = () => {
       setSelectedProduct(product);
       // Reset the selected variant when product changes
       setSelectedVariant(null);
-      // Reset the selected issue when product changes
-      setSelectedIssue("");
+      // Reset the selected issues when product changes
+      setSelectedIssues([]);
     }
   };
 
   const handleVariantSelect = (variantId: string) => {
     setSelectedVariant(variantId);
-    // Reset the selected issue when variant changes
-    setSelectedIssue("");
+    // Reset the selected issues when variant changes
+    setSelectedIssues([]);
     // Clear variant error if it exists
     if (errors.variant) {
       setErrors(prev => ({ ...prev, variant: "" }));
+    }
+  };
+
+  // New function to handle checkbox changes for issues
+  const handleIssueToggle = (issue: string) => {
+    setSelectedIssues(current => {
+      // If already selected, remove it
+      if (current.includes(issue)) {
+        return current.filter(i => i !== issue);
+      } 
+      // Otherwise add it
+      return [...current, issue];
+    });
+    
+    // Clear issue error if any issue is selected
+    if (errors.issue) {
+      setErrors(prev => ({ ...prev, issue: "" }));
     }
   };
   
@@ -174,9 +194,9 @@ const Index = () => {
       newErrors.variant = "Please select a product variant";
     }
 
-    // Validate issue selection
-    if (selectedProduct && selectedVariant && !selectedIssue) {
-      newErrors.issue = "Please select an issue with the product";
+    // Validate at least one issue is selected
+    if (selectedProduct && selectedVariant && selectedIssues.length === 0) {
+      newErrors.issue = "Please select at least one issue with the product";
     }
     
     // Store location is always required
@@ -207,7 +227,8 @@ const Index = () => {
     navigate("/thank-you", { 
       state: { 
         customerName: formData.customerName || "Valued Customer", // Use "Valued Customer" if name is empty
-        productName: selectedProduct?.name || "our product"
+        productName: selectedProduct?.name || "our product",
+        issues: selectedIssues
       } 
     });
   };
@@ -330,52 +351,54 @@ const Index = () => {
                   )}
                 </div>
                 
-                {/* Product Variant Selection - Only shows if a product is selected */}
+                {/* Product Variant Selection - Changed to Radio Buttons */}
                 {selectedProduct && (
                   <div className="space-y-2">
                     <Label htmlFor="variant" className="flex justify-between">
                       <span>Select {selectedProduct.name} Variant</span>
                       <span className="text-red-500">*</span>
                     </Label>
-                    <Select 
+                    <RadioGroup 
+                      value={selectedVariant || ""} 
                       onValueChange={handleVariantSelect}
-                      value={selectedVariant || undefined}
+                      className={cn(
+                        "grid grid-cols-1 gap-2 p-2",
+                        errors.variant ? "border border-red-500 rounded-md" : ""
+                      )}
                     >
-                      <SelectTrigger className={errors.variant ? "border-red-500" : ""}>
-                        <SelectValue placeholder="Choose a product variant" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {selectedProduct.variants.map((variant) => (
-                          <SelectItem key={variant.id} value={variant.id}>
+                      {selectedProduct.variants.map((variant) => (
+                        <div key={variant.id} className="flex items-center space-x-2 hover:bg-gray-50 p-2 rounded-md">
+                          <RadioGroupItem value={variant.id} id={variant.id} />
+                          <Label htmlFor={variant.id} className="cursor-pointer flex-grow">
                             {variant.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                          </Label>
+                        </div>
+                      ))}
+                    </RadioGroup>
                     {errors.variant && (
                       <p className="text-sm text-red-500 mt-1">{errors.variant}</p>
                     )}
                   </div>
                 )}
                 
-                {/* Issue Selection - Only shows if a product and variant are selected */}
+                {/* Issue Selection - Changed to Checkboxes */}
                 {selectedProduct && selectedVariant && (
                   <div className="space-y-2">
                     <Label htmlFor="issue" className="flex justify-between">
-                      <span>What issue did you experience?</span>
+                      <span>What issues did you experience?</span>
                       <span className="text-red-500">*</span>
                     </Label>
-                    <RadioGroup 
-                      onValueChange={setSelectedIssue}
-                      value={selectedIssue}
-                      className={cn(
-                        "grid grid-cols-1 md:grid-cols-2 gap-2",
-                        errors.issue ? "border border-red-500 rounded-md p-2" : ""
-                      )}
-                    >
+                    <div className={cn(
+                      "grid grid-cols-1 md:grid-cols-2 gap-2 p-2",
+                      errors.issue ? "border border-red-500 rounded-md" : ""
+                    )}>
                       {PRODUCT_ISSUES.map((issue) => (
                         <div key={issue} className="flex items-center space-x-2 hover:bg-gray-50 p-2 rounded-md">
-                          <RadioGroupItem value={issue} id={issue} />
+                          <Checkbox 
+                            id={issue}
+                            checked={selectedIssues.includes(issue)}
+                            onCheckedChange={() => handleIssueToggle(issue)}
+                          />
                           <Label htmlFor={issue} className="cursor-pointer flex items-center gap-2">
                             <AlertCircle className="h-4 w-4 text-amber-500" />
                             {issue}
@@ -383,27 +406,31 @@ const Index = () => {
                         </div>
                       ))}
                       <div className="flex items-center space-x-2 hover:bg-gray-50 p-2 rounded-md">
-                        <RadioGroupItem value="Other" id="other" />
+                        <Checkbox 
+                          id="other"
+                          checked={selectedIssues.includes("Other")}
+                          onCheckedChange={() => handleIssueToggle("Other")}
+                        />
                         <Label htmlFor="other" className="cursor-pointer flex items-center gap-2">
                           <AlertCircle className="h-4 w-4 text-amber-500" />
                           Other
                         </Label>
                       </div>
-                    </RadioGroup>
+                    </div>
                     {errors.issue && (
                       <p className="text-sm text-red-500 mt-1">{errors.issue}</p>
                     )}
                   </div>
                 )}
 
-                {/* Comments */}
-                {selectedIssue && (
+                {/* Comments - Only shown if at least one issue is selected */}
+                {selectedIssues.length > 0 && (
                   <div className="space-y-2">
-                    <Label htmlFor="comments">Describe the issue in more detail (Optional)</Label>
+                    <Label htmlFor="comments">Describe the issue(s) in more detail (Optional)</Label>
                     <Textarea
                       id="comments"
                       name="comments"
-                      placeholder="Please provide more details about the issue..."
+                      placeholder="Please provide more details about the issue(s)..."
                       value={formData.comments}
                       onChange={handleInputChange}
                       className="min-h-[120px]"
