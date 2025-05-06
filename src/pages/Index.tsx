@@ -1,6 +1,5 @@
 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -17,6 +16,7 @@ import Logo from "@/components/layout/Logo";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 // Define product types
 interface Product {
@@ -24,6 +24,10 @@ interface Product {
   name: string;
   image: string;
   description: string;
+  variants: Array<{
+    id: string;
+    name: string;
+  }>;
 }
 
 // Use local placeholder images with text to ensure display
@@ -32,25 +36,57 @@ const products: Product[] = [
     id: "indomie",
     name: "Indomie",
     image: "https://placehold.co/400x300/FFFFFF/E51E25?text=Indomie",
-    description: "Delicious instant noodles with a variety of flavors"
+    description: "Delicious instant noodles with a variety of flavors",
+    variants: [
+      { id: "indomie-chicken", name: "Indomie Tables Chicken" },
+      { id: "indomie-jollof", name: "Indomie Jollof Flavor" },
+      { id: "indomie-onion-chicken", name: "Indomie Onion Chicken Flavour" },
+      { id: "indomie-crayfish", name: "Indomie Crayfish Flavour" },
+      { id: "indomie-chicken-pepper-soup", name: "Indomie Chicken Pepper Soup" },
+      { id: "indomie-oriental", name: "Indomie Oriental Fried Noodle" },
+      { id: "indomie-relish-beef", name: "Indomie Relish Beef" },
+      { id: "indomie-relish-seafood", name: "Indomie Relish Sea Food Delight" }
+    ]
   },
   {
     id: "minimie",
     name: "Minimie",
     image: "https://placehold.co/400x300/FFFFFF/FFB800?text=Minimie",
-    description: "Mini-sized instant noodles perfect for snacking"
+    description: "Mini-sized instant noodles perfect for snacking",
+    variants: [
+      { id: "minimie-chinchin", name: "Minimie Chinchin" },
+      { id: "minimie-chinchin-spicy", name: "Minimie Chinchin (Hot and Spicy)" },
+      { id: "minimie-noodle-chicken", name: "Minimie Instant Noodle Chicken Flavour" },
+      { id: "minimie-noodle-vegetable", name: "Minimie Instant Noodle Vegetable" },
+      { id: "minimie-noodle-tomato", name: "Minimie Instant Noodle Tomato" }
+    ]
   },
   {
     id: "dano",
     name: "Dano Milk",
     image: "https://placehold.co/400x300/FFFFFF/0075C2?text=Dano+Milk",
-    description: "High quality milk products for your daily needs"
+    description: "High quality milk products for your daily needs",
+    variants: [
+      { id: "dano-slim", name: "Dano Slim" },
+      { id: "dano-cool-cow", name: "Dano Cool Cow" },
+      { id: "dano-uht", name: "Dano UHT" },
+      { id: "dano-vitakids", name: "Dano Vitakids" }
+    ]
   },
   {
     id: "kelloggs",
     name: "Kellogg's Cereals",
     image: "https://placehold.co/400x300/FFFFFF/E31837?text=Kellogg's",
-    description: "Nutritious breakfast cereals for a great start to your day"
+    description: "Nutritious breakfast cereals for a great start to your day",
+    variants: [
+      { id: "kelloggs-corn-flakes", name: "Kelloggs Corn Flakes" },
+      { id: "kelloggs-cocopops", name: "Kelloggs Cocopops" },
+      { id: "kelloggs-frosties", name: "Kelloggs Frosties" },
+      { id: "kelloggs-rice-krispies", name: "Kelloggs Rice Krispies" },
+      { id: "kelloggs-crunchy-nut", name: "Kelloggs Crunchy Nut" },
+      { id: "kelloggs-crispix", name: "Kelloggs Crispix" },
+      { id: "kelloggs-krave", name: "Kelloggs Krave" }
+    ]
   }
 ];
 
@@ -84,6 +120,7 @@ const Index = () => {
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [selectedIssue, setSelectedIssue] = useState<string>("");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<{[key: string]: string}>({});
   
@@ -115,6 +152,16 @@ const Index = () => {
     const product = products.find(p => p.id === productId);
     if (product) {
       setSelectedProduct(product);
+      // Reset the selected variant when product changes
+      setSelectedVariant(null);
+    }
+  };
+
+  const handleVariantSelect = (variantId: string) => {
+    setSelectedVariant(variantId);
+    // Clear variant error if it exists
+    if (errors.variant) {
+      setErrors(prev => ({ ...prev, variant: "" }));
     }
   };
   
@@ -124,6 +171,11 @@ const Index = () => {
     // Validate product selection
     if (!selectedProduct) {
       newErrors.product = "Please select a product";
+    }
+
+    // Validate variant selection
+    if (selectedProduct && !selectedVariant) {
+      newErrors.variant = "Please select a product variant";
     }
     
     // Validate name if not anonymous
@@ -158,6 +210,7 @@ const Index = () => {
       toast.success("Feedback submitted successfully!");
       // Reset form after successful submission
       setSelectedProduct(null);
+      setSelectedVariant(null);
       setFormData({
         customerName: "",
         email: "",
@@ -250,8 +303,37 @@ const Index = () => {
                   )}
                 </div>
 
-                {/* Selected Product Information (if selected) */}
+                {/* Product Variants Selection - Radio Buttons */}
                 {selectedProduct && (
+                  <div className="space-y-3">
+                    <Label className="flex justify-between">
+                      <span>Select {selectedProduct.name} Variant</span>
+                      <span className="text-red-500">*</span>
+                    </Label>
+                    <div className={cn("border rounded-md p-4", errors.variant ? "border-red-500" : "border-gray-200")}>
+                      <RadioGroup
+                        value={selectedVariant || ""}
+                        onValueChange={handleVariantSelect}
+                        className="grid grid-cols-1 gap-3"
+                      >
+                        {selectedProduct.variants.map((variant) => (
+                          <div key={variant.id} className="flex items-center space-x-2 hover:bg-gray-50 p-2 rounded-md">
+                            <RadioGroupItem value={variant.id} id={variant.id} />
+                            <Label htmlFor={variant.id} className="cursor-pointer flex-1">
+                              {variant.name}
+                            </Label>
+                          </div>
+                        ))}
+                      </RadioGroup>
+                    </div>
+                    {errors.variant && (
+                      <p className="text-sm text-red-500 mt-1">{errors.variant}</p>
+                    )}
+                  </div>
+                )}
+
+                {/* Selected Product Information (if selected) */}
+                {selectedProduct && selectedVariant && (
                   <div className="p-4 border border-dashed border-indomie-yellow/50 bg-amber-50/50 rounded-lg">
                     <div className="flex items-center gap-4">
                       <div className="w-16 h-16 rounded overflow-hidden flex-shrink-0 border">
@@ -263,7 +345,12 @@ const Index = () => {
                       </div>
                       <div>
                         <h3 className="font-semibold text-lg">{selectedProduct.name}</h3>
-                        <p className="text-sm text-gray-600">{selectedProduct.description}</p>
+                        <div className="text-sm text-gray-600">
+                          <p>{selectedProduct.description}</p>
+                          <p className="mt-1 font-medium">
+                            Selected: {selectedProduct.variants.find(v => v.id === selectedVariant)?.name}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -380,36 +467,26 @@ const Index = () => {
                   </div>
                 </div>
 
-                {/* Common Issues - Now using a Dropdown */}
-                {selectedProduct && (
+                {/* Common Issues - Now using Radio Buttons */}
+                {selectedProduct && selectedVariant && (
                   <div className="space-y-3 p-4 bg-white/80 rounded-md backdrop-blur-sm border border-indomie-yellow/20">
                     <Label className="text-base font-medium">Did you experience any of these issues with {selectedProduct?.name}?</Label>
                     
-                    <Select 
+                    <RadioGroup 
                       value={selectedIssue} 
                       onValueChange={setSelectedIssue}
+                      className="grid grid-cols-1 gap-3 mt-3"
                     >
-                      <SelectTrigger className="w-full bg-white">
-                        <SelectValue placeholder="Select any issues you experienced..." />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white">
-                        <SelectGroup>
-                          <SelectLabel className="font-semibold text-indomie-red">Common Product Issues</SelectLabel>
-                          {PRODUCT_ISSUES.map((issue) => (
-                            <SelectItem 
-                              key={issue} 
-                              value={issue}
-                              className="flex items-center gap-2 focus:bg-indomie-yellow/10 hover:bg-indomie-yellow/5 cursor-pointer"
-                            >
-                              <div className="flex items-center gap-2">
-                                <AlertCircle className="h-4 w-4 text-amber-500" />
-                                <span>{issue}</span>
-                              </div>
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
+                      {PRODUCT_ISSUES.map((issue) => (
+                        <div key={issue} className="flex items-center space-x-2 hover:bg-gray-50 p-2 rounded-md">
+                          <RadioGroupItem value={issue} id={`issue-${issue}`} />
+                          <Label htmlFor={`issue-${issue}`} className="cursor-pointer flex items-center gap-2 flex-1">
+                            <AlertCircle className="h-4 w-4 text-amber-500" />
+                            <span>{issue}</span>
+                          </Label>
+                        </div>
+                      ))}
+                    </RadioGroup>
                     
                     {selectedIssue && (
                       <div className="mt-2 p-2 bg-amber-50 border border-amber-200 rounded-md">
