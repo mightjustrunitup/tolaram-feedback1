@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import Feedback from "./pages/Feedback";
 import NotFound from "./pages/NotFound";
 import ScrollToTop from "./components/utils/ScrollToTop";
+import NavigationBar from "./components/layout/NavigationBar";
 
 const queryClient = new QueryClient();
 
@@ -18,6 +19,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <ScrollToTop />
+        <NavigationBar />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/feedback" element={<Feedback />} />
