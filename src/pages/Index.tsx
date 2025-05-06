@@ -1,16 +1,23 @@
 
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { format } from "date-fns";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { CalendarIcon, AlertCircle, Package } from "lucide-react";
 import Logo from "@/components/layout/Logo";
-import { useEffect, useRef, useState } from "react";
-import { Package } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
+import { StarRating } from "@/components/ui/star-rating";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // Define product types
 interface Product {
@@ -48,12 +55,71 @@ const products: Product[] = [
   }
 ];
 
+// Mock store locations
+const STORE_LOCATIONS = [
+  "Lagos - Ikeja Mall",
+  "Lagos - Lekki Phase 1",
+  "Abuja - Wuse II",
+  "Abuja - Jabi Lake Mall",
+  "Port Harcourt - GRA",
+  "Ibadan - Dugbe",
+  "Kano - Nassarawa",
+  "Enugu - New Haven"
+];
+
+// Issues list
+const PRODUCT_ISSUES = [
+  "Mislabelled products / allergies",
+  "Unusual taste or odor",
+  "Texture - too hard or soft",
+  "Mold or spoilage",
+  "Foreign elements",
+  "Other"
+];
+
 const Index = () => {
   const navigate = useNavigate();
-  const [showProducts, setShowProducts] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const selectTriggerRef = useRef<HTMLButtonElement>(null);
+  const isMobile = useIsMobile();
   
+  const [date, setDate] = useState<Date>(new Date());
+  const [isAnonymous, setIsAnonymous] = useState(false);
+  const [selectedIssue, setSelectedIssue] = useState<string>("");
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [errors, setErrors] = useState<{[key: string]: string}>({});
+  
+  const [formData, setFormData] = useState({
+    customerName: "",
+    email: "",
+    storeLocation: "",
+    staffFriendliness: 4,
+    cleanliness: 4,
+    productAvailability: 4,
+    overallExperience: 4,
+    comments: ""
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    // Clear error for this field when changed
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: "" }));
+    }
+  };
+
+  const handleRatingChange = (name: string, value: number) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSelectChange = (name: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    // Clear error for this field when changed
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: "" }));
+    }
+  };
+
   const handleProductSelect = (productId: string) => {
     const product = products.find(p => p.id === productId);
     if (product) {
@@ -61,147 +127,410 @@ const Index = () => {
     }
   };
   
-  const handleContinue = () => {
-    if (selectedProduct) {
-      // Pass the selected product ID in the navigation state
-      navigate("/feedback", { state: { selectedProduct } });
+  const validateForm = () => {
+    const newErrors: {[key: string]: string} = {};
+    
+    // Validate product selection
+    if (!selectedProduct) {
+      newErrors.product = "Please select a product";
     }
+    
+    // Validate name if not anonymous
+    if (!isAnonymous && !formData.customerName.trim()) {
+      newErrors.customerName = "Name is required";
+    }
+    
+    // Store location is always required
+    if (!formData.storeLocation) {
+      newErrors.storeLocation = "Please select a store location";
+    }
+    
+    // Set errors and return validity result
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
-  // Auto-show products and open dropdown when page loads
-  useEffect(() => {
-    // Automatically show products section
-    setShowProducts(true);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
     
-    // Add a small delay to allow the DOM to update
-    const timer = setTimeout(() => {
-      // Click the select trigger to open the dropdown
-      if (selectTriggerRef.current) {
-        selectTriggerRef.current.click();
-      }
-    }, 300);
+    // Validate form before submission
+    if (!validateForm()) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
     
-    return () => clearTimeout(timer);
-  }, []);
-  
+    setSubmitting(true);
+    
+    // Simulate submission - frontend only
+    setTimeout(() => {
+      setSubmitting(false);
+      toast.success("Feedback submitted successfully!");
+      // Reset form after successful submission
+      setSelectedProduct(null);
+      setFormData({
+        customerName: "",
+        email: "",
+        storeLocation: "",
+        staffFriendliness: 4,
+        cleanliness: 4,
+        productAvailability: 4,
+        overallExperience: 4,
+        comments: ""
+      });
+      setIsAnonymous(false);
+      setSelectedIssue("");
+    }, 1500);
+  };
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 noodle-pattern">
+    <div className="min-h-screen flex flex-col noodle-bg-light">
       {/* Fixed Header */}
       <header className="w-full bg-white border-b py-4 px-6 shadow-md fixed top-0 left-0 right-0 z-20">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
+        <div className="max-w-7xl mx-auto flex justify-center items-center">
           <Logo />
-          <div className="flex items-center gap-4">
-            <Button 
-              variant="outline"
-              onClick={() => navigate("/login")}
-            >
-              Login
-            </Button>
-          </div>
         </div>
       </header>
 
-      <div className="text-center max-w-3xl px-4 pt-20">
-        <h1 className="text-4xl font-bold mt-8 mb-4">Welcome to Feedback Portal</h1>
-        <p className="text-xl text-gray-600 mb-8">Your opinion matters to us. Help us improve your experience!</p>
+      {/* Title banner */}
+      <div className="mt-20 bg-indomie-dark text-white p-4 md:p-6 text-center noodle-bg-dark">
+        <h2 className="text-2xl md:text-3xl font-bold text-shadow mb-2">Welcome to Tolaram Feedback Portal</h2>
+        <p className="text-sm md:text-base text-white/90 text-shadow mb-4">Your opinion matters to us</p>
+      </div>
+
+      {/* Feedback Form */}
+      <div className="flex-1 py-8 px-6 relative">
+        <div className="absolute inset-0 w-full h-full">
+          <div className="w-full h-full bg-[radial-gradient(#FFC72C_1px,transparent_1px)] [background-size:20px_20px] opacity-20"></div>
+        </div>
         
-        <div className="flex flex-col items-center gap-8">
-          {!showProducts ? (
-            <Button 
-              size="lg" 
-              className="bg-blue-600 hover:bg-blue-700 text-white relative overflow-hidden group"
-              onClick={() => setShowProducts(true)}
-            >
-              <span className="relative z-10 flex items-center gap-2">
-                <Package />
-                Select Product
-              </span>
-              <span className="absolute bottom-0 left-0 w-full h-0 bg-blue-800 transition-all duration-300 group-hover:h-full -z-0"></span>
-            </Button>
-          ) : (
-            <>
-              <h2 className="text-2xl font-semibold mb-6">Choose a product to provide feedback on</h2>
-              
-              <div className="w-full max-w-md">
-                <Select onValueChange={handleProductSelect}>
-                  <SelectTrigger className="w-full" ref={selectTriggerRef}>
-                    <SelectValue placeholder="Select a product" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {products.map((product) => (
-                      <SelectItem key={product.id} value={product.id}>
-                        <div className="flex items-center gap-3">
-                          <div className="w-6 h-6 rounded overflow-hidden">
-                            <img 
-                              src={product.image}
-                              alt={product.name}
-                              className="w-full h-full object-cover"
-                            />
+        <div className="max-w-3xl mx-auto relative z-10">
+          <Card className="shadow-lg animate-fade-in border-t-4 border-t-indomie-red relative overflow-hidden">
+            <div className="absolute -right-16 -top-16 w-32 h-32 rounded-full bg-indomie-yellow/30 blur-xl"></div>
+            <div className="absolute -left-16 -bottom-16 w-32 h-32 rounded-full bg-indomie-red/30 blur-xl"></div>
+            
+            <CardHeader className="relative z-10">
+              <div className="flex items-center justify-between mb-2">
+                <CardTitle className="text-2xl font-bold">Share Your Feedback</CardTitle>
+                {selectedProduct && (
+                  <Badge 
+                    className="px-3 py-1 bg-indomie-red/20 text-indomie-red border border-indomie-red/30 flex items-center gap-2"
+                    variant="outline"
+                  >
+                    <div className="w-4 h-4 rounded overflow-hidden">
+                      <img 
+                        src={selectedProduct.image}
+                        alt={selectedProduct.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    Feedback for {selectedProduct.name}
+                  </Badge>
+                )}
+              </div>
+              <CardDescription>
+                Help us improve our products by completing this short feedback form.
+              </CardDescription>
+            </CardHeader>
+            
+            <CardContent className="relative z-10">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Product Selection */}
+                <div className="space-y-2">
+                  <Label htmlFor="product" className="flex justify-between">
+                    <span>Select Product</span>
+                    <span className="text-red-500">*</span>
+                  </Label>
+                  <Select 
+                    onValueChange={handleProductSelect}
+                    value={selectedProduct?.id}
+                  >
+                    <SelectTrigger className={errors.product ? "border-red-500" : ""}>
+                      <SelectValue placeholder="Choose a product to provide feedback on" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {products.map((product) => (
+                        <SelectItem key={product.id} value={product.id}>
+                          <div className="flex items-center gap-3">
+                            <div className="w-6 h-6 rounded overflow-hidden">
+                              <img 
+                                src={product.image}
+                                alt={product.name}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <span>{product.name}</span>
                           </div>
-                          <span>{product.name}</span>
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                
-                <div className="mt-8 flex flex-col items-center">
-                  {selectedProduct && (
-                    <div className="mb-6 p-4 border rounded-lg bg-white shadow-sm w-full">
-                      <div className="flex items-center gap-4">
-                        <div className="w-16 h-16 rounded overflow-hidden flex-shrink-0">
-                          <img 
-                            src={selectedProduct.image}
-                            alt={selectedProduct.name}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        <div className="text-left">
-                          <h3 className="font-semibold text-lg">{selectedProduct.name}</h3>
-                          <p className="text-sm text-gray-600">{selectedProduct.description}</p>
-                        </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.product && (
+                    <p className="text-sm text-red-500 mt-1">{errors.product}</p>
+                  )}
+                </div>
+
+                {/* Selected Product Information (if selected) */}
+                {selectedProduct && (
+                  <div className="p-4 border border-dashed border-indomie-yellow/50 bg-amber-50/50 rounded-lg">
+                    <div className="flex items-center gap-4">
+                      <div className="w-16 h-16 rounded overflow-hidden flex-shrink-0 border">
+                        <img 
+                          src={selectedProduct.image}
+                          alt={selectedProduct.name}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-lg">{selectedProduct.name}</h3>
+                        <p className="text-sm text-gray-600">{selectedProduct.description}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Customer Information */}
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="anonymous" 
+                      checked={isAnonymous}
+                      onCheckedChange={(checked) => {
+                        setIsAnonymous(checked === true);
+                        // Clear name error if switching to anonymous
+                        if (checked && errors.customerName) {
+                          setErrors(prev => ({ ...prev, customerName: "" }));
+                        }
+                      }}
+                    />
+                    <label
+                      htmlFor="anonymous"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      I want to remain anonymous
+                    </label>
+                  </div>
+                  
+                  {!isAnonymous && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="customerName" className="flex justify-between">
+                          <span>Your Name</span>
+                          <span className="text-red-500">*</span>
+                        </Label>
+                        <Input
+                          id="customerName"
+                          name="customerName"
+                          placeholder="Enter your name"
+                          value={formData.customerName}
+                          onChange={handleInputChange}
+                          className={errors.customerName ? "border-red-500" : ""}
+                        />
+                        {errors.customerName && (
+                          <p className="text-sm text-red-500 mt-1">{errors.customerName}</p>
+                        )}
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="email">Email (Optional)</Label>
+                        <Input
+                          id="email"
+                          name="email"
+                          type="email"
+                          placeholder="Enter your email"
+                          value={formData.email}
+                          onChange={handleInputChange}
+                        />
                       </div>
                     </div>
                   )}
+                </div>
+
+                {/* Visit Details */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Date of Visit</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-start text-left font-normal",
+                            !date && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {date ? format(date, "PPP") : <span>Pick a date</span>}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={date}
+                          onSelect={(date) => date && setDate(date)}
+                          initialFocus
+                          className="p-3 pointer-events-auto"
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
                   
-                  <div className="flex gap-4 mt-4">
-                    <Button 
-                      variant="outline"
-                      onClick={() => {
-                        setShowProducts(false);
-                        setSelectedProduct(null);
-                      }}
+                  <div className="space-y-2">
+                    <Label className="flex justify-between">
+                      <span>Store Location</span>
+                      <span className="text-red-500">*</span>
+                    </Label>
+                    <Select 
+                      onValueChange={(value) => handleSelectChange("storeLocation", value)}
+                      value={formData.storeLocation}
                     >
-                      Back
-                    </Button>
-                    
-                    <Button 
-                      disabled={!selectedProduct}
-                      className="bg-indomie-red hover:bg-indomie-red/90"
-                      onClick={handleContinue}
-                    >
-                      Continue with {selectedProduct?.name || "selected product"}
-                    </Button>
+                      <SelectTrigger className={errors.storeLocation ? "border-red-500" : ""}>
+                        <SelectValue placeholder="Select store location" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {STORE_LOCATIONS.map((location) => (
+                          <SelectItem key={location} value={location}>
+                            {location}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {errors.storeLocation && (
+                      <p className="text-sm text-red-500 mt-1">{errors.storeLocation}</p>
+                    )}
                   </div>
                 </div>
-              </div>
-            </>
-          )}
+
+                {/* Rating Scales - Now using Star Ratings */}
+                {selectedProduct && (
+                  <div className="space-y-6 p-4 bg-white/70 rounded-md backdrop-blur-sm border border-indomie-yellow/20">
+                    <h3 className="font-semibold text-lg mb-4 text-indomie-dark">Rate Your {selectedProduct.name} Experience</h3>
+                    
+                    <div className="space-y-4">
+                      <div className="p-3 hover:bg-gray-50/70 rounded-md transition-colors">
+                        <StarRating
+                          label={`Staff Friendliness`}
+                          value={formData.staffFriendliness}
+                          onChange={(value) => handleRatingChange("staffFriendliness", value)}
+                          max={5}
+                          color="text-indomie-yellow"
+                          size="lg"
+                          showValue
+                        />
+                      </div>
+                      
+                      <div className="p-3 hover:bg-gray-50/70 rounded-md transition-colors">
+                        <StarRating
+                          label={`Cleanliness`}
+                          value={formData.cleanliness}
+                          onChange={(value) => handleRatingChange("cleanliness", value)}
+                          max={5}
+                          color="text-indomie-yellow"
+                          size="lg"
+                          showValue
+                        />
+                      </div>
+                      
+                      <div className="p-3 hover:bg-gray-50/70 rounded-md transition-colors">
+                        <StarRating
+                          label={`${selectedProduct.name} Availability`}
+                          value={formData.productAvailability}
+                          onChange={(value) => handleRatingChange("productAvailability", value)}
+                          max={5}
+                          color="text-indomie-yellow"
+                          size="lg"
+                          showValue
+                        />
+                      </div>
+                      
+                      <div className="p-3 hover:bg-gray-50/70 rounded-md transition-colors">
+                        <StarRating
+                          label={`Overall ${selectedProduct.name} Experience`}
+                          value={formData.overallExperience}
+                          onChange={(value) => handleRatingChange("overallExperience", value)}
+                          max={5}
+                          color="text-indomie-yellow"
+                          size="lg"
+                          showValue
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Common Issues - Now using a Dropdown */}
+                {selectedProduct && (
+                  <div className="space-y-3 p-4 bg-white/80 rounded-md backdrop-blur-sm border border-indomie-yellow/20">
+                    <Label className="text-base font-medium">Did you experience any of these issues with {selectedProduct?.name}?</Label>
+                    
+                    <Select 
+                      value={selectedIssue} 
+                      onValueChange={setSelectedIssue}
+                    >
+                      <SelectTrigger className="w-full bg-white">
+                        <SelectValue placeholder="Select any issues you experienced..." />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white">
+                        <SelectGroup>
+                          <SelectLabel className="font-semibold text-indomie-red">Common Product Issues</SelectLabel>
+                          {PRODUCT_ISSUES.map((issue) => (
+                            <SelectItem 
+                              key={issue} 
+                              value={issue}
+                              className="flex items-center gap-2 focus:bg-indomie-yellow/10 hover:bg-indomie-yellow/5 cursor-pointer"
+                            >
+                              <div className="flex items-center gap-2">
+                                <AlertCircle className="h-4 w-4 text-amber-500" />
+                                <span>{issue}</span>
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    
+                    {selectedIssue && (
+                      <div className="mt-2 p-2 bg-amber-50 border border-amber-200 rounded-md">
+                        <p className="text-sm text-amber-800 flex items-center gap-2">
+                          <AlertCircle className="h-4 w-4" />
+                          Thank you for reporting: <span className="font-medium">{selectedIssue}</span>
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Comments */}
+                <div className="space-y-2">
+                  <Label htmlFor="comments">Additional Comments {selectedProduct ? `about ${selectedProduct.name}` : ''}</Label>
+                  <Textarea
+                    id="comments"
+                    name="comments"
+                    placeholder={`Please share any additional feedback, issues, or suggestions...`}
+                    className="min-h-[120px]"
+                    value={formData.comments}
+                    onChange={handleInputChange}
+                  />
+                </div>
+
+                {/* Submit Button */}
+                <div className="flex justify-end">
+                  <Button 
+                    className="bg-indomie-red hover:bg-indomie-red/90 relative overflow-hidden group"
+                    type="submit"
+                    disabled={submitting}
+                  >
+                    <span className="relative z-10">
+                      {submitting ? "Submitting..." : "Submit Feedback"}
+                    </span>
+                    <span className="absolute bottom-0 left-0 w-full h-0 bg-indomie-yellow transition-all duration-300 group-hover:h-full -z-0"></span>
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+            <CardFooter className="flex justify-center text-center text-sm text-gray-500 relative z-10">
+              <p>Thank you for helping us improve our products and services.</p>
+            </CardFooter>
+          </Card>
         </div>
-        
-        {!showProducts && (
-          <div className="mt-12">
-            <Button 
-              size="lg" 
-              variant="outline"
-              className="border-indomie-yellow hover:bg-indomie-yellow/10 relative overflow-hidden group"
-              onClick={() => navigate("/home")}
-            >
-              <span className="relative z-10">Explore More</span>
-              <span className="absolute bottom-0 left-0 w-0 h-full bg-indomie-yellow/20 transition-all duration-300 group-hover:w-full -z-0"></span>
-            </Button>
-          </div>
-        )}
       </div>
     </div>
   );
