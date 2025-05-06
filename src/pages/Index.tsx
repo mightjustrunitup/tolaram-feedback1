@@ -91,7 +91,7 @@ const products: Product[] = [
   }
 ];
 
-// Mock store locations
+// Store locations
 const STORE_LOCATIONS = [
   "Lagos - Ikeja Mall",
   "Lagos - Lekki Phase 1",
@@ -103,14 +103,13 @@ const STORE_LOCATIONS = [
   "Enugu - New Haven"
 ];
 
-// Issues list
+// Product issues list - updated based on user requirements
 const PRODUCT_ISSUES = [
   "Mislabelled products / allergies",
   "Unusual taste or odor",
   "Texture - too hard or soft",
   "Mold or spoilage",
-  "Foreign elements",
-  "Other"
+  "Foreign elements"
 ];
 
 const Index = () => {
@@ -155,11 +154,15 @@ const Index = () => {
       setSelectedProduct(product);
       // Reset the selected variant when product changes
       setSelectedVariant(null);
+      // Reset the selected issue when product changes
+      setSelectedIssue("");
     }
   };
 
   const handleVariantSelect = (variantId: string) => {
     setSelectedVariant(variantId);
+    // Reset the selected issue when variant changes
+    setSelectedIssue("");
     // Clear variant error if it exists
     if (errors.variant) {
       setErrors(prev => ({ ...prev, variant: "" }));
@@ -177,6 +180,11 @@ const Index = () => {
     // Validate variant selection
     if (selectedProduct && !selectedVariant) {
       newErrors.variant = "Please select a product variant";
+    }
+
+    // Validate issue selection
+    if (selectedProduct && selectedVariant && !selectedIssue) {
+      newErrors.issue = "Please select an issue with the product";
     }
     
     // Validate name if not anonymous
@@ -205,22 +213,36 @@ const Index = () => {
     
     setSubmitting(true);
     
-    // Simulate submission - frontend only
-    setTimeout(() => {
-      setSubmitting(false);
-      toast.success("Feedback submitted successfully!");
-      // Reset form after successful submission
-      setSelectedProduct(null);
-      setSelectedVariant(null);
-      setFormData({
-        customerName: "",
-        email: "",
-        storeLocation: "",
-        comments: ""
-      });
-      setIsAnonymous(false);
-      setSelectedIssue("");
-    }, 1500);
+    // Get selected variant name
+    const variantName = selectedProduct?.variants.find(v => v.id === selectedVariant)?.name || "";
+    
+    // Navigate to the Feedback page with selected product details
+    const productWithSelectedVariant = {
+      ...selectedProduct,
+      selectedVariant: variantName,
+      selectedIssue: selectedIssue
+    };
+    
+    // For actual implementation, you'd navigate to the feedback page
+    // This is currently commented out to prevent errors in the current example
+    navigate("/feedback", { state: { selectedProduct: productWithSelectedVariant } });
+    
+    // If you want to stay on the same page and just show a success message:
+    // setTimeout(() => {
+    //   setSubmitting(false);
+    //   toast.success("Feedback submitted successfully!");
+    //   // Reset form after successful submission
+    //   setSelectedProduct(null);
+    //   setSelectedVariant(null);
+    //   setFormData({
+    //     customerName: "",
+    //     email: "",
+    //     storeLocation: "",
+    //     comments: ""
+    //   });
+    //   setIsAnonymous(false);
+    //   setSelectedIssue("");
+    // }, 1500);
   };
 
   return (
@@ -333,8 +355,47 @@ const Index = () => {
                   </div>
                 )}
 
-                {/* Selected Product Information (if selected) */}
+                {/* Product Issue Selection - Radio Buttons - Only shown after variant selection */}
                 {selectedProduct && selectedVariant && (
+                  <div className="space-y-3 p-4 bg-white/80 rounded-md backdrop-blur-sm border border-indomie-yellow/20">
+                    <Label className="text-base font-medium flex justify-between">
+                      <span>What issue did you experience with this product?</span>
+                      <span className="text-red-500">*</span>
+                    </Label>
+                    
+                    <RadioGroup 
+                      value={selectedIssue} 
+                      onValueChange={setSelectedIssue}
+                      className="grid grid-cols-1 gap-3 mt-3"
+                    >
+                      {PRODUCT_ISSUES.map((issue) => (
+                        <div key={issue} className="flex items-center space-x-2 hover:bg-gray-50 p-2 rounded-md">
+                          <RadioGroupItem value={issue} id={`issue-${issue}`} />
+                          <Label htmlFor={`issue-${issue}`} className="cursor-pointer flex items-center gap-2 flex-1">
+                            <AlertCircle className="h-4 w-4 text-amber-500" />
+                            <span>{issue}</span>
+                          </Label>
+                        </div>
+                      ))}
+                    </RadioGroup>
+                    
+                    {errors.issue && (
+                      <p className="text-sm text-red-500 mt-1">{errors.issue}</p>
+                    )}
+                    
+                    {selectedIssue && (
+                      <div className="mt-2 p-2 bg-amber-50 border border-amber-200 rounded-md">
+                        <p className="text-sm text-amber-800 flex items-center gap-2">
+                          <AlertCircle className="h-4 w-4" />
+                          Issue selected: <span className="font-medium">{selectedIssue}</span>
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Selected Product Information (if selected) */}
+                {selectedProduct && selectedVariant && selectedIssue && (
                   <div className="p-4 border border-dashed border-indomie-yellow/50 bg-amber-50/50 rounded-lg">
                     <div className="flex items-center gap-4">
                       <div className="w-16 h-16 rounded overflow-hidden flex-shrink-0 border">
@@ -350,6 +411,10 @@ const Index = () => {
                           <p>{selectedProduct.description}</p>
                           <p className="mt-1 font-medium">
                             Selected: {selectedProduct.variants.find(v => v.id === selectedVariant)?.name}
+                          </p>
+                          <p className="mt-1 text-amber-700 flex items-center gap-1">
+                            <AlertCircle className="h-3 w-3" />
+                            Issue: {selectedIssue}
                           </p>
                         </div>
                       </div>
@@ -467,38 +532,6 @@ const Index = () => {
                     )}
                   </div>
                 </div>
-
-                {/* Common Issues - Now using Radio Buttons */}
-                {selectedProduct && selectedVariant && (
-                  <div className="space-y-3 p-4 bg-white/80 rounded-md backdrop-blur-sm border border-indomie-yellow/20">
-                    <Label className="text-base font-medium">Did you experience any of these issues with {selectedProduct?.name}?</Label>
-                    
-                    <RadioGroup 
-                      value={selectedIssue} 
-                      onValueChange={setSelectedIssue}
-                      className="grid grid-cols-1 gap-3 mt-3"
-                    >
-                      {PRODUCT_ISSUES.map((issue) => (
-                        <div key={issue} className="flex items-center space-x-2 hover:bg-gray-50 p-2 rounded-md">
-                          <RadioGroupItem value={issue} id={`issue-${issue}`} />
-                          <Label htmlFor={`issue-${issue}`} className="cursor-pointer flex items-center gap-2 flex-1">
-                            <AlertCircle className="h-4 w-4 text-amber-500" />
-                            <span>{issue}</span>
-                          </Label>
-                        </div>
-                      ))}
-                    </RadioGroup>
-                    
-                    {selectedIssue && (
-                      <div className="mt-2 p-2 bg-amber-50 border border-amber-200 rounded-md">
-                        <p className="text-sm text-amber-800 flex items-center gap-2">
-                          <AlertCircle className="h-4 w-4" />
-                          Thank you for reporting: <span className="font-medium">{selectedIssue}</span>
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                )}
 
                 {/* Comments */}
                 <div className="space-y-2">
