@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { StarRating } from "@/components/ui/star-rating";
@@ -13,6 +13,9 @@ import { toast } from "sonner";
 
 export default function ThankYou() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const selectedProduct = location.state?.selectedProduct;
+  
   const [rating, setRating] = useState(0);
   const [email, setEmail] = useState("");
   const [subscribeToNewsletter, setSubscribeToNewsletter] = useState(false);
@@ -55,12 +58,32 @@ export default function ThankYou() {
             </div>
             <CardTitle className="text-2xl font-bold">Thank You!</CardTitle>
             <CardDescription>
-              Your feedback has been submitted successfully. We truly appreciate your time and input.
+              {selectedProduct ? 
+                `Thank you for your interest in ${selectedProduct.name}!` : 
+                "Thank you for your feedback!"}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6 relative z-10">
+            {selectedProduct && (
+              <div className="p-4 border border-dashed border-indomie-yellow/50 bg-amber-50/50 rounded-lg">
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 rounded overflow-hidden flex-shrink-0 border">
+                    <img 
+                      src={selectedProduct.image}
+                      alt={selectedProduct.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg">{selectedProduct.name}</h3>
+                    <p className="text-sm text-gray-600">{selectedProduct.description}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+            
             <div className="text-center">
-              <p className="mb-3 font-medium">How would you rate your experience with our feedback process?</p>
+              <p className="mb-3 font-medium">How would you rate your experience?</p>
               <StarRating 
                 value={rating} 
                 onChange={setRating} 
