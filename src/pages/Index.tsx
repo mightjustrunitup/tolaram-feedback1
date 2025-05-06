@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -7,11 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { format } from "date-fns";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import { CalendarIcon, AlertCircle } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import Logo from "@/components/layout/Logo";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
@@ -115,7 +112,6 @@ const Index = () => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   
-  const [date, setDate] = useState<Date>(new Date());
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [selectedIssue, setSelectedIssue] = useState<string>("");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -125,7 +121,6 @@ const Index = () => {
   
   const [formData, setFormData] = useState({
     customerName: "",
-    email: "",
     storeLocation: "",
     comments: ""
   });
@@ -219,7 +214,6 @@ const Index = () => {
     navigate("/thank-you", { 
       state: { 
         customerName: isAnonymous ? "Valued Customer" : formData.customerName,
-        email: formData.email,
         productName: selectedProduct?.name || "our product"
       } 
     });
@@ -295,92 +289,48 @@ const Index = () => {
                     </label>
                   </div>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="customerName" className="flex justify-between">
-                        <span>Your Name</span>
-                        <span className="text-red-500">*</span>
-                      </Label>
-                      <Input
-                        id="customerName"
-                        name="customerName"
-                        placeholder="Enter your name"
-                        value={formData.customerName}
-                        onChange={handleInputChange}
-                        className={cn(errors.customerName ? "border-red-500" : "", "w-full")}
-                        disabled={isAnonymous}
-                      />
-                      {errors.customerName && (
-                        <p className="text-sm text-red-500 mt-1">{errors.customerName}</p>
-                      )}
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email (Optional)</Label>
-                      <Input
-                        id="email"
-                        name="email"
-                        type="email"
-                        placeholder="Enter your email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        disabled={isAnonymous}
-                        className="w-full"
-                      />
-                    </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="customerName" className="flex justify-between">
+                      <span>Your Name</span>
+                      <span className="text-red-500">*</span>
+                    </Label>
+                    <Input
+                      id="customerName"
+                      name="customerName"
+                      placeholder="Enter your name"
+                      value={formData.customerName}
+                      onChange={handleInputChange}
+                      className={errors.customerName ? "border-red-500" : ""}
+                      disabled={isAnonymous}
+                    />
+                    {errors.customerName && (
+                      <p className="text-sm text-red-500 mt-1">{errors.customerName}</p>
+                    )}
                   </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                    <div className="space-y-2">
-                      <Label>Date of Visit</Label>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant="outline"
-                            className={cn(
-                              "w-full justify-start text-left font-normal",
-                              !date && "text-muted-foreground"
-                            )}
-                          >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {date ? format(date, "PPP") : <span>Pick a date</span>}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={date}
-                            onSelect={(date) => date && setDate(date)}
-                            initialFocus
-                            className="p-3 pointer-events-auto"
-                          />
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label className="flex justify-between">
-                        <span>Store Location</span>
-                        <span className="text-red-500">*</span>
-                      </Label>
-                      <Select 
-                        onValueChange={(value) => handleSelectChange("storeLocation", value)}
-                      >
-                        <SelectTrigger className={cn(errors.storeLocation ? "border-red-500" : "", "w-full")}>
-                          <SelectValue placeholder="Select store location" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {STORE_LOCATIONS.map((location) => (
-                            <SelectItem key={location} value={location}>
-                              {location}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      {errors.storeLocation && (
-                        <p className="text-sm text-red-500 mt-1">{errors.storeLocation}</p>
-                      )}
-                    </div>
+
+                  {/* Store Location */}
+                  <div className="space-y-2">
+                    <Label className="flex justify-between">
+                      <span>Store Location</span>
+                      <span className="text-red-500">*</span>
+                    </Label>
+                    <Select 
+                      onValueChange={(value) => handleSelectChange("storeLocation", value)}
+                    >
+                      <SelectTrigger className={errors.storeLocation ? "border-red-500" : ""}>
+                        <SelectValue placeholder="Select store location" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {STORE_LOCATIONS.map((location) => (
+                          <SelectItem key={location} value={location}>
+                            {location}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {errors.storeLocation && (
+                      <p className="text-sm text-red-500 mt-1">{errors.storeLocation}</p>
+                    )}
                   </div>
                 </div>
 
@@ -505,13 +455,11 @@ const Index = () => {
                   setSelectedVariant(null);
                   setFormData({
                     customerName: "",
-                    email: "",
                     storeLocation: "",
                     comments: ""
                   });
                   setIsAnonymous(false);
                   setSelectedIssue("");
-                  setDate(new Date());
                   setErrors({});
                 }}
               >
