@@ -350,8 +350,7 @@ const Index = () => {
                     <p className="text-sm text-red-500 mt-1">{errors.product}</p>
                   )}
                 </div>
-                
-                {/* Product Variant Selection - UPDATED to display in a two-column grid */}
+
                 {selectedProduct && (
                   <div className="space-y-2">
                     <Label htmlFor="variant" className="flex justify-between">
@@ -380,67 +379,58 @@ const Index = () => {
                     )}
                   </div>
                 )}
-                
-                {/* Issue Selection - Changed to Checkboxes with yellow styling removed */}
-                {selectedProduct && selectedVariant && (
-                  <div className="space-y-2">
-                    <Label htmlFor="issue" className="flex justify-between">
-                      <span>What issues did you experience?</span>
-                      <span className="text-red-500">*</span>
-                    </Label>
-                    <div className={cn(
-                      "grid grid-cols-1 md:grid-cols-2 gap-2 p-2",
-                      errors.issue ? "border border-red-500 rounded-md" : ""
-                    )}>
-                      {PRODUCT_ISSUES.map((issue) => (
-                        <div key={issue} className="flex items-center space-x-2 hover:bg-gray-50 p-2 rounded-md">
-                          <Checkbox 
-                            id={issue}
-                            checked={selectedIssues.includes(issue)}
-                            onCheckedChange={() => handleIssueToggle(issue)}
-                          />
-                          <Label htmlFor={issue} className="cursor-pointer">
-                            {issue}
-                          </Label>
-                        </div>
-                      ))}
-                      <div className="flex items-center space-x-2 hover:bg-gray-50 p-2 rounded-md">
-                        <Checkbox 
-                          id="other"
-                          checked={selectedIssues.includes("Other")}
-                          onCheckedChange={() => handleIssueToggle("Other")}
-                        />
-                        <Label htmlFor="other" className="cursor-pointer">
-                          Other
-                        </Label>
+
+                {/* Product Issues - Only display if a variant is selected */}
+                {selectedVariant && (
+                  <>
+                    <div className="space-y-3 p-4 bg-white/80 rounded-md backdrop-blur-sm border border-indomie-yellow/20">
+                      <Label className="text-base font-medium flex justify-between">
+                        <span>Which issues did you experience with this product?</span>
+                        <span className="text-red-500">*</span>
+                      </Label>
+                      
+                      <div className="space-y-3">
+                        {PRODUCT_ISSUES.map((issue) => (
+                          <div key={issue} className="flex items-center space-x-2">
+                            <Checkbox 
+                              id={issue.replace(/\s/g, '-')} 
+                              checked={selectedIssues.includes(issue)}
+                              onCheckedChange={() => handleIssueToggle(issue)}
+                              className="border-indomie-red"
+                            />
+                            <label
+                              htmlFor={issue.replace(/\s/g, '-')}
+                              className="text-sm md:text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                            >
+                              {issue}
+                            </label>
+                          </div>
+                        ))}
                       </div>
+                      {errors.issue && (
+                        <p className="text-sm text-red-500 mt-1">{errors.issue}</p>
+                      )}
                     </div>
-                    {errors.issue && (
-                      <p className="text-sm text-red-500 mt-1">{errors.issue}</p>
-                    )}
-                  </div>
+                    
+                    {/* Comments - Display this section immediately when a variant is selected */}
+                    <div className="space-y-2">
+                      <Label htmlFor="comments">Additional Comments</Label>
+                      <Textarea
+                        id="comments"
+                        name="comments"
+                        placeholder={`Please share any additional details about the issues you experienced...`}
+                        className="min-h-[120px]"
+                        value={formData.comments}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                  </>
                 )}
-
-                {/* Comments - Only shown if at least one issue is selected */}
-                {selectedIssues.length > 0 && (
-                  <div className="space-y-2">
-                    <Label htmlFor="comments">Describe the issue(s) in more detail (Optional)</Label>
-                    <Textarea
-                      id="comments"
-                      name="comments"
-                      placeholder="Please provide more details about the issue(s)..."
-                      value={formData.comments}
-                      onChange={handleInputChange}
-                      className="min-h-[120px]"
-                    />
-                  </div>
-                )}
-
-                {/* Submit Button */}
-                <div className="flex justify-end">
+                
+                <CardFooter className="flex justify-end items-center pt-4 px-0">
                   <Button 
-                    type="submit"
                     className="bg-indomie-red hover:bg-indomie-red/90 relative overflow-hidden group"
+                    type="submit"
                     disabled={submitting}
                   >
                     <span className="relative z-10">
@@ -448,7 +438,7 @@ const Index = () => {
                     </span>
                     <span className="absolute bottom-0 left-0 w-full h-0 bg-indomie-yellow transition-all duration-300 group-hover:h-full -z-0"></span>
                   </Button>
-                </div>
+                </CardFooter>
               </form>
             </CardContent>
           </Card>
@@ -456,6 +446,6 @@ const Index = () => {
       </div>
     </div>
   );
-}
+};
 
 export default Index;
