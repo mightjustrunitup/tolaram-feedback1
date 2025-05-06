@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -280,8 +279,8 @@ const Index = () => {
             
             <CardContent className="relative z-10">
               <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Customer Information - MOVED TO TOP */}
-                <div className="space-y-4 p-4 bg-white/80 rounded-md backdrop-blur-sm border border-indomie-yellow/20">
+                {/* Customer Information - MOVED TO TOP - Changed border from yellow to grey */}
+                <div className="space-y-4 p-4 bg-white/80 rounded-md backdrop-blur-sm border border-gray-200">
                   <h3 className="font-semibold text-lg mb-2">Your Information</h3>
                   
                   <div className="space-y-2">
@@ -334,7 +333,7 @@ const Index = () => {
                       {products.map((product) => (
                         <SelectItem key={product.id} value={product.id} className="flex items-center gap-2">
                           <div className="flex items-center gap-2">
-                            <div className="w-5 h-5 rounded-full overflow-hidden bg-gray-100">
+                            <div className="w-5 h-5 rounded overflow-hidden bg-gray-100">
                               <img 
                                 src={product.image}
                                 alt={product.name}
@@ -381,10 +380,10 @@ const Index = () => {
                   </div>
                 )}
 
-                {/* Product Issues - Only display if a variant is selected */}
+                {/* Product Issues - Only display if a variant is selected - Changed border from yellow to grey */}
                 {selectedVariant && (
                   <>
-                    <div className="space-y-3 p-4 bg-white/80 rounded-md backdrop-blur-sm border border-indomie-yellow/20">
+                    <div className="space-y-3 p-4 bg-white/80 rounded-md backdrop-blur-sm border border-gray-200">
                       <Label className="text-base font-medium flex justify-between">
                         <span>Which issues did you experience with this product?</span>
                         <span className="text-red-500">*</span>

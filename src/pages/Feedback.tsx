@@ -189,11 +189,10 @@ export default function Feedback() {
               </CardDescription>
             </CardHeader>
             
-            {/* Rest of the form remains the same */}
             <CardContent className="relative z-10">
               <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Product Information */}
-                <div className="p-4 border border-dashed border-indomie-yellow/50 bg-amber-50/50 rounded-lg">
+                {/* Product Information - Changed border from amber to grey */}
+                <div className="p-4 border border-gray-200 bg-amber-50/50 rounded-lg">
                   <div className="flex items-center gap-4">
                     <div className="w-16 h-16 rounded overflow-hidden flex-shrink-0 border">
                       <img 
@@ -313,8 +312,8 @@ export default function Feedback() {
                   </div>
                 </div>
 
-                {/* Rating Scales - Now using Star Ratings instead of Sliders */}
-                <div className="space-y-6 p-4 bg-white/70 rounded-md backdrop-blur-sm border border-indomie-yellow/20">
+                {/* Rating Scales - Now using Star Ratings instead of Sliders - Changed border from yellow to grey */}
+                <div className="space-y-6 p-4 bg-white/70 rounded-md backdrop-blur-sm border border-gray-200">
                   <h3 className="font-semibold text-lg mb-4 text-indomie-dark">Rate Your Experience</h3>
                   
                   <div className="space-y-4">
@@ -368,8 +367,8 @@ export default function Feedback() {
                   </div>
                 </div>
 
-                {/* Common Issues - Now using a Dropdown */}
-                <div className="space-y-3 p-4 bg-white/80 rounded-md backdrop-blur-sm border border-indomie-yellow/20">
+                {/* Common Issues - Now using a Dropdown - Changed border from yellow to grey */}
+                <div className="space-y-3 p-4 bg-white/80 rounded-md backdrop-blur-sm border border-gray-200">
                   <Label className="text-base font-medium">Did you experience any of these issues?</Label>
                   
                   <Select 
