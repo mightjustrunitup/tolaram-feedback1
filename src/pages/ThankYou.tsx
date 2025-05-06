@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { StarRating } from "@/components/ui/star-rating";
 import { toast } from "sonner";
 
@@ -77,8 +77,6 @@ export default function ThankYou() {
             )}
           </div>
         </CardContent>
-        
-        {/* Removed the CardFooter section with the Back to Home button */}
       </Card>
     </div>
   );
