@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -119,11 +118,11 @@ export default function Feedback() {
     setSubmitting(true);
     
     // Simulate submission - frontend only
-    setTimeout(() => {
-      setSubmitting(false);
-      toast.success("Feedback submitted successfully!");
-      navigate("/thank-you");
-    }, 1500);
+    // Navigate immediately to thank-you page instead of waiting
+    navigate("/thank-you");
+    
+    // Show success toast
+    toast.success("Feedback submitted successfully!");
   };
 
   // If no product is selected, redirect to home page
