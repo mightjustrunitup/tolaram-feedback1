@@ -1,25 +1,27 @@
 
-import { useEffect } from "react";
+import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import AnimatedIndomie from "@/components/layout/AnimatedIndomie";
+import { StarRating } from "@/components/ui/star-rating";
+import { toast } from "sonner";
 
 export default function ThankYou() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [rating, setRating] = useState(5); // Default to 5 stars
+  const [hasRated, setHasRated] = useState(false);
   
   // Get the data from location state or set defaults if not available
   const customerName = location.state?.customerName || "Valued Customer";
   const productName = location.state?.productName || "our products";
   
-  // Redirect to home if arrived directly at this page without going through feedback
-  useEffect(() => {
-    if (!location.state) {
-      navigate("/");
-    }
-  }, [location, navigate]);
+  // Handler for when user submits their rating
+  const handleRatingSubmit = () => {
+    toast.success(`Thank you for your ${rating}-star rating!`);
+    setHasRated(true);
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-sky-50 to-gray-50">
@@ -44,8 +46,35 @@ export default function ThankYou() {
             Thank you {customerName} for your valuable feedback about {productName}. Your input helps us improve our products and services.
           </p>
           
-          <div className="py-2">
-            <AnimatedIndomie size="md" className="mx-auto" />
+          <div className="py-6 space-y-4">
+            <h2 className="text-lg font-semibold">How was your experience using our feedback system?</h2>
+            
+            <div className="flex justify-center">
+              <StarRating
+                value={rating}
+                onChange={!hasRated ? setRating : undefined}
+                max={5}
+                size="lg"
+                color="text-yellow-400"
+                showValue={true}
+                readOnly={hasRated}
+              />
+            </div>
+            
+            {!hasRated && (
+              <Button 
+                onClick={handleRatingSubmit}
+                className="bg-green-500 hover:bg-green-600 mt-2"
+              >
+                Submit Rating
+              </Button>
+            )}
+            
+            {hasRated && (
+              <p className="text-green-600 font-medium animate-fade-in">
+                Thank you for rating our feedback system!
+              </p>
+            )}
           </div>
           
           <p className="text-sm text-gray-600">
