@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -87,16 +88,16 @@ const products: Product[] = [
   }
 ];
 
-// Store locations - we'll keep this in case it's used elsewhere in the code
-const STORE_LOCATIONS = [
-  "Lagos - Ikeja Mall",
-  "Lagos - Lekki Phase 1",
-  "Abuja - Wuse II",
-  "Abuja - Jabi Lake Mall",
-  "Port Harcourt - GRA",
-  "Ibadan - Dugbe",
-  "Kano - Nassarawa",
-  "Enugu - New Haven"
+// Example locations - updated with Ikeja, Badagry examples
+const LOCATIONS = [
+  "Ikeja",
+  "Badagry",
+  "Lekki",
+  "Abuja",
+  "Port Harcourt",
+  "Ibadan",
+  "Kano",
+  "Enugu"
 ];
 
 // Product issues list - updated based on user requirements
@@ -122,7 +123,7 @@ const Index = () => {
   
   const [formData, setFormData] = useState({
     customerName: "",
-    storeLocation: "",
+    location: "",
     comments: ""
   });
 
@@ -199,9 +200,9 @@ const Index = () => {
       newErrors.issue = "Please select at least one issue with the product";
     }
     
-    // Store location is always required
-    if (!formData.storeLocation) {
-      newErrors.storeLocation = "Please enter a store location";
+    // Location is always required
+    if (!formData.location) {
+      newErrors.location = "Please enter your location";
     }
     
     // Set errors and return validity result
@@ -296,22 +297,22 @@ const Index = () => {
                     />
                   </div>
 
-                  {/* Store Location - Changed from Select to Input */}
+                  {/* Location - Changed from Store Location to Location with new placeholder */}
                   <div className="space-y-2">
                     <Label className="flex justify-between">
-                      <span>Store Location</span>
+                      <span>Location</span>
                       <span className="text-red-500">*</span>
                     </Label>
                     <Input
-                      id="storeLocation"
-                      name="storeLocation"
-                      placeholder="Enter store location (city, mall, etc.)"
-                      value={formData.storeLocation}
+                      id="location"
+                      name="location"
+                      placeholder="Enter your location (e.g., Ikeja, Badagry)"
+                      value={formData.location}
                       onChange={handleInputChange}
-                      className={errors.storeLocation ? "border-red-500" : ""}
+                      className={errors.location ? "border-red-500" : ""}
                     />
-                    {errors.storeLocation && (
-                      <p className="text-sm text-red-500 mt-1">{errors.storeLocation}</p>
+                    {errors.location && (
+                      <p className="text-sm text-red-500 mt-1">{errors.location}</p>
                     )}
                   </div>
                 </div>

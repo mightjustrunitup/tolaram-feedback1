@@ -17,16 +17,16 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { StarRating } from "@/components/ui/star-rating";
 
-// Mock store locations
-const STORE_LOCATIONS = [
-  "Lagos - Ikeja Mall",
-  "Lagos - Lekki Phase 1",
-  "Abuja - Wuse II",
-  "Abuja - Jabi Lake Mall",
-  "Port Harcourt - GRA",
-  "Ibadan - Dugbe",
-  "Kano - Nassarawa",
-  "Enugu - New Haven"
+// Example locations - updated with new examples
+const LOCATIONS = [
+  "Ikeja",
+  "Badagry",
+  "Lekki",
+  "Abuja",
+  "Port Harcourt",
+  "Ibadan",
+  "Kano",
+  "Enugu"
 ];
 
 // Issues list
@@ -65,7 +65,7 @@ export default function Feedback() {
   const [formData, setFormData] = useState({
     customerName: "",
     email: "",
-    storeLocation: "",
+    location: "",
     staffFriendliness: 4,
     cleanliness: 4,
     productAvailability: 4,
@@ -104,9 +104,9 @@ export default function Feedback() {
       newErrors.customerName = "Name is required";
     }
     
-    // Store location is always required
-    if (!formData.storeLocation) {
-      newErrors.storeLocation = "Please select a store location";
+    // Location is always required
+    if (!formData.location) {
+      newErrors.location = "Please enter your location";
     }
     
     // Set errors and return validity result
@@ -174,7 +174,7 @@ export default function Feedback() {
                   className="px-3 py-1 bg-indomie-red/20 text-indomie-red border border-indomie-red/30 flex items-center gap-2"
                   variant="outline"
                 >
-                  <div className="w-4 h-4 rounded overflow-hidden">
+                  <div className="w-4 h-4 rounded-hidden overflow-hidden">
                     <img 
                       src={selectedProduct.image}
                       alt={selectedProduct.name}
@@ -296,25 +296,19 @@ export default function Feedback() {
                   
                   <div className="space-y-2">
                     <Label className="flex justify-between">
-                      <span>Store Location</span>
+                      <span>Location</span>
                       <span className="text-red-500">*</span>
                     </Label>
-                    <Select 
-                      onValueChange={(value) => handleSelectChange("storeLocation", value)}
-                    >
-                      <SelectTrigger className={errors.storeLocation ? "border-red-500" : ""}>
-                        <SelectValue placeholder="Select store location" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {STORE_LOCATIONS.map((location) => (
-                          <SelectItem key={location} value={location}>
-                            {location}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {errors.storeLocation && (
-                      <p className="text-sm text-red-500 mt-1">{errors.storeLocation}</p>
+                    <Input
+                      id="location"
+                      name="location"
+                      placeholder="Enter your location (e.g., Ikeja, Badagry)"
+                      value={formData.location}
+                      onChange={handleInputChange}
+                      className={errors.location ? "border-red-500" : ""}
+                    />
+                    {errors.location && (
+                      <p className="text-sm text-red-500 mt-1">{errors.location}</p>
                     )}
                   </div>
                 </div>
