@@ -311,7 +311,7 @@ const Index = () => {
                       <Input
                         id="location"
                         name="location"
-                        placeholder="Enter your location"
+                        placeholder="Enter your location (e.g., Ikeja)"
                         value={formData.location}
                         onChange={handleInputChange}
                       />

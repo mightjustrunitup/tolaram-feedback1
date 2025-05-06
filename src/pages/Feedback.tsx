@@ -297,7 +297,7 @@ export default function Feedback() {
                     <Input
                       id="location"
                       name="location"
-                      placeholder="Enter your location (e.g., Ikeja, Badagry)"
+                      placeholder="Enter your location (e.g., Ikeja)"
                       value={formData.location}
                       onChange={handleInputChange}
                     />
