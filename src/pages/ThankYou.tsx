@@ -76,10 +76,6 @@ export default function ThankYou() {
               </p>
             )}
           </div>
-          
-          <p className="text-sm text-gray-600">
-            Our team will review your feedback and take appropriate action if necessary.
-          </p>
         </CardContent>
         
         <CardFooter className="flex justify-center pb-8">
