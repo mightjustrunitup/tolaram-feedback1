@@ -257,7 +257,7 @@ const Index = () => {
               <div className="flex flex-col items-center text-center mb-4">
                 <CardTitle className="text-2xl font-bold">Welcome to Tolaram Feedback Portal</CardTitle>
                 <CardDescription className="mt-2 max-w-md">
-                  Help us improve our products by completing this short feedback form. Your opinion matters to us, and we're committed to making our products better with your input.
+                  Your opinion matters to us, and we're committed to making our products better with your input.
                 </CardDescription>
               </div>
               {selectedProduct && (
