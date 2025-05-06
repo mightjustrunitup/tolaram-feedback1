@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -315,39 +314,39 @@ const Index = () => {
                     </label>
                   </div>
                   
-                  {!isAnonymous && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="customerName" className="flex justify-between">
-                          <span>Your Name</span>
-                          <span className="text-red-500">*</span>
-                        </Label>
-                        <Input
-                          id="customerName"
-                          name="customerName"
-                          placeholder="Enter your name"
-                          value={formData.customerName}
-                          onChange={handleInputChange}
-                          className={errors.customerName ? "border-red-500" : ""}
-                        />
-                        {errors.customerName && (
-                          <p className="text-sm text-red-500 mt-1">{errors.customerName}</p>
-                        )}
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="email">Email (Optional)</Label>
-                        <Input
-                          id="email"
-                          name="email"
-                          type="email"
-                          placeholder="Enter your email"
-                          value={formData.email}
-                          onChange={handleInputChange}
-                        />
-                      </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="customerName" className="flex justify-between">
+                        <span>Your Name</span>
+                        <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        id="customerName"
+                        name="customerName"
+                        placeholder="Enter your name"
+                        value={formData.customerName}
+                        onChange={handleInputChange}
+                        className={errors.customerName ? "border-red-500" : ""}
+                        disabled={isAnonymous}
+                      />
+                      {errors.customerName && (
+                        <p className="text-sm text-red-500 mt-1">{errors.customerName}</p>
+                      )}
                     </div>
-                  )}
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email (Optional)</Label>
+                      <Input
+                        id="email"
+                        name="email"
+                        type="email"
+                        placeholder="Enter your email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        disabled={isAnonymous}
+                      />
+                    </div>
+                  </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                     <div className="space-y-2">
