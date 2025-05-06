@@ -78,14 +78,7 @@ export default function ThankYou() {
           </div>
         </CardContent>
         
-        <CardFooter className="flex justify-center pb-8">
-          <Button 
-            onClick={() => navigate("/")} 
-            className="bg-indomie-red hover:bg-indomie-red/90"
-          >
-            Back to Home
-          </Button>
-        </CardFooter>
+        {/* Removed the CardFooter section with the Back to Home button */}
       </Card>
     </div>
   );
