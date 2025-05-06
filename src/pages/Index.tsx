@@ -389,7 +389,7 @@ const Index = () => {
                         <span className="text-red-500">*</span>
                       </Label>
                       
-                      <div className="space-y-3">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         {PRODUCT_ISSUES.map((issue) => (
                           <div key={issue} className="flex items-center space-x-2">
                             <Checkbox 
