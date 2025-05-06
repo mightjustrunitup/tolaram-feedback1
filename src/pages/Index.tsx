@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
+import { FeedbackService, FeedbackSubmission } from "@/services/feedbackService";
 
 // Define product types
 interface Product {
@@ -120,6 +121,45 @@ const Index = () => {
     setFormValid(isValid);
   }, [selectedProduct, selectedVariant, selectedIssues]);
 
+  // Example of how to load products from PHP backend
+  // Uncomment this when your buddy's API is ready
+  /*
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const apiProducts = await FeedbackService.getProducts();
+        // Process and set products here
+        // You'll need to map the API response to match your Product interface
+      } catch (error) {
+        toast.error("Failed to load products. Please try again.");
+        console.error("Error loading products:", error);
+      }
+    };
+    
+    loadProducts();
+  }, []);
+  */
+
+  // Example of how to load variants when a product is selected
+  // Uncomment this when your buddy's API is ready
+  /*
+  useEffect(() => {
+    if (!selectedProduct?.id) return;
+    
+    const loadVariants = async () => {
+      try {
+        const apiVariants = await FeedbackService.getProductVariants(selectedProduct.id);
+        // Process and update the selected product's variants
+      } catch (error) {
+        toast.error("Failed to load product variants. Please try again.");
+        console.error("Error loading variants:", error);
+      }
+    };
+    
+    loadVariants();
+  }, [selectedProduct?.id]);
+  */
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -198,7 +238,7 @@ const Index = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Validate form before submission
@@ -211,15 +251,53 @@ const Index = () => {
     
     // Get selected variant name
     const variantName = selectedProduct?.variants.find(v => v.id === selectedVariant)?.name || "";
-    
-    // Directly navigate to the Thank-You page with relevant data
-    navigate("/thank-you", { 
-      state: { 
-        customerName: formData.customerName || "Valued Customer", // Use "Valued Customer" if name is empty
-        productName: selectedProduct?.name || "our product",
-        issues: selectedIssues
-      } 
-    });
+
+    try {
+      // Prepare data to send to PHP backend
+      const feedbackData: FeedbackSubmission = {
+        customerName: formData.customerName || undefined, // Don't send empty strings
+        location: formData.location || undefined,
+        productId: selectedProduct?.id || "",
+        variantId: selectedVariant || "",
+        issues: selectedIssues,
+        comments: formData.comments || undefined
+      };
+      
+      // EXAMPLE: Uncomment this when your buddy's API is ready
+      /*
+      // Submit to PHP backend
+      const response = await FeedbackService.submitFeedback(feedbackData);
+      
+      if (response.submitted) {
+        // Navigate to thank you page
+        navigate("/thank-you", { 
+          state: { 
+            customerName: formData.customerName || "Valued Customer",
+            productName: selectedProduct?.name || "our product",
+            issues: selectedIssues
+          } 
+        });
+      } else {
+        toast.error("Failed to submit feedback. Please try again.");
+        setSubmitting(false);
+      }
+      */
+      
+      // For now, use the existing navigation logic
+      // Remove this when the PHP API integration is ready
+      navigate("/thank-you", { 
+        state: { 
+          customerName: formData.customerName || "Valued Customer",
+          productName: selectedProduct?.name || "our product",
+          issues: selectedIssues
+        } 
+      });
+      
+    } catch (error) {
+      console.error("Error submitting feedback:", error);
+      toast.error("Failed to submit feedback. Please try again.");
+      setSubmitting(false);
+    }
   };
 
   return (
