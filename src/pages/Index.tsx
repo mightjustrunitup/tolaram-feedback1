@@ -102,7 +102,7 @@ const STORE_LOCATIONS = [
   "Enugu - New Haven"
 ];
 
-// Product issues list - updated based on user requirements
+// Product issues list - removed "Other" option as requested
 const PRODUCT_ISSUES = [
   "Mislabelled products / allergies",
   "Unusual taste or odor",
@@ -466,12 +466,6 @@ const Index = () => {
                           </Label>
                         </div>
                       ))}
-                      <div className="flex items-center space-x-2 rounded-md border p-3 hover:bg-gray-100 cursor-pointer">
-                        <RadioGroupItem value="other" id="other-issue" />
-                        <Label htmlFor="other-issue" className="flex-1 cursor-pointer">
-                          Other
-                        </Label>
-                      </div>
                     </RadioGroup>
                     {errors.issue && (
                       <p className="text-sm text-red-500">{errors.issue}</p>
