@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -103,7 +102,7 @@ const STORE_LOCATIONS = [
   "Enugu - New Haven"
 ];
 
-// Product issues list - removed "Other" option as requested
+// Product issues list - updated based on user requirements
 const PRODUCT_ISSUES = [
   "Mislabelled products / allergies",
   "Unusual taste or odor",
@@ -156,10 +155,6 @@ const Index = () => {
       setSelectedVariant(null);
       // Reset the selected issue when product changes
       setSelectedIssue("");
-      // Clear variant error if it exists
-      if (errors.variant) {
-        setErrors(prev => ({ ...prev, variant: "" }));
-      }
     }
   };
 
@@ -371,7 +366,7 @@ const Index = () => {
                       <Select 
                         onValueChange={(value) => handleSelectChange("storeLocation", value)}
                       >
-                        <SelectTrigger className={errors.storeLocation ? "border-red-500" : ""}>
+                        <SelectTrigger className={cn(errors.storeLocation ? "border-red-500" : "", "w-full")}>
                           <SelectValue placeholder="Select store location" />
                         </SelectTrigger>
                         <SelectContent>
@@ -389,138 +384,113 @@ const Index = () => {
                   </div>
                 </div>
 
-                {/* Product selection */}
-                <div className="space-y-4 p-4 bg-white/80 rounded-md backdrop-blur-sm border border-indomie-yellow/20">
-                  <h3 className="font-semibold text-lg mb-2">Product Information</h3>
-                  
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <Label className="flex justify-between">
-                        <span>Select Product</span>
-                        <span className="text-red-500">*</span>
-                      </Label>
-                      <Select onValueChange={handleProductSelect}>
-                        <SelectTrigger className={errors.product ? "border-red-500" : ""}>
-                          <SelectValue placeholder="Choose a product" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectLabel>Available Products</SelectLabel>
-                            {products.map((product) => (
-                              <SelectItem key={product.id} value={product.id}>
-                                {product.name}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                      {errors.product && (
-                        <p className="text-sm text-red-500 mt-1">{errors.product}</p>
-                      )}
-                    </div>
-                    
-                    {selectedProduct && (
-                      <div className="space-y-2">
-                        <Label className="flex justify-between">
-                          <span>Select Variant</span>
-                          <span className="text-red-500">*</span>
-                        </Label>
-                        <Select onValueChange={handleVariantSelect}>
-                          <SelectTrigger className={errors.variant ? "border-red-500" : ""}>
-                            <SelectValue placeholder="Choose a variant" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectGroup>
-                              <SelectLabel>{selectedProduct.name} Variants</SelectLabel>
-                              {selectedProduct.variants.map((variant) => (
-                                <SelectItem key={variant.id} value={variant.id}>
-                                  {variant.name}
-                                </SelectItem>
-                              ))}
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                        {errors.variant && (
-                          <p className="text-sm text-red-500 mt-1">{errors.variant}</p>
-                        )}
-                      </div>
-                    )}
-                    
-                    {/* Show product details when selected */}
-                    {selectedProduct && (
-                      <div className="p-3 border border-dashed border-indomie-yellow/50 bg-amber-50/50 rounded-lg flex items-center gap-4">
-                        <div className="w-16 h-16 rounded overflow-hidden flex-shrink-0 border">
-                          <img 
-                            src={selectedProduct.image}
-                            alt={selectedProduct.name}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        <div>
-                          <h3 className="font-semibold text-sm sm:text-base">{selectedProduct.name}</h3>
-                          <p className="text-xs sm:text-sm text-gray-600">{selectedProduct.description}</p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                {/* Product Selection - Now after user information */}
+                <div className="space-y-2">
+                  <Label htmlFor="product" className="flex justify-between">
+                    <span>Select Product</span>
+                    <span className="text-red-500">*</span>
+                  </Label>
+                  <Select 
+                    onValueChange={handleProductSelect}
+                    value={selectedProduct?.id}
+                  >
+                    <SelectTrigger className={errors.product ? "border-red-500" : ""}>
+                      <SelectValue placeholder="Choose a product to provide feedback on" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {products.map((product) => (
+                        <SelectItem key={product.id} value={product.id}>
+                          <div className="flex items-center gap-3">
+                            <div className="w-6 h-6 rounded overflow-hidden">
+                              <img 
+                                src={product.image}
+                                alt={product.name}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <span>{product.name}</span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.product && (
+                    <p className="text-sm text-red-500 mt-1">{errors.product}</p>
+                  )}
                 </div>
 
-                {/* Comments section - Now showing right after product selection */}
+                {/* Product Variants Selection - Radio Buttons */}
                 {selectedProduct && (
-                  <div className="space-y-2 p-4 bg-white/80 rounded-md backdrop-blur-sm border border-indomie-yellow/20">
-                    <Label htmlFor="comments">Additional Comments</Label>
-                    <Textarea
-                      id="comments"
-                      name="comments"
-                      placeholder={`Please share any additional feedback, issues, or suggestions...`}
-                      className="min-h-[120px]"
-                      value={formData.comments}
-                      onChange={handleInputChange}
-                      maxWords={100}
-                      showWordCount={true}
-                    />
-                  </div>
-                )}
-
-                {/* Common Issues selection - Only show when product variant is selected */}
-                {selectedVariant && (
-                  <div className="space-y-3 p-4 bg-white/80 rounded-md backdrop-blur-sm border border-indomie-yellow/20">
-                    <Label className="text-base font-medium flex justify-between">
-                      <span>Did you experience any of these issues?</span>
+                  <div className="space-y-3">
+                    <Label className="flex justify-between">
+                      <span>Product Variant</span>
                       <span className="text-red-500">*</span>
                     </Label>
-                    
                     <RadioGroup 
-                      value={selectedIssue}
-                      onValueChange={setSelectedIssue}
-                      className="grid grid-cols-1 gap-2 mt-2"
+                      onValueChange={handleVariantSelect}
+                      value={selectedVariant || ""}
+                      className={`grid grid-cols-1 sm:grid-cols-2 gap-2 ${errors.variant ? "border border-red-500 p-2 rounded" : ""}`}
                     >
-                      {PRODUCT_ISSUES.map((issue) => (
-                        <div key={issue} className={cn(
-                          "flex items-center space-x-2 p-2 rounded-md hover:bg-gray-50/70 transition-all",
-                          selectedIssue === issue ? "bg-indomie-yellow/10 border border-indomie-yellow" : "border border-transparent"
-                        )}>
-                          <RadioGroupItem value={issue} id={issue} />
-                          <Label htmlFor={issue} className="flex items-center gap-2 cursor-pointer w-full">
-                            {issue === selectedIssue && <AlertCircle className="h-4 w-4 text-amber-500" />}
-                            {issue}
+                      {selectedProduct.variants.map((variant) => (
+                        <div key={variant.id} className="flex items-center space-x-2 rounded-md border p-3 hover:bg-gray-100 cursor-pointer">
+                          <RadioGroupItem value={variant.id} id={variant.id} />
+                          <Label htmlFor={variant.id} className="flex-1 cursor-pointer">
+                            {variant.name}
                           </Label>
                         </div>
                       ))}
                     </RadioGroup>
-                    
-                    {errors.issue && (
-                      <p className="text-sm text-red-500 mt-1">{errors.issue}</p>
+                    {errors.variant && (
+                      <p className="text-sm text-red-500">{errors.variant}</p>
                     )}
-                    
-                    {selectedIssue && (
-                      <div className="mt-2 p-2 bg-amber-50 border border-amber-200 rounded-md">
-                        <p className="text-sm text-amber-800 flex items-center gap-2">
-                          <AlertCircle className="h-4 w-4" />
-                          Thank you for reporting: <span className="font-medium">{selectedIssue}</span>
-                        </p>
+                  </div>
+                )}
+
+                {/* Product Issues Selection - Now showing only when variant is selected */}
+                {selectedProduct && selectedVariant && (
+                  <div className="space-y-3">
+                    <Label className="flex justify-between">
+                      <span>What issue did you experience?</span>
+                      <span className="text-red-500">*</span>
+                    </Label>
+                    <RadioGroup 
+                      onValueChange={setSelectedIssue}
+                      value={selectedIssue}
+                      className={`grid grid-cols-1 gap-2 ${errors.issue ? "border border-red-500 p-2 rounded" : ""}`}
+                    >
+                      {PRODUCT_ISSUES.map((issue) => (
+                        <div key={issue} className="flex items-center space-x-2 rounded-md border p-3 hover:bg-gray-100 cursor-pointer">
+                          <RadioGroupItem value={issue} id={issue.replace(/\s/g, "-")} />
+                          <Label htmlFor={issue.replace(/\s/g, "-")} className="flex-1 cursor-pointer">
+                            {issue}
+                          </Label>
+                        </div>
+                      ))}
+                      <div className="flex items-center space-x-2 rounded-md border p-3 hover:bg-gray-100 cursor-pointer">
+                        <RadioGroupItem value="other" id="other-issue" />
+                        <Label htmlFor="other-issue" className="flex-1 cursor-pointer">
+                          Other
+                        </Label>
                       </div>
+                    </RadioGroup>
+                    {errors.issue && (
+                      <p className="text-sm text-red-500">{errors.issue}</p>
                     )}
+                  </div>
+                )}
+
+                {/* Comments - now with 100 word limit */}
+                {selectedProduct && selectedVariant && selectedIssue && (
+                  <div className="space-y-2">
+                    <Label htmlFor="comments">Additional Comments</Label>
+                    <Textarea
+                      id="comments"
+                      name="comments"
+                      placeholder="Please provide more details about your experience..."
+                      className="min-h-[120px]"
+                      value={formData.comments}
+                      onChange={handleInputChange}
+                    />
                   </div>
                 )}
               </form>
@@ -528,9 +498,24 @@ const Index = () => {
             <CardFooter className="flex justify-between items-center relative z-10 mt-4">
               <Button 
                 variant="outline"
-                onClick={() => navigate("/home")}
+                type="button"
+                onClick={() => {
+                  // Reset the form
+                  setSelectedProduct(null);
+                  setSelectedVariant(null);
+                  setFormData({
+                    customerName: "",
+                    email: "",
+                    storeLocation: "",
+                    comments: ""
+                  });
+                  setIsAnonymous(false);
+                  setSelectedIssue("");
+                  setDate(new Date());
+                  setErrors({});
+                }}
               >
-                Back
+                Clear Form
               </Button>
               <Button 
                 className="bg-indomie-red hover:bg-indomie-red/90 relative overflow-hidden group"
@@ -548,6 +533,6 @@ const Index = () => {
       </div>
     </div>
   );
-};
+}
 
 export default Index;

@@ -29,13 +29,14 @@ const STORE_LOCATIONS = [
   "Enugu - New Haven"
 ];
 
-// Issues list - removed "Other" option as requested
+// Issues list
 const PRODUCT_ISSUES = [
   "Mislabelled products / allergies",
   "Unusual taste or odor",
   "Texture - too hard or soft",
   "Mold or spoilage",
-  "Foreign elements"
+  "Foreign elements",
+  "Other"
 ];
 
 interface Product {
