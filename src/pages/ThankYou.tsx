@@ -24,18 +24,18 @@ export default function ThankYou() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-sky-50 to-gray-50">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-rose-50 to-gray-50">
       <div className="absolute inset-0 w-full h-full">
         <div className="w-full h-full bg-[radial-gradient(#64748b_1px,transparent_1px)] [background-size:20px_20px] opacity-10"></div>
       </div>
       
-      <Card className="max-w-md w-full shadow-lg border-t-4 border-t-green-500 animate-fade-in relative overflow-hidden">
-        <div className="absolute -right-16 -top-16 w-32 h-32 rounded-full bg-green-100/30 blur-xl"></div>
+      <Card className="max-w-md w-full shadow-lg border-t-4 border-t-indomie-red animate-fade-in relative overflow-hidden">
+        <div className="absolute -right-16 -top-16 w-32 h-32 rounded-full bg-red-100/30 blur-xl"></div>
         <div className="absolute -left-16 -bottom-16 w-32 h-32 rounded-full bg-blue-100/30 blur-xl"></div>
         
         <CardHeader className="pt-8 pb-0 flex flex-col items-center">
-          <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mb-4">
-            <CheckCircle2 className="h-8 w-8 text-green-600" />
+          <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mb-4">
+            <CheckCircle2 className="h-8 w-8 text-indomie-red" />
           </div>
         </CardHeader>
         
@@ -64,14 +64,14 @@ export default function ThankYou() {
             {!hasRated && (
               <Button 
                 onClick={handleRatingSubmit}
-                className="bg-green-500 hover:bg-green-600 mt-2"
+                className="bg-indomie-red hover:bg-indomie-red/90 mt-2"
               >
                 Submit Rating
               </Button>
             )}
             
             {hasRated && (
-              <p className="text-green-600 font-medium animate-fade-in">
+              <p className="text-indomie-red font-medium animate-fade-in">
                 Thank you for rating our feedback system!
               </p>
             )}
