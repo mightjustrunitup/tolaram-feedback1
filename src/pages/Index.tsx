@@ -226,7 +226,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col noodle-bg-light">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-sky-50 to-gray-50">
       {/* Fixed Header */}
       <header className="w-full bg-white border-b py-4 px-6 shadow-md fixed top-0 left-0 right-0 z-20">
         <div className="max-w-7xl mx-auto flex justify-center items-center">
@@ -235,15 +235,15 @@ const Index = () => {
       </header>
 
       {/* Feedback Form */}
-      <div className="flex-1 py-8 px-6 relative pt-20">
+      <div className="flex-1 py-8 px-6 relative pt-24 md:pt-28">
         <div className="absolute inset-0 w-full h-full">
-          <div className="w-full h-full bg-[radial-gradient(#FFC72C_1px,transparent_1px)] [background-size:20px_20px] opacity-20"></div>
+          <div className="w-full h-full bg-[radial-gradient(#64748b_1px,transparent_1px)] [background-size:20px_20px] opacity-10"></div>
         </div>
         
         <div className="max-w-3xl mx-auto relative z-10">
           <Card className="shadow-lg animate-fade-in border-t-4 border-t-indomie-red relative overflow-hidden">
-            <div className="absolute -right-16 -top-16 w-32 h-32 rounded-full bg-indomie-yellow/30 blur-xl"></div>
-            <div className="absolute -left-16 -bottom-16 w-32 h-32 rounded-full bg-indomie-red/30 blur-xl"></div>
+            <div className="absolute -right-16 -top-16 w-32 h-32 rounded-full bg-blue-100/30 blur-xl"></div>
+            <div className="absolute -left-16 -bottom-16 w-32 h-32 rounded-full bg-green-100/30 blur-xl"></div>
             
             <CardHeader className="relative z-10">
               <div className="flex flex-col items-center text-center mb-4">

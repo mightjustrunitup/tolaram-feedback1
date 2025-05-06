@@ -13,15 +13,15 @@ export default function NavigationBar({ className }: NavigationBarProps) {
   
   return (
     <nav className={cn(
-      "w-full bg-primary shadow-md py-4 px-6",
+      "w-full bg-white border-b shadow-md py-4 px-6",
       className
     )}>
       <div className="max-w-7xl mx-auto flex justify-between items-center">
-        <Logo className="text-white" />
+        <Logo className="text-gray-800" />
         <div className="flex items-center gap-4">
           <Button 
             variant="ghost" 
-            className="text-white hover:text-primary-foreground hover:bg-primary-foreground/10"
+            className="text-gray-700 hover:text-indomie-red hover:bg-gray-100"
             onClick={() => navigate("/")}
           >
             Home

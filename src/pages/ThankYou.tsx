@@ -60,7 +60,7 @@ export default function ThankYou() {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-sky-50 to-gray-50">
       {/* Fixed Header */}
-      <header className="w-full bg-white border-b py-4 px-6 shadow-sm fixed top-0 left-0 right-0 z-20">
+      <header className="w-full bg-white border-b py-4 px-6 shadow-md fixed top-0 left-0 right-0 z-20">
         <div className="max-w-7xl mx-auto flex justify-center items-center">
           <h1 className="text-2xl font-semibold text-gray-800">Feedback</h1>
         </div>
@@ -73,7 +73,7 @@ export default function ThankYou() {
         </div>
         
         <div className="max-w-2xl mx-auto relative z-10">
-          <Card className="shadow-md animate-fade-in border-t-4 border-t-primary relative overflow-hidden">
+          <Card className="shadow-md animate-fade-in border-t-4 border-t-indomie-red relative overflow-hidden">
             <div className="absolute -right-16 -top-16 w-32 h-32 rounded-full bg-blue-100/30 blur-xl"></div>
             <div className="absolute -left-16 -bottom-16 w-32 h-32 rounded-full bg-green-100/30 blur-xl"></div>
             
@@ -106,7 +106,7 @@ export default function ThankYou() {
                     value={siteFeedbackRating}
                     onChange={setSiteFeedbackRating}
                     max={5}
-                    color="text-blue-500"
+                    color="text-indomie-yellow"
                     size="lg"
                     label="Rate our feedback system"
                     showValue
@@ -114,9 +114,10 @@ export default function ThankYou() {
                   
                   <Button
                     onClick={handleSiteFeedbackSubmit}
-                    className="relative overflow-hidden group bg-primary hover:bg-primary/90"
+                    className="relative overflow-hidden group bg-indomie-red hover:bg-indomie-red/90"
                   >
-                    Submit Rating
+                    <span className="relative z-10">Submit Rating</span>
+                    <span className="absolute bottom-0 left-0 w-full h-0 bg-indomie-yellow transition-all duration-300 group-hover:h-full -z-0"></span>
                   </Button>
                 </div>
               </div>
@@ -138,12 +139,13 @@ export default function ThankYou() {
                         <Button
                           onClick={handleSendConfirmationEmail}
                           disabled={isSubmitting}
-                          className="bg-primary hover:bg-primary/90"
+                          className="bg-indomie-red hover:bg-indomie-red/90 relative overflow-hidden group"
                         >
-                          <span className="flex items-center gap-2">
+                          <span className="relative z-10 flex items-center gap-2">
                             {isSubmitting ? "Sending..." : "Send"}
                             <Send className="h-4 w-4" />
                           </span>
+                          <span className="absolute bottom-0 left-0 w-full h-0 bg-indomie-yellow transition-all duration-300 group-hover:h-full -z-0"></span>
                         </Button>
                       </div>
                     </div>
@@ -152,7 +154,7 @@ export default function ThankYou() {
                       <h3 className="text-lg font-semibold mb-2">Want a confirmation email?</h3>
                       <Button
                         variant="outline"
-                        className="border-primary/30 hover:bg-primary/10"
+                        className="border-indomie-red/30 hover:bg-indomie-red/10"
                         onClick={() => setShowEmailForm(true)}
                       >
                         <Mail className="mr-2 h-4 w-4" />
@@ -191,10 +193,11 @@ export default function ThankYou() {
                   Back to Products
                 </Button>
                 <Button 
-                  className="bg-primary hover:bg-primary/90"
+                  className="bg-indomie-red hover:bg-indomie-red/90 relative overflow-hidden group"
                   onClick={() => navigate("/")}
                 >
-                  Home
+                  <span className="relative z-10">Home</span>
+                  <span className="absolute bottom-0 left-0 w-full h-0 bg-indomie-yellow transition-all duration-300 group-hover:h-full -z-0"></span>
                 </Button>
               </div>
             </CardFooter>
