@@ -17,7 +17,7 @@ export default function Logo({ size = "md", className }: LogoProps) {
           size === "lg" && "text-4xl",
         )}
       >
-        <span>Feedback</span>
+        {/* Removed the "Feedback" text */}
         <div className="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-primary via-blue-400 to-primary animate-gradient-x"></div>
       </div>
     </div>
