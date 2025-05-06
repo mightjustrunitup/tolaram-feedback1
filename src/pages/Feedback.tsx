@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -429,7 +430,7 @@ export default function Feedback() {
                 </div>
               </form>
             </CardContent>
-            <CardFooter className="flex justify-between relative z-10">
+            <CardFooter className="flex justify-between items-center relative z-10 mt-4">
               <Button 
                 variant="outline"
                 onClick={() => navigate("/")}

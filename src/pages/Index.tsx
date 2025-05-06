@@ -547,7 +547,24 @@ const Index = () => {
                 </div>
 
                 {/* Submit Button */}
-                <div className="flex justify-end">
+                <div className="flex justify-between items-center">
+                  <Button 
+                    variant="outline" 
+                    type="button" 
+                    onClick={() => {
+                      setSelectedProduct(null);
+                      setSelectedVariant(null);
+                      setSelectedIssue("");
+                      setFormData({
+                        customerName: "",
+                        email: "",
+                        storeLocation: "",
+                        comments: ""
+                      });
+                    }}
+                  >
+                    Reset Form
+                  </Button>
                   <Button 
                     className="bg-indomie-red hover:bg-indomie-red/90 relative overflow-hidden group"
                     type="submit"
