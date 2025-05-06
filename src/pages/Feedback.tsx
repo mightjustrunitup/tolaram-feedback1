@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -47,10 +46,18 @@ interface Product {
   description: string;
 }
 
+// Default product to use when no product is selected
+const DEFAULT_PRODUCT: Product = {
+  id: "general",
+  name: "Our Products",
+  image: "https://placehold.co/400x300/FFFFFF/E51E25?text=Tolaram",
+  description: "Please provide your general feedback about our products and services"
+};
+
 export default function Feedback() {
   const navigate = useNavigate();
   const location = useLocation();
-  const selectedProduct = location.state?.selectedProduct as Product | null;
+  const selectedProduct = (location.state?.selectedProduct as Product | null) || DEFAULT_PRODUCT;
   
   const [date, setDate] = useState<Date>(new Date());
   const [isAnonymous, setIsAnonymous] = useState(false);
@@ -128,28 +135,11 @@ export default function Feedback() {
         state: { 
           customerName: isAnonymous ? "Valued Customer" : formData.customerName,
           email: formData.email,
-          productName: selectedProduct?.name || "our product"
+          productName: selectedProduct?.name || "our products"
         } 
       });
     }, 1500);
   };
-
-  // If no product is selected, redirect to home page
-  if (!selectedProduct) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle>No Product Selected</CardTitle>
-            <CardDescription>Please select a product to provide feedback</CardDescription>
-          </CardHeader>
-          <CardFooter>
-            <Button onClick={() => navigate("/")}>Go to Home</Button>
-          </CardFooter>
-        </Card>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen flex flex-col noodle-bg-light">
@@ -198,6 +188,8 @@ export default function Feedback() {
                 Help us improve your {selectedProduct.name} experience by completing this short feedback form.
               </CardDescription>
             </CardHeader>
+            
+            {/* Rest of the form remains the same */}
             <CardContent className="relative z-10">
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Product Information */}
@@ -329,7 +321,7 @@ export default function Feedback() {
 
                 {/* Rating Scales - Now using Star Ratings instead of Sliders */}
                 <div className="space-y-6 p-4 bg-white/70 rounded-md backdrop-blur-sm border border-indomie-yellow/20">
-                  <h3 className="font-semibold text-lg mb-4 text-indomie-dark">Rate Your {selectedProduct.name} Experience</h3>
+                  <h3 className="font-semibold text-lg mb-4 text-indomie-dark">Rate Your Experience</h3>
                   
                   <div className="space-y-4">
                     <div className="p-3 hover:bg-gray-50/70 rounded-md transition-colors">
@@ -358,7 +350,7 @@ export default function Feedback() {
                     
                     <div className="p-3 hover:bg-gray-50/70 rounded-md transition-colors">
                       <StarRating
-                        label={`${selectedProduct.name} Availability`}
+                        label={`Product Availability`}
                         value={formData.productAvailability}
                         onChange={(value) => handleRatingChange("productAvailability", value)}
                         max={5}
@@ -370,7 +362,7 @@ export default function Feedback() {
                     
                     <div className="p-3 hover:bg-gray-50/70 rounded-md transition-colors">
                       <StarRating
-                        label={`Overall ${selectedProduct.name} Experience`}
+                        label={`Overall Experience`}
                         value={formData.overallExperience}
                         onChange={(value) => handleRatingChange("overallExperience", value)}
                         max={5}
@@ -384,7 +376,7 @@ export default function Feedback() {
 
                 {/* Common Issues - Now using a Dropdown */}
                 <div className="space-y-3 p-4 bg-white/80 rounded-md backdrop-blur-sm border border-indomie-yellow/20">
-                  <Label className="text-base font-medium">Did you experience any of these issues with {selectedProduct?.name}?</Label>
+                  <Label className="text-base font-medium">Did you experience any of these issues?</Label>
                   
                   <Select 
                     value={selectedIssue} 
@@ -424,11 +416,11 @@ export default function Feedback() {
 
                 {/* Comments - now with 100 word limit */}
                 <div className="space-y-2">
-                  <Label htmlFor="comments">Additional Comments about {selectedProduct.name}</Label>
+                  <Label htmlFor="comments">Additional Comments</Label>
                   <Textarea
                     id="comments"
                     name="comments"
-                    placeholder={`Please share any additional feedback, issues, or suggestions about ${selectedProduct.name}...`}
+                    placeholder={`Please share any additional feedback, issues, or suggestions...`}
                     className="min-h-[120px]"
                     value={formData.comments}
                     onChange={handleInputChange}

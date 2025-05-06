@@ -1,12 +1,16 @@
 
 import { cn } from "@/lib/utils";
 import Logo from "./Logo";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 interface NavigationBarProps {
   className?: string;
 }
 
 export default function NavigationBar({ className }: NavigationBarProps) {
+  const navigate = useNavigate();
+  
   return (
     <nav className={cn(
       "w-full bg-primary shadow-md py-4 px-6",
@@ -15,7 +19,13 @@ export default function NavigationBar({ className }: NavigationBarProps) {
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <Logo className="text-white" />
         <div className="flex items-center gap-4">
-          {/* This space is intentionally left empty as requested */}
+          <Button 
+            variant="ghost" 
+            className="text-white hover:text-primary-foreground hover:bg-primary-foreground/10"
+            onClick={() => navigate("/")}
+          >
+            Home
+          </Button>
         </div>
       </div>
     </nav>
