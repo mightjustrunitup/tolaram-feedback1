@@ -7,10 +7,7 @@ import { StarRating } from "@/components/ui/star-rating";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "sonner";
 import { Check, Mail, Send } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
-import Logo from "@/components/layout/Logo";
-import AnimatedIndomie from "@/components/layout/AnimatedIndomie";
 
 export default function ThankYou() {
   const navigate = useNavigate();
@@ -61,24 +58,24 @@ export default function ThankYou() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col noodle-bg-light">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-sky-50 to-gray-50">
       {/* Fixed Header */}
-      <header className="w-full bg-white border-b py-4 px-6 shadow-md fixed top-0 left-0 right-0 z-20">
+      <header className="w-full bg-white border-b py-4 px-6 shadow-sm fixed top-0 left-0 right-0 z-20">
         <div className="max-w-7xl mx-auto flex justify-center items-center">
-          <Logo />
+          <h1 className="text-2xl font-semibold text-gray-800">Feedback</h1>
         </div>
       </header>
 
       {/* Thank You Content */}
       <div className="flex-1 py-12 px-6 relative pt-24 md:pt-28">
         <div className="absolute inset-0 w-full h-full">
-          <div className="w-full h-full bg-[radial-gradient(#FFC72C_1px,transparent_1px)] [background-size:20px_20px] opacity-20"></div>
+          <div className="w-full h-full bg-[radial-gradient(#64748b_1px,transparent_1px)] [background-size:20px_20px] opacity-10"></div>
         </div>
         
-        <div className="max-w-3xl mx-auto relative z-10">
-          <Card className="shadow-lg animate-fade-in border-t-4 border-t-indomie-red relative overflow-hidden">
-            <div className="absolute -right-16 -top-16 w-32 h-32 rounded-full bg-indomie-yellow/30 blur-xl"></div>
-            <div className="absolute -left-16 -bottom-16 w-32 h-32 rounded-full bg-indomie-red/30 blur-xl"></div>
+        <div className="max-w-2xl mx-auto relative z-10">
+          <Card className="shadow-md animate-fade-in border-t-4 border-t-primary relative overflow-hidden">
+            <div className="absolute -right-16 -top-16 w-32 h-32 rounded-full bg-blue-100/30 blur-xl"></div>
+            <div className="absolute -left-16 -bottom-16 w-32 h-32 rounded-full bg-green-100/30 blur-xl"></div>
             
             <div className="absolute top-0 right-0 bg-green-100 p-2 rounded-bl-lg">
               <div className="flex items-center gap-1 text-green-700">
@@ -100,39 +97,33 @@ export default function ThankYou() {
               </CardDescription>
             </CardHeader>
             
-            <CardContent className="relative z-10 space-y-8">
-              {/* Animated Indomie Brand */}
-              <AnimatedIndomie size="lg" className="mx-auto" />
-              
+            <CardContent className="relative z-10 space-y-6">
               {/* Site Feedback Section */}
-              <div className="p-6 bg-white/80 backdrop-blur-sm rounded-lg border border-indomie-yellow/20">
+              <div className="p-5 bg-white/80 backdrop-blur-sm rounded-lg border border-gray-100 shadow-sm">
                 <h3 className="text-lg font-semibold mb-4 text-center">How was your feedback experience?</h3>
                 <div className="flex flex-col items-center gap-4">
                   <StarRating
                     value={siteFeedbackRating}
                     onChange={setSiteFeedbackRating}
                     max={5}
-                    color="text-indomie-yellow"
+                    color="text-blue-500"
                     size="lg"
                     label="Rate our feedback system"
                     showValue
                   />
                   
                   <Button
-                    className="bg-indomie-red hover:bg-indomie-red/90 relative overflow-hidden group mt-2"
                     onClick={handleSiteFeedbackSubmit}
+                    className="relative overflow-hidden group bg-primary hover:bg-primary/90"
                   >
-                    <span className="relative z-10 flex items-center">
-                      Submit Rating
-                    </span>
-                    <span className="absolute bottom-0 left-0 w-full h-0 bg-indomie-yellow transition-all duration-300 group-hover:h-full -z-0"></span>
+                    Submit Rating
                   </Button>
                 </div>
               </div>
               
               {/* Email Confirmation Section - Only show if no email was provided */}
               {!userEmail && !isEmailSent && (
-                <div className="p-6 bg-white/80 backdrop-blur-sm rounded-lg border border-indomie-yellow/20">
+                <div className="p-5 bg-white/80 backdrop-blur-sm rounded-lg border border-gray-100 shadow-sm">
                   {showEmailForm ? (
                     <div className="space-y-4">
                       <h3 className="text-lg font-semibold mb-2">Get a confirmation email</h3>
@@ -145,11 +136,11 @@ export default function ThankYou() {
                           className="flex-1"
                         />
                         <Button
-                          className="bg-indomie-red hover:bg-indomie-red/90 relative overflow-hidden group"
                           onClick={handleSendConfirmationEmail}
                           disabled={isSubmitting}
+                          className="bg-primary hover:bg-primary/90"
                         >
-                          <span className="relative z-10 flex items-center gap-2">
+                          <span className="flex items-center gap-2">
                             {isSubmitting ? "Sending..." : "Send"}
                             <Send className="h-4 w-4" />
                           </span>
@@ -161,7 +152,7 @@ export default function ThankYou() {
                       <h3 className="text-lg font-semibold mb-2">Want a confirmation email?</h3>
                       <Button
                         variant="outline"
-                        className="border-indomie-yellow/50 hover:bg-indomie-yellow/10"
+                        className="border-primary/30 hover:bg-primary/10"
                         onClick={() => setShowEmailForm(true)}
                       >
                         <Mail className="mr-2 h-4 w-4" />
@@ -174,7 +165,7 @@ export default function ThankYou() {
               
               {/* Email Sent Confirmation */}
               {(isEmailSent || userEmail) && (
-                <div className="p-6 bg-green-50 rounded-lg border border-green-100">
+                <div className="p-5 bg-green-50 rounded-lg border border-green-100">
                   <div className="flex items-center gap-3">
                     <div className="bg-green-100 p-2 rounded-full">
                       <Mail className="h-5 w-5 text-green-600" />
@@ -190,23 +181,20 @@ export default function ThankYou() {
               )}
             </CardContent>
             
-            <CardFooter className="flex justify-center relative z-10 mt-4">
+            <CardFooter className="flex justify-center relative z-10 mt-2">
               <div className="space-x-4">
                 <Button 
                   variant="outline"
-                  className="border-indomie-yellow/50 hover:bg-indomie-yellow/10"
+                  className="border-gray-200 hover:bg-gray-50"
                   onClick={() => navigate("/")}
                 >
                   Back to Products
                 </Button>
                 <Button 
-                  className="bg-indomie-red hover:bg-indomie-red/90 relative overflow-hidden group"
-                  onClick={() => navigate("/home")}
+                  className="bg-primary hover:bg-primary/90"
+                  onClick={() => navigate("/")}
                 >
-                  <span className="relative z-10">
-                    Home
-                  </span>
-                  <span className="absolute bottom-0 left-0 w-full h-0 bg-indomie-yellow transition-all duration-300 group-hover:h-full -z-0"></span>
+                  Home
                 </Button>
               </div>
             </CardFooter>
