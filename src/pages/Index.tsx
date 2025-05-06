@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -216,33 +215,14 @@ const Index = () => {
     // Get selected variant name
     const variantName = selectedProduct?.variants.find(v => v.id === selectedVariant)?.name || "";
     
-    // Navigate to the Feedback page with selected product details
-    const productWithSelectedVariant = {
-      ...selectedProduct,
-      selectedVariant: variantName,
-      selectedIssue: selectedIssue
-    };
-    
-    // For actual implementation, you'd navigate to the feedback page
-    // This is currently commented out to prevent errors in the current example
-    navigate("/feedback", { state: { selectedProduct: productWithSelectedVariant } });
-    
-    // If you want to stay on the same page and just show a success message:
-    // setTimeout(() => {
-    //   setSubmitting(false);
-    //   toast.success("Feedback submitted successfully!");
-    //   // Reset form after successful submission
-    //   setSelectedProduct(null);
-    //   setSelectedVariant(null);
-    //   setFormData({
-    //     customerName: "",
-    //     email: "",
-    //     storeLocation: "",
-    //     comments: ""
-    //   });
-    //   setIsAnonymous(false);
-    //   setSelectedIssue("");
-    // }, 1500);
+    // Directly navigate to the Thank-You page with relevant data
+    navigate("/thank-you", { 
+      state: { 
+        customerName: isAnonymous ? "Valued Customer" : formData.customerName,
+        email: formData.email,
+        productName: selectedProduct?.name || "our product"
+      } 
+    });
   };
 
   return (
