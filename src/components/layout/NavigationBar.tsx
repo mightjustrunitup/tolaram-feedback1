@@ -1,4 +1,3 @@
-
 import { cn } from "@/lib/utils";
 import Logo from "./Logo";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -17,22 +16,12 @@ export default function NavigationBar({ className }: NavigationBarProps) {
   
   return (
     <nav className={cn(
-      "w-full bg-white border-b shadow-md py-4 px-6",
+      "w-full bg-indomie-red border-b shadow-md py-4 px-6",
       className
     )}>
       <div className="max-w-7xl mx-auto flex justify-between items-center">
-        <Logo className="text-gray-800" />
-        {!isThankYouPage && (
-          <div className="flex items-center gap-4">
-            <Button 
-              variant="ghost" 
-              className="text-gray-700 hover:text-indomie-red hover:bg-gray-100"
-              onClick={() => navigate("/")}
-            >
-              Home
-            </Button>
-          </div>
-        )}
+        <Logo className="text-white" />
+        {/* Navigation elements removed as requested */}
       </div>
     </nav>
   );
