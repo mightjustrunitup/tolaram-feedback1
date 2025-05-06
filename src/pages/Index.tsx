@@ -1,194 +1,558 @@
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { format } from "date-fns";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { CalendarIcon, AlertCircle } from "lucide-react";
+import Logo from "@/components/layout/Logo";
 import { toast } from "sonner";
-import AnimatedIndomie from "@/components/layout/AnimatedIndomie";
+import { Badge } from "@/components/ui/badge";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
-// Mock product data
-const PRODUCTS = [
+// Define product types
+interface Product {
+  id: string;
+  name: string;
+  image: string;
+  description: string;
+  variants: Array<{
+    id: string;
+    name: string;
+  }>;
+}
+
+// Use local placeholder images with text to ensure display
+const products: Product[] = [
   {
-    id: "1",
-    name: "Indomie Mi Goreng",
-    image: "/lovable-uploads/d00b8aa9-0602-4cb4-913d-eaced5d824c3.png",
-    description: "Original Indonesian fried noodles with authentic spices",
-    category: "original"
+    id: "indomie",
+    name: "Indomie",
+    image: "https://placehold.co/400x300/FFFFFF/E51E25?text=Indomie",
+    description: "Delicious instant noodles with a variety of flavors",
+    variants: [
+      { id: "indomie-chicken", name: "Indomie Tables Chicken" },
+      { id: "indomie-jollof", name: "Indomie Jollof Flavor" },
+      { id: "indomie-onion-chicken", name: "Indomie Onion Chicken Flavour" },
+      { id: "indomie-crayfish", name: "Indomie Crayfish Flavour" },
+      { id: "indomie-chicken-pepper-soup", name: "Indomie Chicken Pepper Soup" },
+      { id: "indomie-oriental", name: "Indomie Oriental Fried Noodle" },
+      { id: "indomie-relish-beef", name: "Indomie Relish Beef" },
+      { id: "indomie-relish-seafood", name: "Indomie Relish Sea Food Delight" }
+    ]
   },
   {
-    id: "2",
-    name: "Indomie Chicken Flavor",
-    image: "/placeholder.svg",
-    description: "Savory chicken flavored instant noodles",
-    category: "chicken"
+    id: "minimie",
+    name: "Minimie",
+    image: "https://placehold.co/400x300/FFFFFF/FFB800?text=Minimie",
+    description: "Mini-sized instant noodles perfect for snacking",
+    variants: [
+      { id: "minimie-chinchin", name: "Minimie Chinchin" },
+      { id: "minimie-chinchin-spicy", name: "Minimie Chinchin (Hot and Spicy)" },
+      { id: "minimie-noodle-chicken", name: "Minimie Instant Noodle Chicken Flavour" },
+      { id: "minimie-noodle-vegetable", name: "Minimie Instant Noodle Vegetable" },
+      { id: "minimie-noodle-tomato", name: "Minimie Instant Noodle Tomato" }
+    ]
   },
   {
-    id: "3",
-    name: "Indomie Special Chicken",
-    image: "/placeholder.svg",
-    description: "Premium chicken flavor with extra spices and seasonings",
-    category: "chicken"
+    id: "dano",
+    name: "Dano Milk",
+    image: "https://placehold.co/400x300/FFFFFF/0075C2?text=Dano+Milk",
+    description: "High quality milk products for your daily needs",
+    variants: [
+      { id: "dano-slim", name: "Dano Slim" },
+      { id: "dano-cool-cow", name: "Dano Cool Cow" },
+      { id: "dano-uht", name: "Dano UHT" },
+      { id: "dano-vitakids", name: "Dano Vitakids" }
+    ]
   },
   {
-    id: "4",
-    name: "Indomie Vegetable Flavor",
-    image: "/placeholder.svg",
-    description: "Delicious vegetable flavored noodles",
-    category: "vegetable"
-  },
-  {
-    id: "5",
-    name: "Indomie Beef Flavor",
-    image: "/placeholder.svg",
-    description: "Rich beef flavored instant noodles",
-    category: "beef"
-  },
-  {
-    id: "6",
-    name: "Indomie Shrimp Flavor",
-    image: "/placeholder.svg",
-    description: "Tangy shrimp flavored noodles",
-    category: "seafood"
-  },
-  {
-    id: "7",
-    name: "Indomie Hot & Spicy",
-    image: "/placeholder.svg",
-    description: "Extra spicy noodles for those who love heat",
-    category: "spicy"
-  },
-  {
-    id: "8",
-    name: "Indomie Satay Flavor",
-    image: "/placeholder.svg",
-    description: "Noodles with traditional satay flavor",
-    category: "special"
+    id: "kelloggs",
+    name: "Kellogg's Cereals",
+    image: "https://placehold.co/400x300/FFFFFF/E31837?text=Kellogg's",
+    description: "Nutritious breakfast cereals for a great start to your day",
+    variants: [
+      { id: "kelloggs-corn-flakes", name: "Kelloggs Corn Flakes" },
+      { id: "kelloggs-cocopops", name: "Kelloggs Cocopops" },
+      { id: "kelloggs-frosties", name: "Kelloggs Frosties" },
+      { id: "kelloggs-rice-krispies", name: "Kelloggs Rice Krispies" },
+      { id: "kelloggs-crunchy-nut", name: "Kelloggs Crunchy Nut" },
+      { id: "kelloggs-crispix", name: "Kelloggs Crispix" },
+      { id: "kelloggs-krave", name: "Kelloggs Krave" }
+    ]
   }
 ];
 
-// Categories for filtering
-const CATEGORIES = [
-  { id: "all", name: "All Products" },
-  { id: "original", name: "Original" },
-  { id: "chicken", name: "Chicken" },
-  { id: "beef", name: "Beef" },
-  { id: "vegetable", name: "Vegetable" },
-  { id: "seafood", name: "Seafood" },
-  { id: "spicy", name: "Spicy" },
-  { id: "special", name: "Special Editions" }
+// Store locations
+const STORE_LOCATIONS = [
+  "Lagos - Ikeja Mall",
+  "Lagos - Lekki Phase 1",
+  "Abuja - Wuse II",
+  "Abuja - Jabi Lake Mall",
+  "Port Harcourt - GRA",
+  "Ibadan - Dugbe",
+  "Kano - Nassarawa",
+  "Enugu - New Haven"
 ];
 
-export default function Index() {
-  const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
+// Product issues list - updated based on user requirements
+const PRODUCT_ISSUES = [
+  "Mislabelled products / allergies",
+  "Unusual taste or odor",
+  "Texture - too hard or soft",
+  "Mold or spoilage",
+  "Foreign elements"
+];
 
-  // Filter products based on search query and selected category
-  const filteredProducts = PRODUCTS.filter((product) => {
-    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          product.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory === "all" || product.category === selectedCategory;
-    return matchesSearch && matchesCategory;
+const Index = () => {
+  const navigate = useNavigate();
+  const isMobile = useIsMobile();
+  
+  const [date, setDate] = useState<Date>(new Date());
+  const [isAnonymous, setIsAnonymous] = useState(false);
+  const [selectedIssue, setSelectedIssue] = useState<string>("");
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [errors, setErrors] = useState<{[key: string]: string}>({});
+  
+  const [formData, setFormData] = useState({
+    customerName: "",
+    email: "",
+    storeLocation: "",
+    comments: ""
   });
 
-  // Handle product selection
-  const handleProductSelect = (product: any) => {
-    toast.success(`Thank you for your interest in ${product.name}!`);
-    navigate("/thank-you", { state: { selectedProduct: product } });
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    // Clear error for this field when changed
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: "" }));
+    }
+  };
+
+  const handleSelectChange = (name: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    // Clear error for this field when changed
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: "" }));
+    }
+  };
+
+  const handleProductSelect = (productId: string) => {
+    const product = products.find(p => p.id === productId);
+    if (product) {
+      setSelectedProduct(product);
+      // Reset the selected variant when product changes
+      setSelectedVariant(null);
+      // Reset the selected issue when product changes
+      setSelectedIssue("");
+    }
+  };
+
+  const handleVariantSelect = (variantId: string) => {
+    setSelectedVariant(variantId);
+    // Reset the selected issue when variant changes
+    setSelectedIssue("");
+    // Clear variant error if it exists
+    if (errors.variant) {
+      setErrors(prev => ({ ...prev, variant: "" }));
+    }
+  };
+  
+  const validateForm = () => {
+    const newErrors: {[key: string]: string} = {};
+    
+    // Validate product selection
+    if (!selectedProduct) {
+      newErrors.product = "Please select a product";
+    }
+
+    // Validate variant selection
+    if (selectedProduct && !selectedVariant) {
+      newErrors.variant = "Please select a product variant";
+    }
+
+    // Validate issue selection
+    if (selectedProduct && selectedVariant && !selectedIssue) {
+      newErrors.issue = "Please select an issue with the product";
+    }
+    
+    // Validate name if not anonymous
+    if (!isAnonymous && !formData.customerName.trim()) {
+      newErrors.customerName = "Name is required";
+    }
+    
+    // Store location is always required
+    if (!formData.storeLocation) {
+      newErrors.storeLocation = "Please select a store location";
+    }
+    
+    // Set errors and return validity result
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Validate form before submission
+    if (!validateForm()) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+    
+    setSubmitting(true);
+    
+    // Get selected variant name
+    const variantName = selectedProduct?.variants.find(v => v.id === selectedVariant)?.name || "";
+    
+    // Navigate to the Feedback page with selected product details
+    const productWithSelectedVariant = {
+      ...selectedProduct,
+      selectedVariant: variantName,
+      selectedIssue: selectedIssue
+    };
+    
+    // For actual implementation, you'd navigate to the feedback page
+    // This is currently commented out to prevent errors in the current example
+    navigate("/feedback", { state: { selectedProduct: productWithSelectedVariant } });
+    
+    // If you want to stay on the same page and just show a success message:
+    // setTimeout(() => {
+    //   setSubmitting(false);
+    //   toast.success("Feedback submitted successfully!");
+    //   // Reset form after successful submission
+    //   setSelectedProduct(null);
+    //   setSelectedVariant(null);
+    //   setFormData({
+    //     customerName: "",
+    //     email: "",
+    //     storeLocation: "",
+    //     comments: ""
+    //   });
+    //   setIsAnonymous(false);
+    //   setSelectedIssue("");
+    // }, 1500);
   };
 
   return (
     <div className="min-h-screen flex flex-col noodle-bg-light">
-      <div className="py-6 px-6 flex-1">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-            <div>
-              <h1 className="text-2xl font-bold text-indomie-dark">Product Feedback</h1>
-              <p className="text-gray-600">Select a product to provide feedback</p>
-            </div>
+      {/* Fixed Header */}
+      <header className="w-full bg-white border-b py-4 px-6 shadow-md fixed top-0 left-0 right-0 z-20">
+        <div className="max-w-7xl mx-auto flex justify-center items-center">
+          <Logo />
+        </div>
+      </header>
+
+      {/* Feedback Form */}
+      <div className="flex-1 py-8 px-6 relative pt-20">
+        <div className="absolute inset-0 w-full h-full">
+          <div className="w-full h-full bg-[radial-gradient(#FFC72C_1px,transparent_1px)] [background-size:20px_20px] opacity-20"></div>
+        </div>
+        
+        <div className="max-w-3xl mx-auto relative z-10">
+          <Card className="shadow-lg animate-fade-in border-t-4 border-t-indomie-red relative overflow-hidden">
+            <div className="absolute -right-16 -top-16 w-32 h-32 rounded-full bg-indomie-yellow/30 blur-xl"></div>
+            <div className="absolute -left-16 -bottom-16 w-32 h-32 rounded-full bg-indomie-red/30 blur-xl"></div>
             
-            <div className="relative w-full sm:max-w-xs">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-              <Input
-                placeholder="Search products..."
-                className="pl-10"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-          </div>
-          
-          {/* Categories */}
-          <ScrollArea className="w-full whitespace-nowrap pb-4">
-            <div className="flex gap-2 py-2">
-              {CATEGORIES.map((category) => (
+            <CardHeader className="relative z-10">
+              <div className="flex flex-col items-center text-center mb-4">
+                <CardTitle className="text-2xl font-bold">Welcome to Tolaram Feedback Portal</CardTitle>
+                <CardDescription className="mt-2 max-w-md">
+                  Help us improve our products by completing this short feedback form. Your opinion matters to us, and we're committed to making our products better with your input.
+                </CardDescription>
+              </div>
+              {selectedProduct && (
                 <Badge 
-                  key={category.id}
-                  variant={selectedCategory === category.id ? "default" : "outline"}
-                  className={`cursor-pointer px-3 py-1 ${
-                    selectedCategory === category.id 
-                      ? 'bg-indomie-red hover:bg-indomie-red/90' 
-                      : 'hover:bg-gray-100'
-                  }`}
-                  onClick={() => setSelectedCategory(category.id)}
+                  className="px-3 py-1 bg-indomie-red/20 text-indomie-red border border-indomie-red/30 flex items-center gap-2 mx-auto"
+                  variant="outline"
                 >
-                  {category.name}
-                </Badge>
-              ))}
-            </div>
-          </ScrollArea>
-          
-          {/* Products grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
-            {filteredProducts.length > 0 ? (
-              filteredProducts.map((product) => (
-                <Card key={product.id} className="overflow-hidden hover:shadow-md transition-shadow">
-                  <div className="aspect-[4/3] bg-gray-100 relative overflow-hidden">
+                  <div className="w-4 h-4 rounded overflow-hidden">
                     <img 
-                      src={product.image} 
-                      alt={product.name}
-                      className="w-full h-full object-cover transition-transform hover:scale-105"
+                      src={selectedProduct.image}
+                      alt={selectedProduct.name}
+                      className="w-full h-full object-cover"
                     />
                   </div>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-lg">{product.name}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="pb-4">
-                    <CardDescription>{product.description}</CardDescription>
-                  </CardContent>
-                  <CardFooter className="pt-0">
-                    <Button 
-                      className="w-full bg-indomie-yellow text-indomie-dark hover:bg-indomie-yellow/90"
-                      onClick={() => handleProductSelect(product)}
+                  Feedback for {selectedProduct.name}
+                </Badge>
+              )}
+            </CardHeader>
+            
+            <CardContent className="relative z-10">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Customer Information - MOVED TO TOP */}
+                <div className="space-y-4 p-4 bg-white/80 rounded-md backdrop-blur-sm border border-indomie-yellow/20">
+                  <h3 className="font-semibold text-lg mb-2">Your Information</h3>
+                  
+                  <div className="flex items-center space-x-2 mb-4">
+                    <Checkbox 
+                      id="anonymous" 
+                      checked={isAnonymous}
+                      onCheckedChange={(checked) => {
+                        setIsAnonymous(checked === true);
+                        // Clear name error if switching to anonymous
+                        if (checked && errors.customerName) {
+                          setErrors(prev => ({ ...prev, customerName: "" }));
+                        }
+                      }}
+                    />
+                    <label
+                      htmlFor="anonymous"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                     >
-                      Give Feedback
-                    </Button>
-                  </CardFooter>
-                </Card>
-              ))
-            ) : (
-              <div className="col-span-full py-12 flex flex-col items-center justify-center text-center">
-                <AnimatedIndomie className="w-20 h-20 mb-4 text-gray-400" />
-                <h3 className="text-lg font-semibold text-gray-800">No products found</h3>
-                <p className="text-gray-600">Try adjusting your search or filter criteria</p>
-              </div>
-            )}
-          </div>
-          
-          {/* Empty state if no products at all */}
-          {PRODUCTS.length === 0 && (
-            <div className="py-12 flex flex-col items-center justify-center text-center">
-              <AnimatedIndomie className="w-24 h-24 mb-6 text-gray-300" />
-              <h3 className="text-xl font-semibold text-gray-800">No products available</h3>
-              <p className="text-gray-600 mb-6">Products will appear here once they are added to the system.</p>
-            </div>
-          )}
+                      I want to remain anonymous
+                    </label>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="customerName" className="flex justify-between">
+                        <span>Your Name</span>
+                        <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        id="customerName"
+                        name="customerName"
+                        placeholder="Enter your name"
+                        value={formData.customerName}
+                        onChange={handleInputChange}
+                        className={cn(errors.customerName ? "border-red-500" : "", "w-full")}
+                        disabled={isAnonymous}
+                      />
+                      {errors.customerName && (
+                        <p className="text-sm text-red-500 mt-1">{errors.customerName}</p>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email (Optional)</Label>
+                      <Input
+                        id="email"
+                        name="email"
+                        type="email"
+                        placeholder="Enter your email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        disabled={isAnonymous}
+                        className="w-full"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div className="space-y-2">
+                      <Label>Date of Visit</Label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className={cn(
+                              "w-full justify-start text-left font-normal",
+                              !date && "text-muted-foreground"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {date ? format(date, "PPP") : <span>Pick a date</span>}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={date}
+                            onSelect={(date) => date && setDate(date)}
+                            initialFocus
+                            className="p-3 pointer-events-auto"
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label className="flex justify-between">
+                        <span>Store Location</span>
+                        <span className="text-red-500">*</span>
+                      </Label>
+                      <Select 
+                        onValueChange={(value) => handleSelectChange("storeLocation", value)}
+                      >
+                        <SelectTrigger className={cn(errors.storeLocation ? "border-red-500" : "", "w-full")}>
+                          <SelectValue placeholder="Select store location" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {STORE_LOCATIONS.map((location) => (
+                            <SelectItem key={location} value={location}>
+                              {location}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      {errors.storeLocation && (
+                        <p className="text-sm text-red-500 mt-1">{errors.storeLocation}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Product Selection - Now after user information */}
+                <div className="space-y-2">
+                  <Label htmlFor="product" className="flex justify-between">
+                    <span>Select Product</span>
+                    <span className="text-red-500">*</span>
+                  </Label>
+                  <Select 
+                    onValueChange={handleProductSelect}
+                    value={selectedProduct?.id}
+                  >
+                    <SelectTrigger className={errors.product ? "border-red-500" : ""}>
+                      <SelectValue placeholder="Choose a product to provide feedback on" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {products.map((product) => (
+                        <SelectItem key={product.id} value={product.id}>
+                          <div className="flex items-center gap-3">
+                            <div className="w-6 h-6 rounded overflow-hidden">
+                              <img 
+                                src={product.image}
+                                alt={product.name}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <span>{product.name}</span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.product && (
+                    <p className="text-sm text-red-500 mt-1">{errors.product}</p>
+                  )}
+                </div>
+
+                {/* Product Variants Selection - Radio Buttons */}
+                {selectedProduct && (
+                  <div className="space-y-3">
+                    <Label className="flex justify-between">
+                      <span>Product Variant</span>
+                      <span className="text-red-500">*</span>
+                    </Label>
+                    <RadioGroup 
+                      onValueChange={handleVariantSelect}
+                      value={selectedVariant || ""}
+                      className={`grid grid-cols-1 sm:grid-cols-2 gap-2 ${errors.variant ? "border border-red-500 p-2 rounded" : ""}`}
+                    >
+                      {selectedProduct.variants.map((variant) => (
+                        <div key={variant.id} className="flex items-center space-x-2 rounded-md border p-3 hover:bg-gray-100 cursor-pointer">
+                          <RadioGroupItem value={variant.id} id={variant.id} />
+                          <Label htmlFor={variant.id} className="flex-1 cursor-pointer">
+                            {variant.name}
+                          </Label>
+                        </div>
+                      ))}
+                    </RadioGroup>
+                    {errors.variant && (
+                      <p className="text-sm text-red-500">{errors.variant}</p>
+                    )}
+                  </div>
+                )}
+
+                {/* Product Issues Selection - Now showing only when variant is selected */}
+                {selectedProduct && selectedVariant && (
+                  <div className="space-y-3">
+                    <Label className="flex justify-between">
+                      <span>What issue did you experience?</span>
+                      <span className="text-red-500">*</span>
+                    </Label>
+                    <RadioGroup 
+                      onValueChange={setSelectedIssue}
+                      value={selectedIssue}
+                      className={`grid grid-cols-1 gap-2 ${errors.issue ? "border border-red-500 p-2 rounded" : ""}`}
+                    >
+                      {PRODUCT_ISSUES.map((issue) => (
+                        <div key={issue} className="flex items-center space-x-2 rounded-md border p-3 hover:bg-gray-100 cursor-pointer">
+                          <RadioGroupItem value={issue} id={issue.replace(/\s/g, "-")} />
+                          <Label htmlFor={issue.replace(/\s/g, "-")} className="flex-1 cursor-pointer">
+                            {issue}
+                          </Label>
+                        </div>
+                      ))}
+                      <div className="flex items-center space-x-2 rounded-md border p-3 hover:bg-gray-100 cursor-pointer">
+                        <RadioGroupItem value="other" id="other-issue" />
+                        <Label htmlFor="other-issue" className="flex-1 cursor-pointer">
+                          Other
+                        </Label>
+                      </div>
+                    </RadioGroup>
+                    {errors.issue && (
+                      <p className="text-sm text-red-500">{errors.issue}</p>
+                    )}
+                  </div>
+                )}
+
+                {/* Comments - now with 100 word limit */}
+                {selectedProduct && selectedVariant && selectedIssue && (
+                  <div className="space-y-2">
+                    <Label htmlFor="comments">Additional Comments</Label>
+                    <Textarea
+                      id="comments"
+                      name="comments"
+                      placeholder="Please provide more details about your experience..."
+                      className="min-h-[120px]"
+                      value={formData.comments}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                )}
+              </form>
+            </CardContent>
+            <CardFooter className="flex justify-between items-center relative z-10 mt-4">
+              <Button 
+                variant="outline"
+                type="button"
+                onClick={() => {
+                  // Reset the form
+                  setSelectedProduct(null);
+                  setSelectedVariant(null);
+                  setFormData({
+                    customerName: "",
+                    email: "",
+                    storeLocation: "",
+                    comments: ""
+                  });
+                  setIsAnonymous(false);
+                  setSelectedIssue("");
+                  setDate(new Date());
+                  setErrors({});
+                }}
+              >
+                Clear Form
+              </Button>
+              <Button 
+                className="bg-indomie-red hover:bg-indomie-red/90 relative overflow-hidden group"
+                onClick={handleSubmit}
+                disabled={submitting}
+              >
+                <span className="relative z-10">
+                  {submitting ? "Submitting..." : "Submit Feedback"}
+                </span>
+                <span className="absolute bottom-0 left-0 w-full h-0 bg-indomie-yellow transition-all duration-300 group-hover:h-full -z-0"></span>
+              </Button>
+            </CardFooter>
+          </Card>
         </div>
       </div>
     </div>
   );
 }
+
+export default Index;
