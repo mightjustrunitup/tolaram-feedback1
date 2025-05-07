@@ -50,8 +50,3 @@ http://localhost:8080
 - React Router
 - Sonner (for toast notifications)
 - shadcn/ui components
-
-## Development Notes
-- The application uses Vite as the build tool
-- Styling is done with Tailwind CSS
-- The project follows a component-based architecture
