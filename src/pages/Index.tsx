@@ -278,13 +278,14 @@ const Index = () => {
           } 
         });
       } else {
-        toast.error("Failed to submit feedback. Please try again.");
+        // Show more specific error message if available
+        const errorMessage = response.message || "Failed to submit feedback. Please try again.";
+        toast.error(errorMessage);
         setSubmitting(false);
       }
-      
     } catch (error) {
-      console.error("Error submitting feedback:", error);
-      toast.error("Failed to submit feedback. Please try again.");
+      console.error("Error in submit handler:", error);
+      toast.error("Something went wrong. Please try again.");
       setSubmitting(false);
     }
   };

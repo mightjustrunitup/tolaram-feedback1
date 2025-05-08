@@ -30,16 +30,21 @@ export const FeedbackService = {
     try {
       console.log("Submitting feedback:", data);
       
+      // Clear any undefined values to avoid RLS issues
+      const submissionData = {
+        customer_name: data.customerName || null,
+        location: data.location || null,
+        product_id: data.productId,
+        variant_id: data.variantId,
+        issues: data.issues,
+        comments: data.comments || null
+      };
+      
+      console.log("Cleaned submission data:", submissionData);
+      
       const { data: insertedData, error } = await supabase
         .from('feedback')
-        .insert({
-          customer_name: data.customerName,
-          location: data.location,
-          product_id: data.productId,
-          variant_id: data.variantId,
-          issues: data.issues,
-          comments: data.comments
-        })
+        .insert(submissionData)
         .select('id, created_at')
         .single();
       
@@ -62,7 +67,7 @@ export const FeedbackService = {
         id: '',
         submitted: false,
         timestamp: new Date().toISOString(),
-        message: "Failed to submit feedback"
+        message: error instanceof Error ? error.message : "Failed to submit feedback"
       };
     }
   },
