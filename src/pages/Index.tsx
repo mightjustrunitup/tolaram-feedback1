@@ -166,7 +166,7 @@ const Index = () => {
         overall_experience: formData.overallExperience,
         comments: formData.comments || undefined,
         is_anonymous: formData.isAnonymous,
-        date_of_visit: new Date()
+        date_of_visit: new Date().toISOString() // Convert Date to string in ISO format
       };
       
       // Submit to Supabase
