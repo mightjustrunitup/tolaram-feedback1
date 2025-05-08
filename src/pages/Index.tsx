@@ -253,7 +253,7 @@ const Index = () => {
     const variantName = selectedProduct?.variants.find(v => v.id === selectedVariant)?.name || "";
 
     try {
-      // Prepare data to send to PHP backend
+      // Prepare data to send to Supabase
       const feedbackData: FeedbackSubmission = {
         customerName: formData.customerName || undefined, // Don't send empty strings
         location: formData.location || undefined,
@@ -263,9 +263,7 @@ const Index = () => {
         comments: formData.comments || undefined
       };
       
-      // EXAMPLE: Uncomment this when your buddy's API is ready
-      /*
-      // Submit to PHP backend
+      // Submit to Supabase database
       const response = await FeedbackService.submitFeedback(feedbackData);
       
       if (response.submitted) {
@@ -281,17 +279,6 @@ const Index = () => {
         toast.error("Failed to submit feedback. Please try again.");
         setSubmitting(false);
       }
-      */
-      
-      // For now, use the existing navigation logic
-      // Remove this when the PHP API integration is ready
-      navigate("/thank-you", { 
-        state: { 
-          customerName: formData.customerName || "Valued Customer",
-          productName: selectedProduct?.name || "our product",
-          issues: selectedIssues
-        } 
-      });
       
     } catch (error) {
       console.error("Error submitting feedback:", error);
