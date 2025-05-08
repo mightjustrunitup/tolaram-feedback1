@@ -1,99 +1,15 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import Logo from "@/components/layout/Logo";
 import { toast } from "sonner";
-import { Badge } from "@/components/ui/badge";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Checkbox } from "@/components/ui/checkbox";
-import { cn } from "@/lib/utils";
 import { FeedbackService, FeedbackSubmission } from "@/services/feedbackService";
-
-// Define product types
-interface Product {
-  id: string;
-  name: string;
-  image: string;
-  description: string;
-  variants: Array<{
-    id: string;
-    name: string;
-  }>;
-}
-
-// Use local placeholder images with text to ensure display
-const products: Product[] = [
-  {
-    id: "indomie",
-    name: "Indomie",
-    image: "https://placehold.co/400x300/FFFFFF/E51E25?text=Indomie",
-    description: "Delicious instant noodles with a variety of flavors",
-    variants: [
-      { id: "indomie-chicken", name: "Indomie Tables Chicken" },
-      { id: "indomie-jollof", name: "Indomie Jollof Flavor" },
-      { id: "indomie-onion-chicken", name: "Indomie Onion Chicken Flavour" },
-      { id: "indomie-crayfish", name: "Indomie Crayfish Flavour" },
-      { id: "indomie-chicken-pepper-soup", name: "Indomie Chicken Pepper Soup" },
-      { id: "indomie-oriental", name: "Indomie Oriental Fried Noodle" },
-      { id: "indomie-relish-beef", name: "Indomie Relish Beef" },
-      { id: "indomie-relish-seafood", name: "Indomie Relish Sea Food Delight" }
-    ]
-  },
-  {
-    id: "minimie",
-    name: "Minimie",
-    image: "https://placehold.co/400x300/FFFFFF/FFB800?text=Minimie",
-    description: "Mini-sized instant noodles perfect for snacking",
-    variants: [
-      { id: "minimie-chinchin", name: "Minimie Chinchin" },
-      { id: "minimie-chinchin-spicy", name: "Minimie Chinchin (Hot and Spicy)" },
-      { id: "minimie-noodle-chicken", name: "Minimie Instant Noodle Chicken Flavour" },
-      { id: "minimie-noodle-vegetable", name: "Minimie Instant Noodle Vegetable" },
-      { id: "minimie-noodle-tomato", name: "Minimie Instant Noodle Tomato" }
-    ]
-  },
-  {
-    id: "dano",
-    name: "Dano Milk",
-    image: "https://placehold.co/400x300/FFFFFF/0075C2?text=Dano+Milk",
-    description: "High quality milk products for your daily needs",
-    variants: [
-      { id: "dano-slim", name: "Dano Slim" },
-      { id: "dano-cool-cow", name: "Dano Cool Cow" },
-      { id: "dano-uht", name: "Dano UHT" },
-      { id: "dano-vitakids", name: "Dano Vitakids" }
-    ]
-  },
-  {
-    id: "kelloggs",
-    name: "Kellogg's Cereals",
-    image: "https://placehold.co/400x300/FFFFFF/E31837?text=Kellogg's",
-    description: "Nutritious breakfast cereals for a great start to your day",
-    variants: [
-      { id: "kelloggs-corn-flakes", name: "Kelloggs Corn Flakes" },
-      { id: "kelloggs-cocopops", name: "Kelloggs Cocopops" },
-      { id: "kelloggs-frosties", name: "Kelloggs Frosties" },
-      { id: "kelloggs-rice-krispies", name: "Kelloggs Rice Krispies" },
-      { id: "kelloggs-crunchy-nut", name: "Kelloggs Crunchy Nut" },
-      { id: "kelloggs-crispix", name: "Kelloggs Crispix" },
-      { id: "kelloggs-krave", name: "Kelloggs Krave" }
-    ]
-  }
-];
-
-// Product issues list
-const PRODUCT_ISSUES = [
-  "Mislabelled products / allergies",
-  "Unusual taste or odor",
-  "Texture - too hard or soft",
-  "Mold or spoilage",
-  "Foreign elements"
-];
+import { CustomerInfoForm } from "@/components/feedback/CustomerInfoForm";
+import { ProductSelection } from "@/components/feedback/ProductSelection";
+import { IssueSelection } from "@/components/feedback/IssueSelection";
+import { FeedbackHeader } from "@/components/feedback/FeedbackHeader";
+import { products, PRODUCT_ISSUES, Product } from "@/components/feedback/data/productData";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -121,7 +37,7 @@ const Index = () => {
     setFormValid(isValid);
   }, [selectedProduct, selectedVariant, selectedIssues]);
 
-  // Example of how to load products from PHP backend
+  // Example of how to load products from backend
   // Uncomment this when your buddy's API is ready
   /*
   useEffect(() => {
@@ -129,7 +45,6 @@ const Index = () => {
       try {
         const apiProducts = await FeedbackService.getProducts();
         // Process and set products here
-        // You'll need to map the API response to match your Product interface
       } catch (error) {
         toast.error("Failed to load products. Please try again.");
         console.error("Error loading products:", error);
@@ -162,14 +77,6 @@ const Index = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    // Clear error for this field when changed
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: "" }));
-    }
-  };
-
-  const handleSelectChange = (name: string, value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
     // Clear error for this field when changed
     if (errors[name]) {
@@ -311,173 +218,39 @@ const Index = () => {
             <div className="absolute -left-16 -bottom-16 w-32 h-32 rounded-full bg-green-100/30 blur-xl"></div>
             
             <CardHeader className="relative z-10">
-              <div className="flex flex-col items-center text-center mb-4">
-                <CardTitle className="text-2xl font-bold">Welcome to Tolaram Feedback Portal</CardTitle>
-                <CardDescription className="mt-2 max-w-md">
-                  Your opinion matters to us, and we're committed to making our products better with your input.
-                </CardDescription>
-              </div>
-              {selectedProduct && (
-                <Badge 
-                  className="px-3 py-1 bg-indomie-red/20 text-indomie-red border border-indomie-red/30 flex items-center gap-2 mx-auto"
-                  variant="outline"
-                >
-                  <div className="w-4 h-4 rounded overflow-hidden">
-                    <img 
-                      src={selectedProduct.image}
-                      alt={selectedProduct.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  Feedback for {selectedProduct.name}
-                </Badge>
-              )}
+              <FeedbackHeader selectedProduct={selectedProduct} />
             </CardHeader>
             
             <CardContent className="relative z-10">
               <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Customer Information - Now with side-by-side layout */}
-                <div className="space-y-4 p-4 bg-white/80 rounded-md backdrop-blur-sm border border-gray-200">
-                  <h3 className="font-semibold text-lg mb-2">Your Information</h3>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="customerName">
-                        <span>Your Name (Optional)</span>
-                      </Label>
-                      <Input
-                        id="customerName"
-                        name="customerName"
-                        placeholder="Enter your name"
-                        value={formData.customerName}
-                        onChange={handleInputChange}
-                      />
-                    </div>
+                {/* Customer Information */}
+                <CustomerInfoForm 
+                  customerName={formData.customerName}
+                  location={formData.location}
+                  onInputChange={handleInputChange}
+                  errors={errors}
+                />
 
-                    <div className="space-y-2">
-                      <Label>
-                        <span>Location (Optional)</span>
-                      </Label>
-                      <Input
-                        id="location"
-                        name="location"
-                        placeholder="Enter your location (e.g., Ikeja)"
-                        value={formData.location}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Product Selection - Now after user information */}
-                <div className="space-y-2">
-                  <Label htmlFor="product" className="flex justify-between">
-                    <span>Select Product</span>
-                    <span className="text-red-500">*</span>
-                  </Label>
-                  <Select 
-                    onValueChange={handleProductSelect}
-                    value={selectedProduct?.id}
-                  >
-                    <SelectTrigger className={errors.product ? "border-red-500" : ""}>
-                      <SelectValue placeholder="Choose a product to provide feedback on" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {products.map((product) => (
-                        <SelectItem key={product.id} value={product.id} className="flex items-center gap-2">
-                          <div className="flex items-center gap-2">
-                            <div className="w-5 h-5 rounded overflow-hidden bg-gray-100">
-                              <img 
-                                src={product.image}
-                                alt={product.name}
-                                className="w-full h-full object-cover"
-                              />
-                            </div>
-                            <span>{product.name}</span>
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {errors.product && (
-                    <p className="text-sm text-red-500 mt-1">{errors.product}</p>
-                  )}
-                </div>
-
-                {selectedProduct && (
-                  <div className="space-y-2">
-                    <Label htmlFor="variant" className="flex justify-between">
-                      <span>Select {selectedProduct.name} Variant</span>
-                      <span className="text-red-500">*</span>
-                    </Label>
-                    <RadioGroup 
-                      value={selectedVariant || ""} 
-                      onValueChange={handleVariantSelect}
-                      className={cn(
-                        "grid grid-cols-1 md:grid-cols-2 gap-2 p-2", 
-                        errors.variant ? "border border-red-500 rounded-md" : ""
-                      )}
-                    >
-                      {selectedProduct.variants.map((variant) => (
-                        <div key={variant.id} className="flex items-center space-x-2 hover:bg-gray-50 p-2 rounded-md">
-                          <RadioGroupItem value={variant.id} id={variant.id} />
-                          <Label htmlFor={variant.id} className="cursor-pointer flex-grow text-sm">
-                            {variant.name}
-                          </Label>
-                        </div>
-                      ))}
-                    </RadioGroup>
-                    {errors.variant && (
-                      <p className="text-sm text-red-500 mt-1">{errors.variant}</p>
-                    )}
-                  </div>
-                )}
+                {/* Product Selection */}
+                <ProductSelection
+                  products={products}
+                  selectedProduct={selectedProduct}
+                  selectedVariant={selectedVariant}
+                  errors={errors}
+                  handleProductSelect={handleProductSelect}
+                  handleVariantSelect={handleVariantSelect}
+                />
 
                 {/* Product Issues - Only display if a variant is selected */}
                 {selectedVariant && (
-                  <>
-                    <div className="space-y-3 p-4 bg-white/80 rounded-md backdrop-blur-sm border border-gray-200">
-                      <Label className="text-base font-medium flex justify-between">
-                        <span>Which issues did you experience with this product?</span>
-                        <span className="text-red-500">*</span>
-                      </Label>
-                      
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        {PRODUCT_ISSUES.map((issue) => (
-                          <div key={issue} className="flex items-center space-x-2">
-                            <Checkbox 
-                              id={issue.replace(/\s/g, '-')} 
-                              checked={selectedIssues.includes(issue)}
-                              onCheckedChange={() => handleIssueToggle(issue)}
-                              className="border-indomie-red"
-                            />
-                            <label
-                              htmlFor={issue.replace(/\s/g, '-')}
-                              className="text-sm md:text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                            >
-                              {issue}
-                            </label>
-                          </div>
-                        ))}
-                      </div>
-                      {errors.issue && (
-                        <p className="text-sm text-red-500 mt-1">{errors.issue}</p>
-                      )}
-                    </div>
-                    
-                    {/* Comments - Display this section immediately when a variant is selected */}
-                    <div className="space-y-2">
-                      <Label htmlFor="comments">Additional Comments</Label>
-                      <Textarea
-                        id="comments"
-                        name="comments"
-                        placeholder="Please share any additional details about the issues you experienced..."
-                        className="min-h-[120px]"
-                        value={formData.comments}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-                  </>
+                  <IssueSelection
+                    issues={PRODUCT_ISSUES}
+                    selectedIssues={selectedIssues}
+                    comments={formData.comments}
+                    handleIssueToggle={handleIssueToggle}
+                    onInputChange={handleInputChange}
+                    errors={errors}
+                  />
                 )}
                 
                 <CardFooter className="flex justify-end items-center pt-4 px-0">
