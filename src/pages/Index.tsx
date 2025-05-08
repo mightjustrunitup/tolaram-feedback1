@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -12,88 +13,9 @@ import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
-import { FeedbackService, FeedbackSubmission } from "@/services/feedbackService";
-
-// Define product types
-interface Product {
-  id: string;
-  name: string;
-  image: string;
-  description: string;
-  variants: Array<{
-    id: string;
-    name: string;
-  }>;
-}
-
-// Use local placeholder images with text to ensure display
-const products: Product[] = [
-  {
-    id: "indomie",
-    name: "Indomie",
-    image: "https://placehold.co/400x300/FFFFFF/E51E25?text=Indomie",
-    description: "Delicious instant noodles with a variety of flavors",
-    variants: [
-      { id: "indomie-chicken", name: "Indomie Tables Chicken" },
-      { id: "indomie-jollof", name: "Indomie Jollof Flavor" },
-      { id: "indomie-onion-chicken", name: "Indomie Onion Chicken Flavour" },
-      { id: "indomie-crayfish", name: "Indomie Crayfish Flavour" },
-      { id: "indomie-chicken-pepper-soup", name: "Indomie Chicken Pepper Soup" },
-      { id: "indomie-oriental", name: "Indomie Oriental Fried Noodle" },
-      { id: "indomie-relish-beef", name: "Indomie Relish Beef" },
-      { id: "indomie-relish-seafood", name: "Indomie Relish Sea Food Delight" }
-    ]
-  },
-  {
-    id: "minimie",
-    name: "Minimie",
-    image: "https://placehold.co/400x300/FFFFFF/FFB800?text=Minimie",
-    description: "Mini-sized instant noodles perfect for snacking",
-    variants: [
-      { id: "minimie-chinchin", name: "Minimie Chinchin" },
-      { id: "minimie-chinchin-spicy", name: "Minimie Chinchin (Hot and Spicy)" },
-      { id: "minimie-noodle-chicken", name: "Minimie Instant Noodle Chicken Flavour" },
-      { id: "minimie-noodle-vegetable", name: "Minimie Instant Noodle Vegetable" },
-      { id: "minimie-noodle-tomato", name: "Minimie Instant Noodle Tomato" }
-    ]
-  },
-  {
-    id: "dano",
-    name: "Dano Milk",
-    image: "https://placehold.co/400x300/FFFFFF/0075C2?text=Dano+Milk",
-    description: "High quality milk products for your daily needs",
-    variants: [
-      { id: "dano-slim", name: "Dano Slim" },
-      { id: "dano-cool-cow", name: "Dano Cool Cow" },
-      { id: "dano-uht", name: "Dano UHT" },
-      { id: "dano-vitakids", name: "Dano Vitakids" }
-    ]
-  },
-  {
-    id: "kelloggs",
-    name: "Kellogg's Cereals",
-    image: "https://placehold.co/400x300/FFFFFF/E31837?text=Kellogg's",
-    description: "Nutritious breakfast cereals for a great start to your day",
-    variants: [
-      { id: "kelloggs-corn-flakes", name: "Kelloggs Corn Flakes" },
-      { id: "kelloggs-cocopops", name: "Kelloggs Cocopops" },
-      { id: "kelloggs-frosties", name: "Kelloggs Frosties" },
-      { id: "kelloggs-rice-krispies", name: "Kelloggs Rice Krispies" },
-      { id: "kelloggs-crunchy-nut", name: "Kelloggs Crunchy Nut" },
-      { id: "kelloggs-crispix", name: "Kelloggs Crispix" },
-      { id: "kelloggs-krave", name: "Kelloggs Krave" }
-    ]
-  }
-];
-
-// Product issues list
-const PRODUCT_ISSUES = [
-  "Mislabelled products / allergies",
-  "Unusual taste or odor",
-  "Texture - too hard or soft",
-  "Mold or spoilage",
-  "Foreign elements"
-];
+import { FeedbackService, FeedbackSubmission, Product, ProductVariant, Issue } from "@/services/feedbackService";
+import { useQuery } from "@tanstack/react-query";
+import { Spinner } from "@/components/ui/spinner";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -105,60 +27,57 @@ const Index = () => {
   const [formValid, setFormValid] = useState(false);
   
   // Changed from single issue to multiple issues with checkboxes
-  const [selectedIssues, setSelectedIssues] = useState<string[]>([]);
+  const [selectedIssue, setSelectedIssue] = useState<string | null>(null);
   
   const [formData, setFormData] = useState({
     customerName: "",
+    email: "",
     location: "",
-    comments: ""
+    comments: "",
+    staffFriendliness: 4,
+    cleanliness: 4,
+    productAvailability: 4,
+    overallExperience: 4,
+    isAnonymous: false
   });
 
+  // Fetch products from Supabase
+  const { 
+    data: products = [],
+    isLoading: isLoadingProducts,
+    error: productsError 
+  } = useQuery({
+    queryKey: ['products'],
+    queryFn: FeedbackService.getProducts
+  });
+
+  // Fetch issues from Supabase
+  const { 
+    data: issues = [],
+    isLoading: isLoadingIssues,
+    error: issuesError 
+  } = useQuery({
+    queryKey: ['issues'],
+    queryFn: FeedbackService.getIssues
+  });
+
+  // Fetch variants when a product is selected
+  const { 
+    data: variants = [],
+    isLoading: isLoadingVariants,
+    error: variantsError
+  } = useQuery({
+    queryKey: ['productVariants', selectedProduct?.id],
+    queryFn: () => selectedProduct?.id ? FeedbackService.getProductVariants(selectedProduct.id) : Promise.resolve([]),
+    enabled: !!selectedProduct?.id,
+  });
+  
   // Check form validity whenever relevant fields change
   useEffect(() => {
     const isValid = selectedProduct !== null && 
-                    selectedVariant !== null && 
-                    selectedIssues.length > 0;
+                    (selectedProduct ? true : false); // Making variant optional
     setFormValid(isValid);
-  }, [selectedProduct, selectedVariant, selectedIssues]);
-
-  // Example of how to load products from PHP backend
-  // Uncomment this when your buddy's API is ready
-  /*
-  useEffect(() => {
-    const loadProducts = async () => {
-      try {
-        const apiProducts = await FeedbackService.getProducts();
-        // Process and set products here
-        // You'll need to map the API response to match your Product interface
-      } catch (error) {
-        toast.error("Failed to load products. Please try again.");
-        console.error("Error loading products:", error);
-      }
-    };
-    
-    loadProducts();
-  }, []);
-  */
-
-  // Example of how to load variants when a product is selected
-  // Uncomment this when your buddy's API is ready
-  /*
-  useEffect(() => {
-    if (!selectedProduct?.id) return;
-    
-    const loadVariants = async () => {
-      try {
-        const apiVariants = await FeedbackService.getProductVariants(selectedProduct.id);
-        // Process and update the selected product's variants
-      } catch (error) {
-        toast.error("Failed to load product variants. Please try again.");
-        console.error("Error loading variants:", error);
-      }
-    };
-    
-    loadVariants();
-  }, [selectedProduct?.id]);
-  */
+  }, [selectedProduct, selectedVariant]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -177,6 +96,10 @@ const Index = () => {
     }
   };
 
+  const handleRatingChange = (name: string, value: number) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
   const handleProductSelect = (productId: string) => {
     const product = products.find(p => p.id === productId);
     if (product) {
@@ -184,32 +107,21 @@ const Index = () => {
       // Reset the selected variant when product changes
       setSelectedVariant(null);
       // Reset the selected issues when product changes
-      setSelectedIssues([]);
+      setSelectedIssue(null);
     }
   };
 
   const handleVariantSelect = (variantId: string) => {
     setSelectedVariant(variantId);
-    // Reset the selected issues when variant changes
-    setSelectedIssues([]);
     // Clear variant error if it exists
     if (errors.variant) {
       setErrors(prev => ({ ...prev, variant: "" }));
     }
   };
 
-  // New function to handle checkbox changes for issues
-  const handleIssueToggle = (issue: string) => {
-    setSelectedIssues(current => {
-      // If already selected, remove it
-      if (current.includes(issue)) {
-        return current.filter(i => i !== issue);
-      } 
-      // Otherwise add it
-      return [...current, issue];
-    });
-    
-    // Clear issue error if any issue is selected
+  const handleIssueSelect = (issueId: string) => {
+    setSelectedIssue(issueId);
+    // Clear issue error if it exists
     if (errors.issue) {
       setErrors(prev => ({ ...prev, issue: "" }));
     }
@@ -223,16 +135,6 @@ const Index = () => {
       newErrors.product = "Please select a product";
     }
 
-    // Validate variant selection
-    if (selectedProduct && !selectedVariant) {
-      newErrors.variant = "Please select a product variant";
-    }
-
-    // Validate at least one issue is selected
-    if (selectedProduct && selectedVariant && selectedIssues.length === 0) {
-      newErrors.issue = "Please select at least one issue with the product";
-    }
-    
     // Set errors and return validity result
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -248,57 +150,69 @@ const Index = () => {
     }
     
     setSubmitting(true);
-    
-    // Get selected variant name
-    const variantName = selectedProduct?.variants.find(v => v.id === selectedVariant)?.name || "";
 
     try {
-      // Prepare data to send to PHP backend
+      // Prepare data to send to Supabase
       const feedbackData: FeedbackSubmission = {
-        customerName: formData.customerName || undefined, // Don't send empty strings
+        customer_name: formData.isAnonymous ? undefined : formData.customerName || undefined,
+        email: formData.isAnonymous ? undefined : formData.email || undefined,
         location: formData.location || undefined,
-        productId: selectedProduct?.id || "",
-        variantId: selectedVariant || "",
-        issues: selectedIssues,
-        comments: formData.comments || undefined
+        product_id: selectedProduct?.id || "",
+        product_variant_id: selectedVariant || undefined,
+        selected_issue_id: selectedIssue || undefined,
+        staff_friendliness: formData.staffFriendliness,
+        cleanliness: formData.cleanliness,
+        product_availability: formData.productAvailability,
+        overall_experience: formData.overallExperience,
+        comments: formData.comments || undefined,
+        is_anonymous: formData.isAnonymous,
+        date_of_visit: new Date()
       };
       
-      // EXAMPLE: Uncomment this when your buddy's API is ready
-      /*
-      // Submit to PHP backend
+      // Submit to Supabase
       const response = await FeedbackService.submitFeedback(feedbackData);
       
       if (response.submitted) {
         // Navigate to thank you page
         navigate("/thank-you", { 
           state: { 
-            customerName: formData.customerName || "Valued Customer",
-            productName: selectedProduct?.name || "our product",
-            issues: selectedIssues
+            customerName: formData.isAnonymous ? "Valued Customer" : formData.customerName || "Valued Customer",
+            email: formData.email,
+            productName: selectedProduct?.name || "our product"
           } 
         });
       } else {
         toast.error("Failed to submit feedback. Please try again.");
         setSubmitting(false);
       }
-      */
       
-      // For now, use the existing navigation logic
-      // Remove this when the PHP API integration is ready
-      navigate("/thank-you", { 
-        state: { 
-          customerName: formData.customerName || "Valued Customer",
-          productName: selectedProduct?.name || "our product",
-          issues: selectedIssues
-        } 
-      });
-      
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error submitting feedback:", error);
-      toast.error("Failed to submit feedback. Please try again.");
+      toast.error(error.message || "Failed to submit feedback. Please try again.");
       setSubmitting(false);
     }
   };
+
+  if (isLoadingProducts || isLoadingIssues) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center">
+        <Spinner size="lg" />
+        <p className="mt-4 text-gray-600">Loading feedback form...</p>
+      </div>
+    );
+  }
+
+  if (productsError || issuesError) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-4">
+        <div className="bg-red-50 text-red-800 p-4 rounded-md mb-4 max-w-md w-full">
+          <h3 className="text-lg font-semibold">Error Loading Data</h3>
+          <p>We encountered a problem loading the necessary data. Please try again later.</p>
+        </div>
+        <Button onClick={() => window.location.reload()}>Retry</Button>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-sky-50 to-gray-50">
@@ -334,7 +248,7 @@ const Index = () => {
                 >
                   <div className="w-4 h-4 rounded overflow-hidden">
                     <img 
-                      src={selectedProduct.image}
+                      src={selectedProduct.image_url}
                       alt={selectedProduct.name}
                       className="w-full h-full object-cover"
                     />
@@ -346,40 +260,71 @@ const Index = () => {
             
             <CardContent className="relative z-10">
               <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Customer Information - Now with side-by-side layout */}
+                {/* Customer Information - With anonymous checkbox */}
                 <div className="space-y-4 p-4 bg-white/80 rounded-md backdrop-blur-sm border border-gray-200">
-                  <h3 className="font-semibold text-lg mb-2">Your Information</h3>
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="font-semibold text-lg">Your Information</h3>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="isAnonymous" 
+                        checked={formData.isAnonymous}
+                        onCheckedChange={(checked) => {
+                          setFormData(prev => ({ ...prev, isAnonymous: checked === true }));
+                        }}
+                      />
+                      <label
+                        htmlFor="isAnonymous"
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        I want to remain anonymous
+                      </label>
+                    </div>
+                  </div>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="customerName">
-                        <span>Your Name (Optional)</span>
-                      </Label>
-                      <Input
-                        id="customerName"
-                        name="customerName"
-                        placeholder="Enter your name"
-                        value={formData.customerName}
-                        onChange={handleInputChange}
-                      />
-                    </div>
+                  {!formData.isAnonymous && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="customerName">
+                          <span>Your Name (Optional)</span>
+                        </Label>
+                        <Input
+                          id="customerName"
+                          name="customerName"
+                          placeholder="Enter your name"
+                          value={formData.customerName}
+                          onChange={handleInputChange}
+                        />
+                      </div>
 
-                    <div className="space-y-2">
-                      <Label>
-                        <span>Location (Optional)</span>
-                      </Label>
-                      <Input
-                        id="location"
-                        name="location"
-                        placeholder="Enter your location (e.g., Ikeja)"
-                        value={formData.location}
-                        onChange={handleInputChange}
-                      />
+                      <div className="space-y-2">
+                        <Label htmlFor="email">Email (Optional)</Label>
+                        <Input
+                          id="email"
+                          name="email"
+                          type="email"
+                          placeholder="Enter your email"
+                          value={formData.email}
+                          onChange={handleInputChange}
+                        />
+                      </div>
                     </div>
+                  )}
+
+                  <div className="space-y-2">
+                    <Label>
+                      <span>Location (Optional)</span>
+                    </Label>
+                    <Input
+                      id="location"
+                      name="location"
+                      placeholder="Enter your location (e.g., Ikeja)"
+                      value={formData.location}
+                      onChange={handleInputChange}
+                    />
                   </div>
                 </div>
 
-                {/* Product Selection - Now after user information */}
+                {/* Product Selection */}
                 <div className="space-y-2">
                   <Label htmlFor="product" className="flex justify-between">
                     <span>Select Product</span>
@@ -398,7 +343,7 @@ const Index = () => {
                           <div className="flex items-center gap-2">
                             <div className="w-5 h-5 rounded overflow-hidden bg-gray-100">
                               <img 
-                                src={product.image}
+                                src={product.image_url}
                                 alt={product.name}
                                 className="w-full h-full object-cover"
                               />
@@ -414,11 +359,10 @@ const Index = () => {
                   )}
                 </div>
 
-                {selectedProduct && (
+                {selectedProduct && variants.length > 0 && (
                   <div className="space-y-2">
-                    <Label htmlFor="variant" className="flex justify-between">
-                      <span>Select {selectedProduct.name} Variant</span>
-                      <span className="text-red-500">*</span>
+                    <Label htmlFor="variant">
+                      <span>Select {selectedProduct.name} Variant (Optional)</span>
                     </Label>
                     <RadioGroup 
                       value={selectedVariant || ""} 
@@ -428,7 +372,7 @@ const Index = () => {
                         errors.variant ? "border border-red-500 rounded-md" : ""
                       )}
                     >
-                      {selectedProduct.variants.map((variant) => (
+                      {variants.map((variant) => (
                         <div key={variant.id} className="flex items-center space-x-2 hover:bg-gray-50 p-2 rounded-md">
                           <RadioGroupItem value={variant.id} id={variant.id} />
                           <Label htmlFor={variant.id} className="cursor-pointer flex-grow text-sm">
@@ -443,52 +387,140 @@ const Index = () => {
                   </div>
                 )}
 
-                {/* Product Issues - Only display if a variant is selected */}
-                {selectedVariant && (
-                  <>
-                    <div className="space-y-3 p-4 bg-white/80 rounded-md backdrop-blur-sm border border-gray-200">
-                      <Label className="text-base font-medium flex justify-between">
-                        <span>Which issues did you experience with this product?</span>
-                        <span className="text-red-500">*</span>
-                      </Label>
-                      
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        {PRODUCT_ISSUES.map((issue) => (
-                          <div key={issue} className="flex items-center space-x-2">
-                            <Checkbox 
-                              id={issue.replace(/\s/g, '-')} 
-                              checked={selectedIssues.includes(issue)}
-                              onCheckedChange={() => handleIssueToggle(issue)}
-                              className="border-indomie-red"
-                            />
-                            <label
-                              htmlFor={issue.replace(/\s/g, '-')}
-                              className="text-sm md:text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                            >
-                              {issue}
-                            </label>
-                          </div>
-                        ))}
+                {/* Rating Scales */}
+                <div className="space-y-6 p-4 bg-white/70 rounded-md backdrop-blur-sm border border-gray-200">
+                  <h3 className="font-semibold text-lg mb-4 text-indomie-dark">Rate Your Experience</h3>
+                  
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="p-3 hover:bg-gray-50/70 rounded-md transition-colors">
+                        <div className="flex flex-col">
+                          <Label className="mb-2">Staff Friendliness</Label>
+                          <Select
+                            value={formData.staffFriendliness.toString()}
+                            onValueChange={(value) => handleRatingChange("staffFriendliness", parseInt(value))}
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="1">1 - Poor</SelectItem>
+                              <SelectItem value="2">2 - Fair</SelectItem>
+                              <SelectItem value="3">3 - Good</SelectItem>
+                              <SelectItem value="4">4 - Very Good</SelectItem>
+                              <SelectItem value="5">5 - Excellent</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
                       </div>
-                      {errors.issue && (
-                        <p className="text-sm text-red-500 mt-1">{errors.issue}</p>
-                      )}
+                      
+                      <div className="p-3 hover:bg-gray-50/70 rounded-md transition-colors">
+                        <div className="flex flex-col">
+                          <Label className="mb-2">Cleanliness</Label>
+                          <Select
+                            value={formData.cleanliness.toString()}
+                            onValueChange={(value) => handleRatingChange("cleanliness", parseInt(value))}
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="1">1 - Poor</SelectItem>
+                              <SelectItem value="2">2 - Fair</SelectItem>
+                              <SelectItem value="3">3 - Good</SelectItem>
+                              <SelectItem value="4">4 - Very Good</SelectItem>
+                              <SelectItem value="5">5 - Excellent</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                      
+                      <div className="p-3 hover:bg-gray-50/70 rounded-md transition-colors">
+                        <div className="flex flex-col">
+                          <Label className="mb-2">Product Availability</Label>
+                          <Select
+                            value={formData.productAvailability.toString()}
+                            onValueChange={(value) => handleRatingChange("productAvailability", parseInt(value))}
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="1">1 - Poor</SelectItem>
+                              <SelectItem value="2">2 - Fair</SelectItem>
+                              <SelectItem value="3">3 - Good</SelectItem>
+                              <SelectItem value="4">4 - Very Good</SelectItem>
+                              <SelectItem value="5">5 - Excellent</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                      
+                      <div className="p-3 hover:bg-gray-50/70 rounded-md transition-colors">
+                        <div className="flex flex-col">
+                          <Label className="mb-2">Overall Experience</Label>
+                          <Select
+                            value={formData.overallExperience.toString()}
+                            onValueChange={(value) => handleRatingChange("overallExperience", parseInt(value))}
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="1">1 - Poor</SelectItem>
+                              <SelectItem value="2">2 - Fair</SelectItem>
+                              <SelectItem value="3">3 - Good</SelectItem>
+                              <SelectItem value="4">4 - Very Good</SelectItem>
+                              <SelectItem value="5">5 - Excellent</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
                     </div>
-                    
-                    {/* Comments - Display this section immediately when a variant is selected */}
-                    <div className="space-y-2">
-                      <Label htmlFor="comments">Additional Comments</Label>
-                      <Textarea
-                        id="comments"
-                        name="comments"
-                        placeholder="Please share any additional details about the issues you experienced..."
-                        className="min-h-[120px]"
-                        value={formData.comments}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-                  </>
-                )}
+                  </div>
+                </div>
+
+                {/* Product Issues - Now using a Dropdown */}
+                <div className="space-y-3 p-4 bg-white/80 rounded-md backdrop-blur-sm border border-gray-200">
+                  <Label className="text-base font-medium">Did you experience any of these issues?</Label>
+                  
+                  <Select 
+                    value={selectedIssue || ""} 
+                    onValueChange={handleIssueSelect}
+                  >
+                    <SelectTrigger className="w-full bg-white">
+                      <SelectValue placeholder="Select any issues you experienced (Optional)" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white">
+                      {issues.map((issue) => (
+                        <SelectItem 
+                          key={issue.id} 
+                          value={issue.id}
+                          className="flex items-center gap-2 focus:bg-indomie-yellow/10 hover:bg-indomie-yellow/5 cursor-pointer"
+                        >
+                          <div className="flex items-center gap-2">
+                            <span>{issue.name}</span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Comments */}
+                <div className="space-y-2">
+                  <Label htmlFor="comments">Additional Comments</Label>
+                  <Textarea
+                    id="comments"
+                    name="comments"
+                    placeholder="Please share any additional details about your experience..."
+                    className="min-h-[120px]"
+                    value={formData.comments}
+                    onChange={handleInputChange}
+                    maxWords={100}
+                    showWordCount={true}
+                  />
+                </div>
                 
                 <CardFooter className="flex justify-end items-center pt-4 px-0">
                   <Button 
