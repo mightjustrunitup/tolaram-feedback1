@@ -6,7 +6,7 @@ export interface FeedbackSubmission {
   customer_name?: string;
   email?: string;
   location?: string;
-  date_of_visit?: Date;
+  date_of_visit?: string; // Changed from Date to string to match Supabase's expected format
   product_id: string;
   product_variant_id?: string;
   staff_friendliness?: number;
@@ -54,9 +54,15 @@ export const FeedbackService = {
    */
   submitFeedback: async (data: FeedbackSubmission): Promise<FeedbackResponse> => {
     try {
+      // Convert any Date objects to ISO strings before sending to Supabase
+      const submissionData = {
+        ...data,
+        date_of_visit: data.date_of_visit ? data.date_of_visit : null,
+      };
+
       const { data: feedbackData, error } = await supabase
         .from('feedback')
-        .insert([data])
+        .insert(submissionData) // Pass a single object, not an array
         .select()
         .single();
 

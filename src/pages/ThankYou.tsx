@@ -5,7 +5,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/layout/Logo';
 import { CheckCircle } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 export default function ThankYou() {
   const location = useLocation();
@@ -37,25 +36,15 @@ export default function ThankYou() {
           <div className="w-full h-full bg-[radial-gradient(#64748b_1px,transparent_1px)] [background-size:20px_20px] opacity-10"></div>
         </div>
         
-        <motion.div 
-          className="max-w-2xl w-full mx-auto relative z-10"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
+        <div className="max-w-2xl w-full mx-auto relative z-10 animate-fade-in">
           <Card className="shadow-lg border-t-4 border-t-green-500 relative overflow-hidden p-6">
             <div className="absolute -right-16 -top-16 w-32 h-32 rounded-full bg-green-100/30 blur-xl"></div>
             <div className="absolute -left-16 -bottom-16 w-32 h-32 rounded-full bg-blue-100/30 blur-xl"></div>
             
             <div className="flex flex-col items-center text-center space-y-6 relative z-10">
-              <motion.div 
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                className="bg-green-100 p-4 rounded-full"
-              >
+              <div className="bg-green-100 p-4 rounded-full animate-scale-in">
                 <CheckCircle size={64} className="text-green-600" />
-              </motion.div>
+              </div>
               
               <h1 className="text-3xl md:text-4xl font-bold text-gray-800">Thank You!</h1>
               
@@ -95,7 +84,7 @@ export default function ThankYou() {
           <div className="text-center mt-8 text-gray-500 text-sm">
             © {new Date().getFullYear()} Tolaram Group. All rights reserved.
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   );
