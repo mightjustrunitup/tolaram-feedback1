@@ -28,6 +28,8 @@ export const FeedbackService = {
    */
   submitFeedback: async (data: FeedbackSubmission): Promise<FeedbackResponse> => {
     try {
+      console.log("Submitting feedback:", data);
+      
       const { data: insertedData, error } = await supabase
         .from('feedback')
         .insert({
@@ -41,7 +43,12 @@ export const FeedbackService = {
         .select('id, created_at')
         .single();
       
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
+      
+      console.log("Feedback submitted successfully:", insertedData);
       
       return {
         id: insertedData.id,

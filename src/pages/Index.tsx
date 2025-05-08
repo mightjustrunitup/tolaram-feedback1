@@ -249,9 +249,6 @@ const Index = () => {
     
     setSubmitting(true);
     
-    // Get selected variant name
-    const variantName = selectedProduct?.variants.find(v => v.id === selectedVariant)?.name || "";
-
     try {
       // Prepare data to send to Supabase
       const feedbackData: FeedbackSubmission = {
@@ -263,10 +260,15 @@ const Index = () => {
         comments: formData.comments || undefined
       };
       
+      console.log("Preparing to submit feedback:", feedbackData);
+      
       // Submit to Supabase database
       const response = await FeedbackService.submitFeedback(feedbackData);
+      console.log("Submission response:", response);
       
       if (response.submitted) {
+        toast.success("Feedback submitted successfully!");
+        
         // Navigate to thank you page
         navigate("/thank-you", { 
           state: { 
