@@ -1,41 +1,14 @@
 
-import { supabase } from "@/integrations/supabase/client";
+import { get, post } from "@/lib/api";
 
 // Define types for the service
 export interface FeedbackSubmission {
-  customer_name?: string;
-  email?: string;
+  customerName?: string;
   location?: string;
-  date_of_visit?: string; // Changed from Date to string to match Supabase's expected format
-  product_id: string;
-  product_variant_id?: string;
-  staff_friendliness?: number;
-  cleanliness?: number;
-  product_availability?: number;
-  overall_experience?: number;
-  selected_issue_id?: string;
+  productId: string;
+  variantId: string;
+  issues: string[];
   comments?: string;
-  is_anonymous: boolean;
-}
-
-export interface Product {
-  id: string;
-  name: string;
-  description: string;
-  image_url: string;
-}
-
-export interface ProductVariant {
-  id: string;
-  product_id: string;
-  name: string;
-  description?: string;
-}
-
-export interface Issue {
-  id: string;
-  name: string;
-  description?: string;
 }
 
 export interface FeedbackResponse {
@@ -46,112 +19,27 @@ export interface FeedbackResponse {
 }
 
 /**
- * Service for feedback-related API operations using Supabase
+ * Service for feedback-related API operations
  */
 export const FeedbackService = {
   /**
-   * Submit feedback to Supabase
+   * Submit feedback to the PHP backend
    */
-  submitFeedback: async (data: FeedbackSubmission): Promise<FeedbackResponse> => {
-    try {
-      // Convert any Date objects to ISO strings before sending to Supabase
-      const submissionData = {
-        ...data,
-        date_of_visit: data.date_of_visit ? data.date_of_visit : null,
-      };
-
-      const { data: feedbackData, error } = await supabase
-        .from('feedback')
-        .insert(submissionData) // Pass a single object, not an array
-        .select()
-        .single();
-
-      if (error) {
-        console.error("Error submitting feedback:", error);
-        throw new Error(error.message);
-      }
-
-      return {
-        id: feedbackData.id,
-        submitted: true,
-        timestamp: feedbackData.created_at,
-        message: "Feedback submitted successfully"
-      };
-    } catch (error: any) {
-      console.error("Error submitting feedback:", error);
-      return {
-        id: "",
-        submitted: false,
-        timestamp: new Date().toISOString(),
-        message: error.message || "Failed to submit feedback"
-      };
-    }
+  submitFeedback: (data: FeedbackSubmission): Promise<FeedbackResponse> => {
+    return post<FeedbackResponse>('/feedback', data);
   },
 
   /**
-   * Get available products from Supabase
+   * Get available products from the backend
    */
-  getProducts: async (): Promise<Product[]> => {
-    try {
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .order('name');
-
-      if (error) {
-        console.error("Error fetching products:", error);
-        throw new Error(error.message);
-      }
-
-      return data || [];
-    } catch (error) {
-      console.error("Error fetching products:", error);
-      return [];
-    }
+  getProducts: () => {
+    return get<any[]>('/products');
   },
 
   /**
    * Get product variants by product ID
    */
-  getProductVariants: async (productId: string): Promise<ProductVariant[]> => {
-    try {
-      const { data, error } = await supabase
-        .from('product_variants')
-        .select('*')
-        .eq('product_id', productId)
-        .order('name');
-
-      if (error) {
-        console.error("Error fetching product variants:", error);
-        throw new Error(error.message);
-      }
-
-      return data || [];
-    } catch (error) {
-      console.error("Error fetching product variants:", error);
-      return [];
-    }
-  },
-
-  /**
-   * Get available issues
-   */
-  getIssues: async (): Promise<Issue[]> => {
-    try {
-      const { data, error } = await supabase
-        .from('issues')
-        .select('*')
-        .order('name');
-
-      if (error) {
-        console.error("Error fetching issues:", error);
-        throw new Error(error.message);
-      }
-
-      return data || [];
-    } catch (error) {
-      console.error("Error fetching issues:", error);
-      return [];
-    }
+  getProductVariants: (productId: string) => {
+    return get<any[]>(`/products/${productId}/variants`);
   }
 };
